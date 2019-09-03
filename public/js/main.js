@@ -1,4 +1,3 @@
-// scene.fog = new THREE.Fog(0x000000, 5000, 10000);
 var loader, renderer, scene, camera, player, board
 boardSize = 10
 
@@ -29,17 +28,16 @@ document.onkeydown = function(e) {
     switch (e.keyCode) {
 
         case (KEYCODES.w):
-            player.mesh.rotateZ(THREE.Math.degToRad(90))
+            player.rotateZ(90)
             break;
         case (KEYCODES.a):
-            player.mesh.rotateY(THREE.Math.degToRad(90))
+            player.rotateY(90)
             break;
         case (KEYCODES.s):
-            player.mesh.rotateY(THREE.Math.degToRad(270))
+            player.rotateY(270)
             break;
         case (KEYCODES.d):
-            console.log('yo')
-            player.mesh.rotateZ(THREE.Math.degToRad(270))
+            player.rotateZ(270)
             break;
     }
     if (MOVEMENTS[e.key]) {
@@ -52,21 +50,55 @@ document.onkeydown = function(e) {
 class Snake {
     constructor(material) {
         this.dirs = ['x', 'y', 'z']
-        this.speed = .01
+        this.speed = .05
+        this.moveTicker = 0
         this.direction = [0, 0, 1]
         this.geometry = new THREE.BoxGeometry(1, 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, material);
+        this.moveQueue = []
+    }
+
+    rotateZ(degrees) {
+        this.moveQueue.push(() => player.mesh.rotateZ(THREE.Math.degToRad(degrees)))
+    }
+
+    rotateX(degrees) {
+        this.moveQueue.push(() => player.mesh.rotateX(THREE.Math.degToRad(degrees)))
+    }
+
+    rotateY(degrees) {
+        this.moveQueue.push(() => player.mesh.rotateY(THREE.Math.degToRad(degrees)))
+
+    }
+    checkRotationQueue() {
+        console.log(this.moveTicker)
+        if (!(this.moveTicker % 20) && this.moveQueue.length) {
+            console.log('MOVING')
+            this.moveQueue.shift()()
+        }
+    }
+
+    eat() {
+
     }
 
     update() {
-        this.direction = Object.values(this.mesh.getWorldDirection())
-            // console.log(this.direction)
+        this.checkRotationQueue()
+
+        var wpVector = new THREE.Vector3()
+        this.mesh.getWorldDirection(wpVector)
+
+        this.direction = wpVector.toArray()
+
         this.direction.map((dirNormal, i) => {
-            // console.log(dirNormal)
-            this.mesh.position[this.dirs[i]] += this.speed * dirNormal
-            let newPosition = this.mesh.position[this.dirs[i]]
-            if (newPosition < 0 - boardSize / 2 + 0.5 || newPosition > boardSize / 2 - 0.5) {
-                this.mesh.position[this.dirs[i]] -= this.speed * dirNormal
+            if (dirNormal) {
+                let futurePosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
+                if (futurePosition <= 0 - boardSize / 2 + 1 || futurePosition >= boardSize / 2 - 1) {
+                    // console.log('flegh.')
+                } else if (dirNormal) {
+                    this.mesh.position[this.dirs[i]] = futurePosition
+                    this.moveTicker += 1
+                }
             }
         })
     }
@@ -76,13 +108,14 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     loader = new THREE.FBXLoader();
     scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0xf0fff0, 0.05);
     maincamera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000);
     subcamera = new THREE.PerspectiveCamera(40, ASPECT_RATIO, 0.1, 10);
     subcamera.viewport = new THREE.Vector4(0, 0, Math.ceil(WIDTH), Math.ceil(HEIGHT));
 
     var cameras = []
-    cameras.push(subcamera)
     cameras.push(maincamera)
+    cameras.push(subcamera)
     camera = new THREE.ArrayCamera(cameras);
     stats = new Stats();
 
@@ -110,6 +143,8 @@ function createObjects() {
         ambient: 0x000000,
         color: 0x48C4DA,
         specular: 0x000000,
+        opacity: 0.05,
+        transparent: true,
         shininess: 0,
         shading: THREE.FlatShading
     })
@@ -129,30 +164,38 @@ function createObjects() {
     });
 
 
-    board = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), mat_wireframe);
     player = new Snake(mat_flat_orange)
 
-    loader.load('models/spheres.fbx', function(object) {
+    var geo = new THREE.EdgesGeometry(new THREE.BoxGeometry(10, 10, 10)); // or WireframeGeometry( geometry )
+
+    var mat = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+    var wireframe = new THREE.LineSegments(geo, mat);
+    wireframe.position.x -= .5
+    wireframe.position.y -= .5
+    wireframe.position.z -= .5
+    scene.add(wireframe);
+
+    loader.load('models/tile.fbx', function(object) {
         object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue });
         for (let i = 0; i < boardSize; i++) {
             for (let j = 0; j < boardSize; j++) {
                 for (let k = 0; k < boardSize; k++) {
                     let clone = object.clone()
                     scene.add(clone)
-                    clone.position.x = i - boardSize / 2 + .5
-                    clone.position.y = j - boardSize / 2 + .5
-                    clone.position.z = k - boardSize / 2 + .5
+                    clone.position.x = i - boardSize / 2
+                    clone.position.y = j - boardSize / 2
+                    clone.position.z = k - boardSize / 2
                 }
             }
         }
     })
 
-    var lineSegments = new THREE.LineSegments(board, new THREE.LineDashedMaterial({ color: 0xffaa00, dashSize: 3, gapSize: 1 }))
-    lineSegments.computeLineDistances()
+    // var lineSegments = new THREE.LineSegments(board, new THREE.LineDashedMaterial({ color: 0xffaa00, dashSize: 3, gapSize: 1 }))
+    // lineSegments.computeLineDistances()
 
     // scene.add(lineSegments)
     scene.add(player.mesh)
-    scene.add(board)
+        // scene.add(board)
 }
 
 function createLights() {
