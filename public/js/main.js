@@ -26,7 +26,7 @@ class Snake {
         this.speed = .05
         this.moveTicker = 0
         this.direction = [0, 0, 1]
-        this.geometry = new THREE.BoxGeometry(.7, .7, .7);
+        this.geometry = new THREE.BoxGeometry(.1, .1, .1);
         this.mesh = new THREE.Mesh(this.geometry, material);
         // DIRECTION INDICATOR
         let geometry = new THREE.BoxGeometry(.5, .5, 2);
@@ -36,8 +36,8 @@ class Snake {
         let scope = this
         this.moveQueue = []
         loader.load('models/snake.fbx', function(object) {
-            object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue })
-            this.add(object)
+            object.traverse(child => { if (child.isMesh) child.material = mat_flat_orange })
+            scope.mesh.add(object)
         })
     }
 
@@ -67,7 +67,6 @@ class Snake {
 
     checkRotationQueue() {
         if (!(Object.values(this.mesh.position).every(pos => pos % 1 < .04 && pos % 1 > 0.96) && this.moveQueue.length)) {
-            console.log('QUEUE ACTIVATED')
             let func = this.moveQueue.shift()
             if (func) func()
             this.mesh.updateMatrixWorld()
@@ -86,7 +85,7 @@ class Snake {
                 let futurePosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
                 if (futurePosition <= 0 - boardSize / 2 || futurePosition >= boardSize / 2 - 1) {
                     futurePosition = this.mesh.position[this.dirs[i]] + -.05 * dirNormal
-                    console.log('Reversing direction, out of bounds!', this.speed)
+                        // console.log('Reversing direction, out of bounds!', this.speed)
                 }
 
                 if (dirNormal) {

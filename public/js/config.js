@@ -44,7 +44,7 @@ var mat_dark_orange = new THREE.MeshPhongMaterial({
     color: 0xCA4E2B,
     specular: 0x000000,
     shininess: 0,
-    shading: THREE.FlatShading
+    shading: THREE.SmoothShading
 })
 
 var mat_mid_blue = new THREE.MeshPhongMaterial({
