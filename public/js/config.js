@@ -10,6 +10,8 @@ var loader,
     board,
     mixer,
     boardSize = 10,
+    floor,
+    floorIndicators = [],
     foods = [],
     colliders = []
 clock = new THREE.Clock();
@@ -76,4 +78,17 @@ var dashline_material = new THREE.LineDashedMaterial({
     color: 0xffaa00,
     dashSize: 3,
     gapSize: 1
+})
+
+var dashline_indicator_material = new THREE.LineDashedMaterial({
+    color: 0x5ad6ca,
+    dashSize: 1,
+    gapSize: 2
+})
+var dashline_indicator_inactive_material = new THREE.LineDashedMaterial({
+    color: 0x5ad6ca,
+    dashSize: 1,
+    gapSize: 2,
+    opacity: .1,
+    transparent: true
 })
