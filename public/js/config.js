@@ -8,8 +8,12 @@ var loader,
     camera,
     player,
     board,
+    mixer,
     boardSize = 10,
-    food = []
+    foods = [],
+    colliders = []
+clock = new THREE.Clock();
+
 const KEYCODES = {
     up: 38,
     down: 40,
@@ -18,8 +22,16 @@ const KEYCODES = {
     w: 87,
     s: 83,
     a: 65,
-    d: 68
+    d: 68,
+    q: 69,
+    e: 81
 }
+
+var mat_collider = new THREE.MeshToonMaterial({
+    opacity: 0,
+    transparent: true,
+    shading: THREE.FlatShading
+})
 
 var mat_flat_blue = new THREE.MeshToonMaterial({
     ambient: 0x000000,
@@ -36,7 +48,7 @@ var mat_flat_orange = new THREE.MeshPhongMaterial({
     color: 0xFBB059,
     specular: 0x000000,
     shininess: 0,
-    shading: THREE.FlatShading
+    shading: THREE.SmoothShading
 })
 
 var mat_dark_orange = new THREE.MeshPhongMaterial({
@@ -59,3 +71,9 @@ var board_material = new THREE.LineBasicMaterial({
     color: 0xFCEF9F,
     linewidth: 2
 });
+
+var dashline_material = new THREE.LineDashedMaterial({
+    color: 0xffaa00,
+    dashSize: 3,
+    gapSize: 1
+})

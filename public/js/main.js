@@ -1,21 +1,22 @@
 document.onkeydown = function(e) {
     switch (e.keyCode) {
-
         case (KEYCODES.w):
-            console.log('w')
-            player.up()
+            player.forward()
             break;
         case (KEYCODES.a):
-            console.log('a')
             player.left()
             break;
         case (KEYCODES.s):
-            console.log('s')
-            player.down()
+            player.backward()
             break;
         case (KEYCODES.d):
-            console.log('d')
             player.right()
+            break;
+        case (KEYCODES.q):
+            player.up()
+            break;
+        case (KEYCODES.e):
+            player.down()
             break;
     }
 }
@@ -23,45 +24,76 @@ document.onkeydown = function(e) {
 class Snake {
     constructor(material) {
         this.dirs = ['x', 'y', 'z']
+        this.moveQueue = []
         this.speed = .05
         this.moveTicker = 0
         this.direction = [0, 0, 1]
-        this.geometry = new THREE.BoxGeometry(.1, .1, .1);
-        this.mesh = new THREE.Mesh(this.geometry, material);
-        // DIRECTION INDICATOR
-        let geometry = new THREE.BoxGeometry(.5, .5, 2);
-        let mesh = new THREE.Mesh(geometry, mat_mid_blue);
-        mesh.position.z = 1
-        this.mesh.add(mesh)
+        this.geometry = new THREE.BoxGeometry(1, 1, 1);
+        this.mesh = new THREE.Mesh(this.geometry, mat_collider);
+
         let scope = this
-        this.moveQueue = []
-        loader.load('models/snake.fbx', function(object) {
-            object.traverse(child => { if (child.isMesh) child.material = mat_flat_orange })
+        loader.load('models/snakeHeadAnim.fbx', function(object) {
+            // mixer = new THREE.AnimationMixer(object);
+            // var action = mixer.clipAction(object.animations[0]);
+            // action.play();
+
+            object.traverse(child => {
+                console.log(child)
+                if (child.name === "head_GEO") child.material = mat_flat_orange
+            })
             scope.mesh.add(object)
         })
     }
 
-    setOrientation(position, rotation) {
-        if (this.mesh) {
-            this.mesh.position.copy(position)
-            this.mesh.rotation.copy(rotation)
-        }
+    forward() {
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(0, 1, 0).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, angle);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+            // this.moveQueue.push(() => this.mesh.rotation.x += 1.5708)
     }
 
+    backward() {
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(-1, -1, 0).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, 0);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+            // this.moveQueue.push(() => this.mesh.rotation.x -= 1.5708)
+    }
     up() {
-        this.moveQueue.push(() => this.mesh.rotation.x += 1.5708)
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(0, -1, 1).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, angle);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
     }
 
     down() {
-        this.moveQueue.push(() => this.mesh.rotation.x -= 1.5708)
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(0, 1, 1).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, angle);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
     }
 
     left() {
-        this.moveQueue.push(() => this.mesh.rotation.y -= 1.5708)
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(0, -1, 0).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, angle / 2);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+            // this.moveQueue.push(() => this.mesh.rotation.y -= 1.5708)
     }
 
     right() {
-        this.moveQueue.push(() => this.mesh.rotation.y += 1.5708)
+        let toRotation = new THREE.Quaternion();
+        const axisNormalised = new THREE.Vector3(0, 1, 0).normalize();
+        const angle = Math.PI;
+        toRotation.setFromAxisAngle(axisNormalised, angle / 2);
+        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+            // this.moveQueue.push(() => this.mesh.rotation.y += 1.5708)
 
     }
 
@@ -103,16 +135,17 @@ function initScene() {
     scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0xf0fff0, 0.05);
     maincamera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000);
-    subcamera = new THREE.PerspectiveCamera(40, ASPECT_RATIO, 0.1, 100);
+    subcamera = new THREE.PerspectiveCamera(20, ASPECT_RATIO, 0.1, 100);
 
     stats = new Stats();
 
     maincamera.position.x = 10
     maincamera.position.y = 7
     maincamera.position.z = 7
-    subcamera.position.y = 1
-    subcamera.position.z = -1
+    subcamera.position.y = 3
+    subcamera.position.z = -8
     subcamera.rotation.y -= 1.5708 * 2
+    subcamera.rotation.x -= -.2
     renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.autoClear = false;
@@ -132,6 +165,7 @@ function createObjects() {
     player = new Snake(mat_flat_orange)
     player.mesh.add(subcamera)
 
+    // Create grid
     loader.load('models/dot.fbx', function(object) {
         object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue });
         for (let i = 0; i < boardSize; i++) {
@@ -149,11 +183,7 @@ function createObjects() {
 
     var board = new THREE.EdgesGeometry(new THREE.BoxGeometry(10, 10, 10)); // or WireframeGeometry( geometry )
 
-    var lineSegments = new THREE.LineSegments(board, new THREE.LineDashedMaterial({
-        color: 0xffaa00,
-        dashSize: 3,
-        gapSize: 1
-    }))
+    var lineSegments = new THREE.LineSegments(board, dashline_material)
     lineSegments.position.x -= .5
     lineSegments.position.y -= .5
     lineSegments.position.z -= .5
@@ -177,9 +207,10 @@ function spawnFood(numFood) {
         }
         foodPositions.push(posCandidate)
     }
-    foodPositions.map(foodPosition => {
-        var mesh = new THREE.Mesh(this.geometry, mat_mid_blue);
 
+    foodPositions.map(foodPosition => {
+        let collider = new THREE.BoxGeometry(1, 1, 1);
+        var mesh = new THREE.Mesh(collider, mat_collider);
         loader.load('models/apple.fbx', function(object) {
             object.traverse(child => { if (child.isMesh) child.material = mat_dark_orange })
             mesh.add(object)
@@ -188,7 +219,9 @@ function spawnFood(numFood) {
         mesh.position.x = foodPosition[0] - boardSize / 2
         mesh.position.y = foodPosition[1] - boardSize / 2
         mesh.position.z = foodPosition[2] - boardSize / 2
-        food.push(mesh)
+        mesh.offset = Math.random()
+
+        foods.push(mesh)
         scene.add(mesh)
     })
 }
@@ -199,25 +232,42 @@ function createLights() {
     scene.add(light);
 
     var lights = [];
-    lights[0] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[0].position.set(1, 0, 0);
+    lights[0] = new THREE.DirectionalLight(0xe69705, 1);
+    lights[0].position.set(1, .3, 0);
 
     lights.map(light => scene.add(light))
 }
 
-function updateScene() {
+function updateScene(delta) {
     player.update()
+    foods.map(food => food.position.y += Math.sin(clock.elapsedTime * 2 + food.offset) / 300)
+
+    var originPoint = player.mesh.position.clone();
+    for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
+        var localVertex = player.mesh.geometry.vertices[vertexIndex].clone();
+        var globalVertex = localVertex.applyMatrix4(player.mesh.matrix);
+        var directionVector = globalVertex.sub(player.mesh.position);
+
+        var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+        foods.map((food) => {
+            var collisionResults = ray.intersectObject(food)
+            if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) scene.remove(food)
+        })
+
+    }
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    updateScene()
+    var delta = clock.getDelta();
+    if (mixer) mixer.update(delta);
+    updateScene(delta)
     stats.update();
     renderer.clear();
     renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     renderer.render(scene, maincamera);
 
-    renderer.setViewport(0, 0, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+    renderer.setViewport(0, 0, SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3);
     renderer.render(scene, subcamera);
 }
 
