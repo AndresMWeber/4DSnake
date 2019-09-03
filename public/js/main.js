@@ -13,10 +13,10 @@ document.onkeydown = function(e) {
             player.right()
             break;
         case (KEYCODES.q):
-            player.up()
+            player.rollLeft()
             break;
         case (KEYCODES.e):
-            player.down()
+            player.rollRight()
             break;
     }
 }
@@ -27,6 +27,7 @@ class Snake {
         this.moveQueue = []
         this.speed = .05
         this.moveTicker = 0
+        this.tail = []
         this.direction = [0, 0, 1]
         this.geometry = new THREE.BoxGeometry(1, 1, 1);
         this.mesh = new THREE.Mesh(this.geometry, mat_collider);
@@ -38,7 +39,6 @@ class Snake {
             // action.play();
 
             object.traverse(child => {
-                console.log(child)
                 if (child.name === "head_GEO") child.material = mat_flat_orange
             })
             scope.mesh.add(object)
@@ -46,63 +46,57 @@ class Snake {
     }
 
     forward() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(0, 1, 0).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, angle);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
-            // this.moveQueue.push(() => this.mesh.rotation.x += 1.5708)
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(-Math.PI / 2, 0, 0, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
     }
 
     backward() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(-1, -1, 0).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, 0);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
-            // this.moveQueue.push(() => this.mesh.rotation.x -= 1.5708)
-    }
-    up() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(0, -1, 1).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, angle);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(Math.PI / 2, 0, 0, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
     }
 
-    down() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(0, 1, 1).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, angle);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
+    rollLeft() {
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(0, 0, Math.PI / 2, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
+    }
+
+    rollRight() {
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(0, 0, -Math.PI / 2, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
     }
 
     left() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(0, -1, 0).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, angle / 2);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
-            // this.moveQueue.push(() => this.mesh.rotation.y -= 1.5708)
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(0, Math.PI / 2, 0, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
     }
 
     right() {
-        let toRotation = new THREE.Quaternion();
-        const axisNormalised = new THREE.Vector3(0, 1, 0).normalize();
-        const angle = Math.PI;
-        toRotation.setFromAxisAngle(axisNormalised, angle / 2);
-        this.moveQueue.push(() => this.mesh.rotation.setFromQuaternion(toRotation))
-            // this.moveQueue.push(() => this.mesh.rotation.y += 1.5708)
-
+        let quat = new THREE.Quaternion
+        let euler = new THREE.Euler(0, -Math.PI / 2, 0, "ZXY");
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
     }
 
     checkRotationQueue() {
         if (!(Object.values(this.mesh.position).every(pos => pos % 1 < .04 && pos % 1 > 0.96) && this.moveQueue.length)) {
             let func = this.moveQueue.shift()
-            if (func) func()
+            if (func) {
+                func()
+                var o = { t: 0 };
+                new TWEEN.Tween(o).to({ t: 1 }, 50).onUpdate(function() {
+                    console.log('update')
+                }).start()
+            }
             this.mesh.updateMatrixWorld()
         }
+    }
+
+    eat() {
+
     }
 
     update() {
@@ -116,7 +110,7 @@ class Snake {
             if (dirNormal) {
                 let futurePosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
                 if (futurePosition <= 0 - boardSize / 2 || futurePosition >= boardSize / 2 - 1) {
-                    futurePosition = this.mesh.position[this.dirs[i]] + -.05 * dirNormal
+                    futurePosition = this.mesh.position[this.dirs[i]] + -.001 * dirNormal
                         // console.log('Reversing direction, out of bounds!', this.speed)
                 }
 
@@ -197,6 +191,7 @@ function createObjects() {
 function generateRandomPosition() {
     return [Math.floor(Math.random() * boardSize), Math.floor(Math.random() * boardSize), Math.floor(Math.random() * boardSize)]
 }
+
 
 function spawnFood(numFood) {
     let foodPositions = []
