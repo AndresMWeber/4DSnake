@@ -1,7 +1,8 @@
 var ASPECT_RATIO = window.innerWidth / window.innerHeight
 var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
-var DEFAULT_SPEED = .03
+var DEFAULT_SPEED = .05
+var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
 var BOARD_SIZE = 5
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 var CLOCK = new THREE.Clock()
@@ -9,6 +10,8 @@ var CLOCK = new THREE.Clock()
 var gameInstance,
     loader,
     renderer,
+    container,
+    controls,
     scene,
     camera,
     player,

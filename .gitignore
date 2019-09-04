@@ -1,4 +1,5 @@
-ee http://help.github.com/ignore-files/ for more about ignoring files.
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+.vscode/
 
 # compiled output
 /dist
@@ -90,3 +91,4 @@ lerna-debug.log
 .DS_Store
 Thumbs.db
 
+.vscode/settings.json

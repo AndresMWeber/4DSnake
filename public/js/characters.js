@@ -84,15 +84,13 @@ class Snake {
         })
     }
 
+    validateMoveOnGrid() {
+        return this.moveQueue.length && this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0
+    }
+
     checkMoveQueue() {
-        // console.log(quatToEulerDegrees(this.mesh.getWorldQuaternion()))
-        // console.log(arrayCompareClose(this.mesh.position, this.position.map(n => n + 1), .2), this.mesh.position, this.position.map(n => n + 1), .2)
-        if (this.moveQueue.length && (!arrayCompare(this.position, this.lastPosition))) {
+        if (this.validateMoveOnGrid()) {
             console.log('changed square and checking move queue.', this.position, this.lastPosition)
-            let euler = this.moveQueue.shift()
-            this.makeTurn(euler)
-        }
-        if (this.moveQueue.length) {
             let euler = this.moveQueue.shift()
             this.makeTurn(euler)
         }

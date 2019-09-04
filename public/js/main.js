@@ -28,7 +28,8 @@ class Game {
         this.createCamera()
         this.createScene()
         this.createLights()
-        this.level = Level(Math.floor(BOARD_SIZE / 2))
+        console.log('creating.')
+        this.level = new Level(Math.floor(BOARD_SIZE / 2))
         this.stats = new Stats();
 
         container = document.getElementById('canvas')
@@ -74,22 +75,22 @@ class Game {
     }
 
     createLights() {
-        light = new THREE.HemisphereLight(0xffffff, 0x444444);
+        let light = new THREE.HemisphereLight(0xffffff, 0x444444);
         light.position.set(0, 200, 0);
         scene.add(light);
 
         var lights = [];
-        lights[0] = new THREE.DirectionalLight(0xe69705, 1);
-        lights[0].position.set(1, .3, 0);
+        lights.push(new THREE.DirectionalLight(0xe69705, 1))
+        lights[lights.length - 1].position.set(1, .3, 0);
 
-        lights[1] = new THREE.DirectionalLight(0xffffff, .2);
-        lights[1].position.set(0, 100, 0);
+        lights.push(new THREE.DirectionalLight(0xffffff, .2))
+        lights[lights.length - 1].position.set(0, 100, 0);
 
         lights.map(light => scene.add(light))
     }
 
     animate() {
-        requestAnimationFrame(animate);
+        requestAnimationFrame(this.animate.bind(this));
         var delta = CLOCK.getDelta();
         if (mixer) mixer.update(delta);
         this.level.update(delta)
@@ -102,9 +103,9 @@ class Game {
 
 class Level {
     constructor(numFood) {
-        buildLevel()
+        this.numFood = numFood
+        this.buildLevel()
         player = new Snake(mat_flat_orange)
-        this.numFood = numFoodd
 
         scene.add(this.lineSegments)
         scene.add(floorXform)
@@ -141,7 +142,7 @@ class Level {
         floorXform.rotateX(-Math.PI / 2)
         floorXform.translateZ(-BOARD_SIZE / 2)
 
-        boardOutline = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE, BOARD_SIZE, BOARD_SIZE)); // or WireframeGeometry( geometry )
+        let boardOutline = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE, BOARD_SIZE, BOARD_SIZE)); // or WireframeGeometry( geometry )
         this.lineSegments = new THREE.LineSegments(boardOutline, dashline_material)
         this.lineSegments.position.set(0, 0, 0)
         this.lineSegments.computeLineDistances()
@@ -219,4 +220,4 @@ class Level {
     }
 }
 
-gameInstance = Game()
+gameInstance = new Game()
