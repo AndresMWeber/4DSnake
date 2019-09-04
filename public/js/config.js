@@ -3,7 +3,7 @@ var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
 var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
-var BOARD_SIZE = 5
+var BOARD_SIZE = 11
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 var CLOCK = new THREE.Clock()
 var $id = document.getElementById.bind(document)
@@ -77,6 +77,11 @@ var mat_sclera = new THREE.MeshPhongMaterial({
 
 var mat_mid_blue = new THREE.MeshBasicMaterial({
     color: 0x365E81,
+    shading: THREE.FlatShading
+})
+
+var mat_mid_highlight = new THREE.MeshBasicMaterial({
+    color: 0x36FFFF,
     shading: THREE.FlatShading
 })
 

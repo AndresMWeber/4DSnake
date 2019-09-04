@@ -38,19 +38,19 @@ class Snake {
         this.speed = DEFAULT_SPEED
         let quat = new THREE.Quaternion
         this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
-        console.log('ROTATED')
-    }
-
-    pitchDown() {
-        this.addMove(this.rotateEuler.fromArray([(this.canPitchDown ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
-        this.canPitchDown = !this.canPitchDown || !this.canPitchUp
-        this.canPitchUp = true
+        $id('debugInfoR').innerHTML = `Made turn on position ${JSON.stringify(this.mesh.position.toArray().map(p=>Number(p.toFixed(2))))}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`
     }
 
     pitchUp() {
         this.addMove(this.rotateEuler.fromArray([(this.canPitchUp ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
         this.canPitchUp = !this.canPitchUp || !this.canPitchDown
         this.canPitchDown = true
+    }
+
+    pitchDown() {
+        this.addMove(this.rotateEuler.fromArray([(this.canPitchDown ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
+        this.canPitchDown = !this.canPitchDown || !this.canPitchUp
+        this.canPitchUp = true
     }
 
     left() {
@@ -74,9 +74,7 @@ class Snake {
     }
 
     addMove(euler) {
-        if (this.moveQueue.length === 2) {
-            this.moveQueue.shift()
-        }
+        this.moveQueue.length === 2 && this.moveQueue.shift()
         this.moveQueue.push(euler)
     }
 
@@ -88,14 +86,9 @@ class Snake {
             if (dirNormal) {
                 this.mesh.position[this.dirs[i]] = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
                 this.mesh.position.set(...this.mesh.position.toArray().map(pos => THREE.Math.clamp(pos, -BOARD_OFFSET, BOARD_OFFSET)))
-                this.moveTicker += 1
             }
         })
-    }
-
-    validateRotateOnGrid() {
-        // TODO: WHY IS THIS * 2?!
-        return this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0
+        this.moveTicker += 1
     }
 
     validateMoveOnGrid() {
@@ -108,42 +101,42 @@ class Snake {
     }
 
     addToTail() {
-        let tailGeo = new THREE.BoxGeometry(1, 1, 1)
-        let tailXform = new THREE.Mesh(tailGeo, mat_flat_blue)
+        let tailGeo = new THREE.BoxGeometry(.9, .9, .9)
+        let tailXform = new THREE.Mesh(tailGeo, mat_dark_orange)
         tailXform.position.set(...this.lastPosition)
         scene.add(tailXform)
         this.hasEaten = false
         this.tail.push(tailXform)
     }
 
-    setDebugMessage(message) {
-        $id('debugInfo').innerText = message
-    }
-
     updateTrail() {
-        console.log('updating trail.')
-        this.trail.push(this.position)
-        if (this.trail.length > this.tail.length) this.trail.shift()
-        console.log(this.trail)
+        if (this.trail.every(trail => !arrayCompare(trail, this.position))) {
+            this.trail.push(this.position)
+            if (this.trail.length > this.tail.length + 1) this.trail.shift()
+        }
         return this.trail
     }
 
     update() {
         // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
         this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
-        this.validateRotateOnGrid() && this.moveQueue.length && this.checkMoveQueue()
-            this.setDebugMessage(`Snake Position: (${this.position[0]},${this.position[1]},${this.position[2]}) <br> ${this.trail.join(' : ')}`)
 
         if (this.validateMoveOnGrid()) {
+            this.moveQueue.length && this.checkMoveQueue()
+            gameInstance.debugLeft(`Snake Position:(${this.position[0]},${this.position[1]},${this.position[2]})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
+
             if (!arrayCompare(this.position, this.lastPosition)) {
+                this.lastPosition = [...this.position]
+
                 // Need to make sure the trail is as long as the length of items
                 this.updateTrail()
                 this.hasEaten && this.addToTail()
 
                 // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
                 // Then iterate through positions and move tail list squares to that square.
-                this.tail.map(tail => {
-                    tail.position.set(...this.lastPosition)
+                this.tail.map((tail, i) => {
+                    console.log(this.trail[i + 1])
+                    tail.position.set(...this.trail[i + 1])
                 })
             }
         }

@@ -20,8 +20,8 @@ canvas {
 
 #info {
     position: absolute;
-    top: 10%;
-    width: 100%;
+    top: 5%;
+    width: 40%;
     text-align: center;
     z-index: 100;
     display: block;
@@ -30,11 +30,23 @@ canvas {
     color: #EEEEEE;
 }
 
-#debugInfo {
+#gameInfo {
     position: absolute;
-    left: 2%;
-    top: 50%;
-    width: 30%;
+    top: 10%;
+    width: 40%;
+    text-align: center;
+    z-index: 100;
+    display: block;
+    font-family: 'Megrim', cursive;
+    font-size: 1rem;
+    color: #EEEEEE;
+}
+
+#debugInfoL,
+#debugInfoR {
+    position: absolute;
+    top: 80%;
+    width: 20%;
     height: 20%;
     text-align: left;
     z-index: 101;
@@ -42,4 +54,13 @@ canvas {
     font-size: .75rem;
     font-family: 'Press Start 2P', cursive;
     color: #EEEEEE;
+}
+
+#debugInfoR {
+    right: 3%;
+    left: none;
+}
+
+#debugInfo {
+    left: 2%;
 }
