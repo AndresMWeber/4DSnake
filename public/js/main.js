@@ -35,7 +35,7 @@ class Game {
         container = document.getElementById('canvas')
         container.appendChild(renderer.domElement);
         container.appendChild(this.stats.dom);
-        document.getElementById('info').innerHTML = "4D_SNAKE"
+        $id('info').innerHTML = "4D_SNAKE"
 
         window.addEventListener('resize', () => {
             ASPECT_RATIO = window.innerWidth / window.innerHeight;
@@ -138,7 +138,7 @@ class Level {
         }
 
         var floorGeo = new THREE.PlaneBufferGeometry(BOARD_SIZE, BOARD_SIZE, 0)
-        floorXform = new THREE.Mesh(floorGeo, mat_flat_orange);
+        floorXform = new THREE.Mesh(floorGeo, mat_dark_orange);
         floorXform.rotateX(-Math.PI / 2)
         floorXform.translateZ(-BOARD_SIZE / 2)
 
@@ -207,7 +207,7 @@ class Level {
                 if (food.eaten === undefined) {
                     var collisionResults = ray.intersectObject(food)
                     if (collisionResults.length) {
-                        if (collisionResults[0].distance < directionVector.length() - 0.5) {
+                        if (collisionResults[0].distance < directionVector.length() - 0.2) {
                             scene.remove(food)
                             food.eaten = true
                             console.log('EAT!')

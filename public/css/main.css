@@ -32,11 +32,14 @@ canvas {
 
 #debugInfo {
     position: absolute;
-    right: 10%;
-    width: 100%;
+    left: 2%;
+    top: 50%;
+    width: 30%;
+    height: 20%;
     text-align: left;
-    z-index: 100;
+    z-index: 101;
     display: block;
-    font-size: 1rem;
-    color: rgba(150, 10, 90, .8);
+    font-size: .75rem;
+    font-family: 'Press Start 2P', cursive;
+    color: #EEEEEE;
 }

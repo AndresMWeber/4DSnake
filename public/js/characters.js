@@ -11,6 +11,7 @@ class Snake {
         this.canPitchDown = true
         this.hasEaten = false
         this.tail = []
+        this.trail = []
         this.direction = [0, 0, 1]
         this.wpVector = new THREE.Vector3()
         this.rotateEuler = new THREE.Euler()
@@ -93,54 +94,60 @@ class Snake {
     }
 
     validateRotateOnGrid() {
-        return this.moveQueue.length && (this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0)
+        // TODO: WHY IS THIS * 2?!
+        return this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0
     }
 
     validateMoveOnGrid() {
-        return this.moveQueue.length && (this.moveTicker % (MOVE_TICKER_COMPARE) === 0)
+        return this.moveTicker % MOVE_TICKER_COMPARE === 0
     }
 
     checkMoveQueue() {
         let euler = this.moveQueue.shift()
         this.makeTurn(euler)
-
     }
 
     addToTail() {
         let tailGeo = new THREE.BoxGeometry(1, 1, 1)
-        let tailXform = new THREE.Mesh(tailGeo, mat_dark_orange)
+        let tailXform = new THREE.Mesh(tailGeo, mat_flat_blue)
         tailXform.position.set(...this.lastPosition)
-        this.tail.push(tailXform)
-        tailXform.name = `tail${this.tail.length}`
-        tailXform.lifeSpan = this.tail.length
         scene.add(tailXform)
         this.hasEaten = false
+        this.tail.push(tailXform)
+    }
+
+    setDebugMessage(message) {
+        $id('debugInfo').innerText = message
+    }
+
+    updateTrail() {
+        console.log('updating trail.')
+        this.trail.push(this.position)
+        if (this.trail.length > this.tail.length) this.trail.shift()
+        console.log(this.trail)
+        return this.trail
     }
 
     update() {
         // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
         this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
+        this.validateRotateOnGrid() && this.moveQueue.length && this.checkMoveQueue()
+            this.setDebugMessage(`Snake Position: (${this.position[0]},${this.position[1]},${this.position[2]}) <br> ${this.trail.join(' : ')}`)
 
+        if (this.validateMoveOnGrid()) {
+            if (!arrayCompare(this.position, this.lastPosition)) {
+                // Need to make sure the trail is as long as the length of items
+                this.updateTrail()
+                this.hasEaten && this.addToTail()
 
-        if (this.validateRotateOnGrid()) {
-            this.checkMoveQueue()
-
-            if (this.validateMoveOnGrid()) {
-                if (!arrayCompare(this.position, this.lastPosition)) {
-                    // Need to make sure the trail is as long as the length of items
-                    this.lastPosition = [...this.position]
-                    this.hasEaten && this.addToTail()
-
-                    // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
-                    // Then iterate through positions and move tail list squares to that square.
-                    this.tail.map(tail => {
-                        tail.lifeSpan -= 1
-                        tail.position.set(...this.lastPosition)
-                    })
-                }
+                // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
+                // Then iterate through positions and move tail list squares to that square.
+                this.tail.map(tail => {
+                    tail.position.set(...this.lastPosition)
+                })
             }
-
         }
+
         this.makeMove()
     }
 }
