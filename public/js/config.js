@@ -6,6 +6,8 @@ var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
 var BOARD_SIZE = 5
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 var CLOCK = new THREE.Clock()
+var $id = document.getElementById.bind(document)
+var $class = document.getElementsByClassName.bind(document)
 
 var gameInstance,
     loader,

@@ -27,5 +27,16 @@ canvas {
     display: block;
     font-family: 'Megrim', cursive;
     font-size: 5rem;
-    color: rgba(255, 255, 255, .3);
+    color: #EEEEEE;
+}
+
+#debugInfo {
+    position: absolute;
+    right: 10%;
+    width: 100%;
+    text-align: left;
+    z-index: 100;
+    display: block;
+    font-size: 1rem;
+    color: rgba(150, 10, 90, .8);
 }

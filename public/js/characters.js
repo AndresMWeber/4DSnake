@@ -13,6 +13,7 @@ class Snake {
         this.tail = []
         this.direction = [0, 0, 1]
         this.wpVector = new THREE.Vector3()
+        this.rotateEuler = new THREE.Euler()
 
         this.geometry = new THREE.BoxGeometry(1, 1, 1)
         this.mesh = new THREE.Mesh(this.geometry, mat_collider)
@@ -40,35 +41,42 @@ class Snake {
     }
 
     pitchDown() {
-        this.moveQueue = [new THREE.Euler((this.canPitchDown ? 1 : 11) * Math.PI / 2, 0, 0, "ZXY")]
+        this.addMove(this.rotateEuler.fromArray([(this.canPitchDown ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
         this.canPitchDown = !this.canPitchDown || !this.canPitchUp
         this.canPitchUp = true
     }
 
     pitchUp() {
-        this.moveQueue = [new THREE.Euler((this.canPitchUp ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY")]
+        this.addMove(this.rotateEuler.fromArray([(this.canPitchUp ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
         this.canPitchUp = !this.canPitchUp || !this.canPitchDown
         this.canPitchDown = true
     }
 
     left() {
-        if (this.canPitchDown && this.canPitchUp) this.moveQueue = [new THREE.Euler(0, Math.PI / 2, 0, "ZXY")]
+        if (this.canPitchDown && this.canPitchUp) this.addMove(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
     }
 
     right() {
-        if (this.canPitchDown && this.canPitchUp) this.moveQueue = [new THREE.Euler(0, -Math.PI / 2, 0, "ZXY")]
+        if (this.canPitchDown && this.canPitchUp) this.addMove(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
     }
 
     rollLeft(force) {
-        let euler = new THREE.Euler(0, 0, -Math.PI / 2, "ZXY")
+        let euler = this.rotateEuler.fromArray([0, 0, -Math.PI / 2, "ZXY"])
         if (force) this.makeTurn(euler)
-        else this.moveQueue = [euler]
+        else this.addMove(euler)
     }
 
     rollRight(force) {
-        let euler = new THREE.Euler(0, 0, Math.PI / 2, "ZXY")
+        let euler = this.rotateEuler.fromArray([0, 0, Math.PI / 2, "ZXY"])
         if (force) this.makeTurn(euler)
-        else this.moveQueue = [euler]
+        else this.addMove(euler)
+    }
+
+    addMove(euler) {
+        if (this.moveQueue.length === 2) {
+            this.moveQueue.shift()
+        }
+        this.moveQueue.push(euler)
     }
 
     makeMove() {
@@ -84,16 +92,18 @@ class Snake {
         })
     }
 
+    validateRotateOnGrid() {
+        return this.moveQueue.length && (this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0)
+    }
+
     validateMoveOnGrid() {
-        return this.moveQueue.length && this.moveTicker % (MOVE_TICKER_COMPARE * 2) === 0
+        return this.moveQueue.length && (this.moveTicker % (MOVE_TICKER_COMPARE) === 0)
     }
 
     checkMoveQueue() {
-        if (this.validateMoveOnGrid()) {
-            console.log('changed square and checking move queue.', this.position, this.lastPosition)
-            let euler = this.moveQueue.shift()
-            this.makeTurn(euler)
-        }
+        let euler = this.moveQueue.shift()
+        this.makeTurn(euler)
+
     }
 
     addToTail() {
@@ -108,21 +118,29 @@ class Snake {
     }
 
     update() {
-        this.position = (this.mesh.position.toArray().map(p => Math.floor(p)))
+        // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
+        this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
 
-        this.checkMoveQueue()
 
-        if (!arrayCompare(this.position, this.lastPosition)) {
-            this.lastPosition = [...this.position]
-                // this.hasEaten && this.addToTail()
+        if (this.validateRotateOnGrid()) {
+            this.checkMoveQueue()
 
-            this.tail.map(tail => {
-                tail.lifeSpan -= 1
-                tail.position.set(...this.lastPosition)
-                    // if (!tail.lifeSpan) scene.remove(tail)
-            })
+            if (this.validateMoveOnGrid()) {
+                if (!arrayCompare(this.position, this.lastPosition)) {
+                    // Need to make sure the trail is as long as the length of items
+                    this.lastPosition = [...this.position]
+                    this.hasEaten && this.addToTail()
+
+                    // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
+                    // Then iterate through positions and move tail list squares to that square.
+                    this.tail.map(tail => {
+                        tail.lifeSpan -= 1
+                        tail.position.set(...this.lastPosition)
+                    })
+                }
+            }
+
         }
-
         this.makeMove()
     }
 }
