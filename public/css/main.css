@@ -17,3 +17,15 @@ canvas {
     width: 100%;
     display: block;
 }
+
+#info {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display: block;
+    font-family: 'Megrim', cursive;
+    font-size: 5rem;
+    color: rgba(255, 255, 255, .3);
+}
