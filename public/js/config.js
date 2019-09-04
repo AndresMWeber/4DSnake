@@ -6,8 +6,8 @@ var BOARD_SIZE = 5
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 var CLOCK = new THREE.Clock()
 
-
-var loader,
+var gameInstance,
+    loader,
     renderer,
     scene,
     camera,
