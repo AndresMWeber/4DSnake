@@ -131,7 +131,6 @@ class Snake {
                 // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
                 // Then iterate through positions and move tail list squares to that square.
                 this.tail.map((tail, i) => {
-                    console.log(this.trail[i + 1])
                     tail.position.set(...this.trail[i + 1])
                 })
             }
