@@ -85,6 +85,8 @@ class Level {
                     } else {
                         food.fbx.children[0].material = mat_mid_blue
                     }
+                } else if (player.position[0] === Math.floor(food.position.x) && player.position[2] === Math.floor(food.position.z)) {
+                    food.fbx.children[0].material = mat_mid_highlight
                 } else {
                     food.fbx.children[0].material = mat_dark_orange
                 }

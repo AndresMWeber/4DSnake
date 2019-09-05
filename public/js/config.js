@@ -8,6 +8,8 @@ var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
 
 var BOARD_SIZE = 11
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
+
+const DEFAULT_ROTATION_ORDER = 'ZXY'
 const HALF_PI = Math.PI / 2
 var CLOCK = new THREE.Clock()
 var $id = document.getElementById.bind(document)
@@ -43,25 +45,25 @@ const KEYCODES = {
 
 var rotationLookup = {
     'right': {
-        "0": [0, -HALF_PI, 0, "ZXY"],
-        "1": [HALF_PI, -HALF_PI, 0, 'ZXY'],
-        "-1": [-HALF_PI, -HALF_PI, 0, 'ZXY']
+        "0": [0, -HALF_PI, 0, DEFAULT_ROTATION_ORDER],
+        "1": [HALF_PI, -HALF_PI, 0, DEFAULT_ROTATION_ORDER],
+        "-1": [-HALF_PI, -HALF_PI, 0, DEFAULT_ROTATION_ORDER]
     },
     'left': {
-        "0": [0, HALF_PI, 0, "ZXY"],
-        "1": [HALF_PI, HALF_PI, 0, 'ZXY'],
-        "-1": [-HALF_PI, HALF_PI, 0, 'ZXY']
+        "0": [0, HALF_PI, 0, DEFAULT_ROTATION_ORDER],
+        "1": [HALF_PI, HALF_PI, 0, DEFAULT_ROTATION_ORDER],
+        "-1": [-HALF_PI, HALF_PI, 0, DEFAULT_ROTATION_ORDER]
     },
     'down': {
-        "1": [HALF_PI, 0, 0, "ZXY"],
-        "0": [-HALF_PI, 0, 0, "ZXY"]
+        "1": [HALF_PI, 0, 0, DEFAULT_ROTATION_ORDER],
+        "0": [-HALF_PI, 0, 0, DEFAULT_ROTATION_ORDER]
     },
     'up': {
-        "1": [-HALF_PI, 0, 0, "ZXY"],
-        "0": [HALF_PI, 0, 0, "ZXY"]
+        "1": [-HALF_PI, 0, 0, DEFAULT_ROTATION_ORDER],
+        "0": [HALF_PI, 0, 0, DEFAULT_ROTATION_ORDER]
     },
-    'rollL': [0, 0, -HALF_PI, "ZXY"],
-    'rollR': [0, 0, HALF_PI, "ZXY"],
+    'rollL': [0, 0, -HALF_PI, DEFAULT_ROTATION_ORDER],
+    'rollR': [0, 0, HALF_PI, DEFAULT_ROTATION_ORDER],
 }
 
 var mat_collider = new THREE.MeshBasicMaterial({
