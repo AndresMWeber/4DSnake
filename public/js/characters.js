@@ -15,10 +15,10 @@ class Snake {
         this.direction = [0, 0, 1]
         this.wpVector = new THREE.Vector3()
         this.rotateEuler = new THREE.Euler()
+        this.rotateQuaternion = new THREE.Quaternion
 
         this.geometry = new THREE.BoxGeometry(1, 1, 1)
         this.mesh = new THREE.Mesh(this.geometry, mat_collider)
-        this.mesh.castShadow = true
 
         let scope = this
         loader.load('models/snakeHeadAnim.fbx', function(object) {
@@ -33,10 +33,33 @@ class Snake {
         })
     }
 
+    addMove(euler) {
+        this.moveQueue.length === 2 && this.moveQueue.shift()
+        this.moveQueue.push(euler)
+    }
+
+    makeMove() {
+        this.direction.map((dirNormal, i) => {
+            if (dirNormal) {
+                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(this.mesh.position[this.dirs[i]] + this.speed * dirNormal, -BOARD_OFFSET, BOARD_OFFSET)
+                    // this.mesh.position.set(...this.mesh.position.toArray().map(pos => ))
+            }
+        })
+        this.moveTicker += 1
+    }
+
+    validateMoveOnGrid() {
+        return this.moveTicker % MOVE_TICKER_COMPARE === 0
+    }
+
+    checkMoveQueue() {
+        let euler = this.moveQueue.shift()
+        this.makeTurn(euler)
+    }
+
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
-        let quat = new THREE.Quaternion
-        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
+        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
         $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`
     }
 
@@ -68,30 +91,6 @@ class Snake {
         let euler = this.rotateEuler.fromArray([0, 0, Math.PI / 2, "ZXY"])
         if (force) this.makeTurn(euler)
         else this.addMove(euler)
-    }
-
-    addMove(euler) {
-        this.moveQueue.length === 2 && this.moveQueue.shift()
-        this.moveQueue.push(euler)
-    }
-
-    makeMove() {
-        this.direction.map((dirNormal, i) => {
-            if (dirNormal) {
-                this.mesh.position[this.dirs[i]] = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
-                this.mesh.position.set(...this.mesh.position.toArray().map(pos => THREE.Math.clamp(pos, -BOARD_OFFSET, BOARD_OFFSET)))
-            }
-        })
-        this.moveTicker += 1
-    }
-
-    validateMoveOnGrid() {
-        return this.moveTicker % MOVE_TICKER_COMPARE === 0
-    }
-
-    checkMoveQueue() {
-        let euler = this.moveQueue.shift()
-        this.makeTurn(euler)
     }
 
     addToTail() {

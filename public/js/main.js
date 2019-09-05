@@ -18,6 +18,24 @@ document.onkeydown = function(e) {
         case (KEYCODES.e):
             player.rollRight()
             break;
+        case (KEYCODES.left):
+            camera.rotation.y -= .1;
+            camera.updateProjectionMatrix();
+            break;
+        case (KEYCODES.right):
+            console.log(camera.rotation)
+            camera.rotation.y += .1;
+            camera.updateProjectionMatrix();
+            break;
+        case (KEYCODES.up):
+            camera.zoom += .05;
+            camera.updateProjectionMatrix();
+            break;
+        case (KEYCODES.down):
+            console.log(camera.zoom)
+            camera.zoom -= .05;
+            camera.updateProjectionMatrix();
+            break;
     }
 }
 
