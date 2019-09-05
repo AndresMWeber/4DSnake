@@ -32,7 +32,6 @@ document.onkeydown = function(e) {
             camera.updateProjectionMatrix();
             break;
         case (KEYCODES.down):
-            console.log(camera.zoom)
             camera.zoom -= .05;
             camera.updateProjectionMatrix();
             break;
