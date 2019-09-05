@@ -2,6 +2,7 @@ class Level {
     constructor(numFood) {
         this.numFood = numFood
         this.buildLevel()
+        this.buildGrid = false
         player = new Snake(mat_flat_orange)
 
         scene.add(this.lineSegments)
@@ -12,18 +13,8 @@ class Level {
     }
 
     buildLevel() {
-        loader.load('models/dot.fbx', function(object) {
-            object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue });
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                for (let j = 0; j < BOARD_SIZE; j++) {
-                    for (let k = 0; k < BOARD_SIZE; k++) {
-                        let clone = object.clone()
-                        scene.add(clone)
-                        clone.position.set(i - BOARD_OFFSET, j - BOARD_OFFSET, k - BOARD_OFFSET)
-                    }
-                }
-            }
-        })
+        this.buildGrid && this.buildGrid()
+
 
         for (let i = 0; i < BOARD_SIZE; i++) {
             var geometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE + .2, 1, BOARD_SIZE + .2))
@@ -43,6 +34,21 @@ class Level {
         this.lineSegments = new THREE.LineSegments(boardOutline, dashline_material)
         this.lineSegments.position.set(0, 0, 0)
         this.lineSegments.computeLineDistances()
+    }
+
+    buildGrid() {
+        loader.load('models/dot.fbx', function(object) {
+            object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue });
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    for (let k = 0; k < BOARD_SIZE; k++) {
+                        let clone = object.clone()
+                        scene.add(clone)
+                        clone.position.set(i - BOARD_OFFSET, j - BOARD_OFFSET, k - BOARD_OFFSET)
+                    }
+                }
+            }
+        })
     }
 
     spawnFood() {
@@ -75,7 +81,20 @@ class Level {
 
     update() {
         player.update()
+        this.highlightFloor()
+        this.highlightFood()
+        this.foodsUpdate()
 
+    }
+
+    highlightFloor() {
+        floorIndicators.map(floorIndicator => {
+            if (Math.floor(floorIndicator.position.y) === Math.floor(player.position[1])) floorIndicator.material = dashline_indicator_material
+            else floorIndicator.material = dashline_indicator_inactive_material
+        })
+    }
+
+    highlightFood() {
         foods.map(food => {
             if (food.fbx) {
                 food.children[0].position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
@@ -92,12 +111,8 @@ class Level {
                 }
             }
         })
-
-        floorIndicators.map(floorIndicator => {
-            if (Math.floor(floorIndicator.position.y) === Math.floor(player.position[1])) floorIndicator.material = dashline_indicator_material
-            else floorIndicator.material = dashline_indicator_inactive_material
-        })
-
+    }
+    foodsUpdate() {
         var originPoint = player.mesh.position.clone();
         for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
             var localVertex = player.mesh.geometry.vertices[vertexIndex].clone();
@@ -120,7 +135,6 @@ class Level {
             })
 
             foods = foods.filter(f => !f.eaten)
-
         }
     }
 }

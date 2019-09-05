@@ -61,7 +61,7 @@ class Snake {
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
         this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
-        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`
+        gameInstance.debugRight(`Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`)
     }
 
     pitchUp() {

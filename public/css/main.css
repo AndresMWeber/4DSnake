@@ -18,28 +18,22 @@ canvas {
     display: block;
 }
 
-#title {
+#title,
+#status {
     position: absolute;
     top: 5%;
-    width: 40%;
+    width: 100%;
     text-align: center;
     z-index: 100;
     display: block;
     font-family: 'Megrim', cursive;
-    font-size: 5rem;
+    font-size: 3rem;
     color: #EEEEEE;
 }
 
 #status {
-    position: absolute;
     top: 50%;
-    width: 40%;
-    text-align: center;
-    z-index: 100;
-    display: block;
-    font-family: 'Megrim', cursive;
-    font-size: 2rem;
-    color: #EEEEEE;
+    font-size: 6rem;
 }
 
 #debugInfoL,
@@ -64,4 +58,12 @@ canvas {
 
 #debugInfo {
     left: 2%;
+}
+
+.unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }

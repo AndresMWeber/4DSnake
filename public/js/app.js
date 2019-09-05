@@ -49,6 +49,7 @@ class Game {
         this.level = new Level(Math.floor(BOARD_SIZE / 2))
         this.gameOver = false
         this.stats = new Stats()
+        this.debugMode = false
 
         container = document.getElementById('canvas')
         container.appendChild(renderer.domElement)
@@ -107,11 +108,11 @@ class Game {
 
 
     debugLeft(message) {
-        $id('debugInfoL').innerHTML = message
+        if (this.debugMode) $id('debugInfoL').innerHTML = message
     }
 
     debugRight(message) {
-        $id('debugInfoR').innerHTML = message
+        if (this.debugMode) $id('debugInfoR').innerHTML = message
     }
 
     levelStatus(message) {
