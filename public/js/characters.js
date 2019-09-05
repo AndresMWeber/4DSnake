@@ -20,6 +20,19 @@ class Snake {
         this.geometry = new THREE.BoxGeometry(1, 1, 1)
         this.mesh = new THREE.Mesh(this.geometry, mat_collider)
 
+        var arrowR = this.buildArrow(this.mesh)
+        var arrowL = this.buildArrow(this.mesh)
+        var arrowU = this.buildArrow(this.mesh)
+        var arrowD = this.buildArrow(this.mesh)
+        arrowD.position.y = -1
+        arrowU.position.y = 1
+        arrowL.position.x = -1
+        arrowR.position.x = 1
+        arrowD.rotateX = -HALF_PI
+        arrowU.rotateX = HALF_PI
+        arrowL.rotateY = HALF_PI
+        arrowR.rotateY = -HALF_PI
+
         let scope = this
         loader.load('models/snakeHeadAnim.fbx', function(object) {
             // mixer = new THREE.AnimationMixer(object);
@@ -36,6 +49,23 @@ class Snake {
     addMove(moveFunction) {
         this.moveQueue.length === 2 && this.moveQueue.shift()
         this.moveQueue.push(moveFunction)
+    }
+
+    buildArrow(parent) {
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(0, 10, 0));
+        geometry.vertices.push(new THREE.Vector3(7, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(3, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(3, -10, 0));
+        geometry.vertices.push(new THREE.Vector3(-3, -10, 0));
+        geometry.vertices.push(new THREE.Vector3(-3, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
+        var line = new THREE.Line(geometry, mat_flat_blue);
+        line.scale.set(.02, .02, .02)
+        scene.add(line)
+        parent.add(line)
+        return line
     }
 
     makeMove() {

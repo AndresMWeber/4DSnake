@@ -2,7 +2,7 @@ class Level {
     constructor(numFood) {
         this.numFood = numFood
         this.buildLevel()
-        this.buildGrid = false
+        this.makeGrid = false
         player = new Snake(mat_flat_orange)
 
         scene.add(this.lineSegments)
@@ -13,17 +13,8 @@ class Level {
     }
 
     buildLevel() {
-        this.buildGrid && this.buildGrid()
-
-
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            var geometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE + .2, 1, BOARD_SIZE + .2))
-            var indicatorMesh = new THREE.LineSegments(geometry, dashline_indicator_inactive_material)
-            indicatorMesh.position.set(0, i - BOARD_OFFSET, 0)
-            indicatorMesh.computeLineDistances()
-            floorIndicators.push(indicatorMesh)
-            scene.add(indicatorMesh)
-        }
+        this.makeGrid && this.buildGrid()
+        this.buildFloorIndicators()
 
         var floorGeo = new THREE.PlaneBufferGeometry(BOARD_SIZE, BOARD_SIZE, 0)
         floorXform = new THREE.Mesh(floorGeo, mat_dark_orange);
@@ -34,6 +25,16 @@ class Level {
         this.lineSegments = new THREE.LineSegments(boardOutline, dashline_material)
         this.lineSegments.position.set(0, 0, 0)
         this.lineSegments.computeLineDistances()
+    }
+    buildFloorIndicators() {
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            var geometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE + .2, 1, BOARD_SIZE + .2))
+            var indicatorMesh = new THREE.LineSegments(geometry, dashline_indicator_inactive_material)
+            indicatorMesh.position.set(0, i - BOARD_OFFSET, 0)
+            indicatorMesh.computeLineDistances()
+            floorIndicators.push(indicatorMesh)
+            scene.add(indicatorMesh)
+        }
     }
 
     buildGrid() {
@@ -81,10 +82,9 @@ class Level {
 
     update() {
         player.update()
+        this.foodsUpdate()
         this.highlightFloor()
         this.highlightFood()
-        this.foodsUpdate()
-
     }
 
     highlightFloor() {
@@ -98,6 +98,7 @@ class Level {
         foods.map(food => {
             if (food.fbx) {
                 food.children[0].position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
+
                 if (player.position[1] === Math.floor(food.position.y)) {
                     if (player.position[0] === Math.floor(food.position.x) || player.position[2] === Math.floor(food.position.z)) {
                         food.fbx.children[0].material = mat_mid_highlight
@@ -112,14 +113,14 @@ class Level {
             }
         })
     }
+
     foodsUpdate() {
         var originPoint = player.mesh.position.clone();
         for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
-            var localVertex = player.mesh.geometry.vertices[vertexIndex].clone();
-            var globalVertex = localVertex.applyMatrix4(player.mesh.matrix);
-            var directionVector = globalVertex.sub(player.mesh.position);
-
-            var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+            var localVertex = player.mesh.geometry.vertices[vertexIndex].clone()
+            var globalVertex = localVertex.applyMatrix4(player.mesh.matrix)
+            var directionVector = globalVertex.sub(player.mesh.position)
+            var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize())
 
             foods.map(food => {
                 if (food.eaten === undefined) {

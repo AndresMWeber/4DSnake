@@ -54,7 +54,7 @@ class Game {
         container = document.getElementById('canvas')
         container.appendChild(renderer.domElement)
         container.appendChild(this.stats.dom)
-        $id('title').innerHTML = "4D_SNAKE"
+        $id('title').innerHTML = "\"4D\" SNAKE"
 
         window.addEventListener('resize', () => {
             ASPECT_RATIO = window.innerWidth / window.innerHeight;
