@@ -47,12 +47,13 @@ class Game {
         this.createLights()
 
         this.level = new Level(Math.floor(BOARD_SIZE / 2))
-        this.stats = new Stats();
+        this.gameOver = false
+        this.stats = new Stats()
 
         container = document.getElementById('canvas')
-        container.appendChild(renderer.domElement);
-        container.appendChild(this.stats.dom);
-        $id('info').innerHTML = "4D_SNAKE"
+        container.appendChild(renderer.domElement)
+        container.appendChild(this.stats.dom)
+        $id('title').innerHTML = "4D_SNAKE"
 
         window.addEventListener('resize', () => {
             ASPECT_RATIO = window.innerWidth / window.innerHeight;
@@ -113,19 +114,25 @@ class Game {
         $id('debugInfoR').innerHTML = message
     }
 
-    levelInfo(message) {
-
+    levelStatus(message) {
+        $id('status').innerHTML = message
     }
 
+    setGameOver() {
+        this.gameOver = true
+        this.levelStatus('GAME OVER')
+    }
     animate() {
-        requestAnimationFrame(this.animate.bind(this));
-        var delta = CLOCK.getDelta();
-        if (mixer) mixer.update(delta);
-        this.level.update(delta)
-        this.stats.update();
-        renderer.clear();
-        renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderer.render(scene, camera);
+        requestAnimationFrame(this.animate.bind(this))
+        if (!this.gameOver) {
+            var delta = CLOCK.getDelta()
+            if (mixer) mixer.update(delta)
+            this.level.update(delta)
+            this.stats.update(delta)
+        }
+        renderer.clear()
+        renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        renderer.render(scene, camera)
     }
 }
 

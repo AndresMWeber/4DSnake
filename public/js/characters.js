@@ -89,12 +89,19 @@ class Snake {
     }
 
     addToTail() {
-        let tailGeo = new THREE.BoxGeometry(.9, .9, .9)
+        let tailGeo = new THREE.SphereBufferGeometry(.5, .5, .5)
         let tailXform = new THREE.Mesh(tailGeo, mat_dark_orange)
         tailXform.position.set(...this.lastPosition)
         scene.add(tailXform)
         this.hasEaten = false
         this.tail.push(tailXform)
+    }
+
+    updateTail() {
+        this.tail.map((tail, i) => {
+            tail.position.set(...this.trail[i])
+            arrayCompare(this.position, this.trail[i]) && i != this.trail.length - 1 && gameInstance.setGameOver()
+        })
     }
 
     updateTrail() {
@@ -117,19 +124,10 @@ class Snake {
 
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]
-
-                // Need to make sure the trail is as long as the length of items
-                this.updateTrail()
-                this.hasEaten && this.addToTail()
-
-                // Then need to add to beginning of trail list and pop off any ones that are greater than the list.
-                // Then iterate through positions and move tail list squares to that square.
-                this.tail.map((tail, i) => {
-                    tail.position.set(...this.trail[i + 1])
-                })
+                this.updateTrail() && this.hasEaten && this.addToTail()
             }
         }
-
         this.makeMove()
+        this.updateTail()
     }
 }

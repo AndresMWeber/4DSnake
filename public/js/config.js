@@ -3,7 +3,7 @@ var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
 var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
-var BOARD_SIZE = 13
+var BOARD_SIZE = 11
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 var CLOCK = new THREE.Clock()
 var $id = document.getElementById.bind(document)
@@ -39,26 +39,21 @@ const KEYCODES = {
 
 var mat_collider = new THREE.MeshBasicMaterial({
     opacity: 0,
-    transparent: true,
-    shading: THREE.FlatShading
+    transparent: true
 })
 
 var mat_flat_blue = new THREE.MeshBasicMaterial({
-    ambient: 0x000000,
     color: 0x48C4DA,
     opacity: .1,
-    transparent: true,
-    shading: THREE.FlatShading
+    transparent: true
 })
 
 var mat_flat_orange = new THREE.MeshLambertMaterial({
-    color: 0xFBB059,
-    shading: THREE.SmoothShading
+    color: 0xFBB059
 })
 
 var mat_dark_orange = new THREE.MeshPhongMaterial({
-    color: 0xCA4E2B,
-    shading: THREE.SmoothShading
+    color: 0xCA4E2B
 })
 
 var mat_cornea = new THREE.MeshPhongMaterial({
@@ -66,23 +61,19 @@ var mat_cornea = new THREE.MeshPhongMaterial({
     specular: 0xffffff,
     shininess: 1,
     transparent: true,
-    opacity: .3,
-    shading: THREE.SmoothShading
+    opacity: .3
 })
 
 var mat_sclera = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    shading: THREE.SmoothShading
+    color: 0xffffff
 })
 
 var mat_mid_blue = new THREE.MeshBasicMaterial({
-    color: 0x365E81,
-    shading: THREE.FlatShading
+    color: 0x365E81
 })
 
 var mat_mid_highlight = new THREE.MeshBasicMaterial({
-    color: 0x36FFFF,
-    shading: THREE.FlatShading
+    color: 0x36FFFF
 })
 
 var board_material = new THREE.LineBasicMaterial({
@@ -92,10 +83,7 @@ var board_material = new THREE.LineBasicMaterial({
 
 var dashline_material = new THREE.LineBasicMaterial({
     color: 0xffaa00,
-    dashed: true,
-    linewidth: 5,
-    dashSize: 3,
-    gapSize: 1
+    linewidth: 5
 })
 
 var dashline_indicator_material = new THREE.LineDashedMaterial({

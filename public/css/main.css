@@ -18,7 +18,7 @@ canvas {
     display: block;
 }
 
-#info {
+#title {
     position: absolute;
     top: 5%;
     width: 40%;
@@ -30,15 +30,15 @@ canvas {
     color: #EEEEEE;
 }
 
-#gameInfo {
+#status {
     position: absolute;
-    top: 10%;
+    top: 50%;
     width: 40%;
     text-align: center;
     z-index: 100;
     display: block;
     font-family: 'Megrim', cursive;
-    font-size: 1rem;
+    font-size: 2rem;
     color: #EEEEEE;
 }
 
