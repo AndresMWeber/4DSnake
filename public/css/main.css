@@ -44,8 +44,9 @@ canvas {
 
 #debugInfoL,
 #debugInfoR {
+    line-height: 1.25rem;
     position: absolute;
-    top: 80%;
+    top: 60%;
     width: 20%;
     height: 20%;
     text-align: left;

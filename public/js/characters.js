@@ -25,7 +25,6 @@ class Snake {
             // mixer = new THREE.AnimationMixer(object);
             // var action = mixer.clipAction(object.animations[0]);
             // action.play();
-
             object.traverse(child => {
                 let material = snakeMaterialsLookup[child.name]
                 if (material) child.material = material
@@ -38,27 +37,25 @@ class Snake {
         this.speed = DEFAULT_SPEED
         let quat = new THREE.Quaternion
         this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(quat.setFromEuler(euler)))
-        $id('debugInfoR').innerHTML = `Made turn on position ${JSON.stringify(this.mesh.position.toArray().map(p=>Number(p.toFixed(2))))}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`
+        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`
     }
 
     pitchUp() {
-        this.addMove(this.rotateEuler.fromArray([(this.canPitchUp ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
-        this.canPitchUp = !this.canPitchUp || !this.canPitchDown
-        this.canPitchDown = true
+        //TODO: If the move is queued before the character moves up, it will ignore the current direction.  Bug.
+        this.addMove(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== 1 ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
     }
 
     pitchDown() {
-        this.addMove(this.rotateEuler.fromArray([(this.canPitchDown ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
-        this.canPitchDown = !this.canPitchDown || !this.canPitchUp
-        this.canPitchUp = true
+        //TODO: If the move is queued before the character moves up, it will ignore the current direction.  Bug.
+        this.addMove(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== -1 ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
     }
 
     left() {
-        if (this.canPitchDown && this.canPitchUp) this.addMove(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
+        if (Math.round(this.direction[1]) == 0) this.addMove(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
     }
 
     right() {
-        if (this.canPitchDown && this.canPitchUp) this.addMove(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
+        if (Math.round(this.direction[1]) == 0) this.addMove(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
     }
 
     rollLeft(force) {
@@ -79,9 +76,6 @@ class Snake {
     }
 
     makeMove() {
-        this.mesh.getWorldDirection(this.wpVector)
-        this.direction = this.wpVector.toArray()
-
         this.direction.map((dirNormal, i) => {
             if (dirNormal) {
                 this.mesh.position[this.dirs[i]] = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
@@ -120,10 +114,12 @@ class Snake {
     update() {
         // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
         this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
+        this.mesh.getWorldDirection(this.wpVector)
+        this.direction = this.wpVector.toArray()
 
         if (this.validateMoveOnGrid()) {
             this.moveQueue.length && this.checkMoveQueue()
-            gameInstance.debugLeft(`Snake Position:(${this.position[0]},${this.position[1]},${this.position[2]})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
+            gameInstance.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
 
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]

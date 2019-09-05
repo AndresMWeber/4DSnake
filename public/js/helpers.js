@@ -18,3 +18,7 @@ function arrayCompare(arr1, arr2) {
 function arrayCompareClose(arr1, arr2, tolerance) {
     return arr1.length === arr2.length && arr1.every((p, i) => Math.abs(arr2[i] - p) < tolerance)
 }
+
+function printFloatArray(floatArray) {
+    return `(${floatArray.map(f=>f.toFixed(2)).join(',')})`
+}
