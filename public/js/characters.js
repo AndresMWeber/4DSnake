@@ -33,18 +33,20 @@ class Snake {
         })
     }
 
-    addMove(euler) {
+    addMove(moveFunction) {
         this.moveQueue.length === 2 && this.moveQueue.shift()
-        this.moveQueue.push(euler)
+        this.moveQueue.push(moveFunction)
     }
 
     makeMove() {
         this.direction.map((dirNormal, i) => {
             if (dirNormal) {
+                //TODO: Add checking here to see if we've been clamped and set the speed accordingly.
                 this.mesh.position[this.dirs[i]] = THREE.Math.clamp(this.mesh.position[this.dirs[i]] + this.speed * dirNormal, -BOARD_OFFSET, BOARD_OFFSET)
-                    // this.mesh.position.set(...this.mesh.position.toArray().map(pos => ))
             }
         })
+
+        //TODO: Add checking here to add to the moveTicker only if we have speed.
         this.moveTicker += 1
     }
 
@@ -52,9 +54,8 @@ class Snake {
         return this.moveTicker % MOVE_TICKER_COMPARE === 0
     }
 
-    checkMoveQueue() {
-        let euler = this.moveQueue.shift()
-        this.makeTurn(euler)
+    executeMoveFromQueue() {
+        this.moveQueue.shift()()
     }
 
     makeTurn(euler) {
@@ -64,33 +65,27 @@ class Snake {
     }
 
     pitchUp() {
-        //TODO: If the move is queued before the character moves up, it will ignore the current direction.  Bug.
-        this.addMove(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== 1 ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== 1 ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
     }
 
     pitchDown() {
-        //TODO: If the move is queued before the character moves up, it will ignore the current direction.  Bug.
-        this.addMove(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== -1 ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== -1 ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
     }
 
     left() {
-        if (Math.round(this.direction[1]) == 0) this.addMove(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
+        if (Math.round(this.direction[1]) == 0) this.makeTurn(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
     }
 
     right() {
-        if (Math.round(this.direction[1]) == 0) this.addMove(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
+        if (Math.round(this.direction[1]) == 0) this.makeTurn(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
     }
 
-    rollLeft(force) {
-        let euler = this.rotateEuler.fromArray([0, 0, -Math.PI / 2, "ZXY"])
-        if (force) this.makeTurn(euler)
-        else this.addMove(euler)
+    rollLeft() {
+        this.makeTurn(this.rotateEuler.fromArray([0, 0, -Math.PI / 2, "ZXY"]))
     }
 
-    rollRight(force) {
-        let euler = this.rotateEuler.fromArray([0, 0, Math.PI / 2, "ZXY"])
-        if (force) this.makeTurn(euler)
-        else this.addMove(euler)
+    rollRight() {
+        this.makeTurn(this.rotateEuler.fromArray([0, 0, Math.PI / 2, "ZXY"]))
     }
 
     addToTail() {
@@ -117,7 +112,7 @@ class Snake {
         this.direction = this.wpVector.toArray()
 
         if (this.validateMoveOnGrid()) {
-            this.moveQueue.length && this.checkMoveQueue()
+            this.moveQueue.length && this.executeMoveFromQueue()
             gameInstance.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
 
             if (!arrayCompare(this.position, this.lastPosition)) {

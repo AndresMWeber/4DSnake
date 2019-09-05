@@ -1,16 +1,16 @@
 document.onkeydown = function(e) {
     switch (e.keyCode) {
         case (KEYCODES.w):
-            player.pitchUp()
+            player.addMove(player.pitchUp.bind(player))
             break;
         case (KEYCODES.a):
-            player.left()
+            player.addMove(player.left.bind(player))
             break;
         case (KEYCODES.s):
-            player.pitchDown()
+            player.addMove(player.pitchDown.bind(player))
             break;
         case (KEYCODES.d):
-            player.right()
+            player.addMove(player.right.bind(player))
             break;
         case (KEYCODES.q):
             player.rollLeft()
