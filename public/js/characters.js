@@ -65,27 +65,27 @@ class Snake {
     }
 
     pitchUp() {
-        this.makeTurn(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== 1 ? -1 : 1) * Math.PI / 2, 0, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.up[Number(Math.round(this.direction[1]) !== 1)]))
     }
 
     pitchDown() {
-        this.makeTurn(this.rotateEuler.fromArray([(Math.round(this.direction[1]) !== -1 ? 1 : -1) * Math.PI / 2, 0, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.down[Number(Math.round(this.direction[1]) !== -1)]))
     }
 
     left() {
-        if (Math.round(this.direction[1]) == 0) this.makeTurn(this.rotateEuler.fromArray([0, Math.PI / 2, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.left[Math.round(this.direction[1])]))
     }
 
     right() {
-        if (Math.round(this.direction[1]) == 0) this.makeTurn(this.rotateEuler.fromArray([0, -Math.PI / 2, 0, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.right[Math.round(this.direction[1])]))
     }
 
     rollLeft() {
-        this.makeTurn(this.rotateEuler.fromArray([0, 0, -Math.PI / 2, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.rollL))
     }
 
     rollRight() {
-        this.makeTurn(this.rotateEuler.fromArray([0, 0, Math.PI / 2, "ZXY"]))
+        this.makeTurn(this.rotateEuler.fromArray(rotationLookup.rollR))
     }
 
     addToTail() {
@@ -110,6 +110,14 @@ class Snake {
             if (this.trail.length > this.tail.length + 1) this.trail.shift()
         }
         return this.trail
+    }
+
+    reset() {
+        this.mesh.position.set(0, 0, 0)
+        this.tail.map(tailSection => scene.remove(tailSection))
+        this.tail = []
+        this.trail = []
+
     }
 
     update() {

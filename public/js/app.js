@@ -122,6 +122,7 @@ class Game {
         this.gameOver = true
         this.levelStatus('GAME OVER')
     }
+
     animate() {
         requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver) {

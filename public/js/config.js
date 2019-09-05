@@ -1,10 +1,14 @@
 var ASPECT_RATIO = window.innerWidth / window.innerHeight
 var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
+
+// TODO:  HAVE THESE BE MODIFIABLE AND AUTO UPDATING ON THE GAME INSTANCE.
 var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
+
 var BOARD_SIZE = 11
 var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
+const HALF_PI = Math.PI / 2
 var CLOCK = new THREE.Clock()
 var $id = document.getElementById.bind(document)
 var $class = document.getElementsByClassName.bind(document)
@@ -35,6 +39,29 @@ const KEYCODES = {
     d: 68,
     q: 69,
     e: 81
+}
+
+var rotationLookup = {
+    'right': {
+        "0": [0, -HALF_PI, 0, "ZXY"],
+        "1": [HALF_PI, -HALF_PI, 0, 'ZXY'],
+        "-1": [-HALF_PI, -HALF_PI, 0, 'ZXY']
+    },
+    'left': {
+        "0": [0, HALF_PI, 0, "ZXY"],
+        "1": [HALF_PI, HALF_PI, 0, 'ZXY'],
+        "-1": [-HALF_PI, HALF_PI, 0, 'ZXY']
+    },
+    'down': {
+        "1": [HALF_PI, 0, 0, "ZXY"],
+        "0": [-HALF_PI, 0, 0, "ZXY"]
+    },
+    'up': {
+        "1": [-HALF_PI, 0, 0, "ZXY"],
+        "0": [HALF_PI, 0, 0, "ZXY"]
+    },
+    'rollL': [0, 0, -HALF_PI, "ZXY"],
+    'rollR': [0, 0, HALF_PI, "ZXY"],
 }
 
 var mat_collider = new THREE.MeshBasicMaterial({
