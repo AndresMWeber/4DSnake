@@ -101,6 +101,15 @@ var mat_mid_blue = new THREE.MeshBasicMaterial({
     color: 0x365E81
 })
 
+var mat_arrow = new THREE.MeshBasicMaterial({
+    color: 0x0063AA,
+    transparent: true
+})
+
+var mat_arrow_highlight = new THREE.MeshBasicMaterial({
+    color: 0xFFAFFF
+})
+
 var mat_mid_highlight = new THREE.MeshBasicMaterial({
     color: 0x36FFFF
 })

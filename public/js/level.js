@@ -1,15 +1,13 @@
 class Level {
     constructor(numFood) {
         this.numFood = numFood
-        this.buildLevel()
         this.makeGrid = false
+        this.buildLevel()
+        this.spawnFood()
         player = new Snake(mat_flat_orange)
-
         scene.add(this.lineSegments)
         scene.add(floorXform)
         scene.add(player.mesh)
-
-        this.spawnFood()
     }
 
     buildLevel() {
@@ -26,6 +24,7 @@ class Level {
         this.lineSegments.position.set(0, 0, 0)
         this.lineSegments.computeLineDistances()
     }
+
     buildFloorIndicators() {
         for (let i = 0; i < BOARD_SIZE; i++) {
             var geometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE + .2, 1, BOARD_SIZE + .2))
@@ -80,8 +79,8 @@ class Level {
         })
     }
 
-    update() {
-        player.update()
+    update(delta) {
+        player.update(delta)
         this.foodsUpdate()
         this.highlightFloor()
         this.highlightFood()

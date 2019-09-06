@@ -1,3 +1,5 @@
+loader = new THREE.FBXLoader();
+
 document.onkeydown = function(e) {
     switch (e.keyCode) {
         case (KEYCODES.w):
@@ -40,7 +42,6 @@ document.onkeydown = function(e) {
 
 class Game {
     constructor() {
-        loader = new THREE.FBXLoader();
         this.createRenderer()
         this.createCamera()
         this.createScene()

@@ -14,24 +14,20 @@ class Snake {
         this.trail = []
         this.direction = [0, 0, 1]
         this.wpVector = new THREE.Vector3()
+        this.arrowGroupVector = new THREE.Vector3()
         this.rotateEuler = new THREE.Euler()
         this.rotateQuaternion = new THREE.Quaternion
 
         this.geometry = new THREE.BoxGeometry(1, 1, 1)
         this.mesh = new THREE.Mesh(this.geometry, mat_collider)
 
-        var arrowR = this.buildArrow(this.mesh)
-        var arrowL = this.buildArrow(this.mesh)
-        var arrowU = this.buildArrow(this.mesh)
-        var arrowD = this.buildArrow(this.mesh)
-        arrowD.position.y = -1
-        arrowU.position.y = 1
-        arrowL.position.x = -1
-        arrowR.position.x = 1
-        arrowD.rotateX = -HALF_PI
-        arrowU.rotateX = HALF_PI
-        arrowL.rotateY = HALF_PI
-        arrowR.rotateY = -HALF_PI
+        this.arrowGroup = new THREE.Group();
+        this.arrowR = this.buildArrow(this.mesh)
+        this.arrowL = this.buildArrow(this.mesh)
+        this.arrowU = this.buildArrow(this.mesh)
+        this.arrowD = this.buildArrow(this.mesh)
+        this.orientArrows()
+        scene.add(this.arrowGroup)
 
         let scope = this
         loader.load('models/snakeHeadAnim.fbx', function(object) {
@@ -46,12 +42,22 @@ class Snake {
         })
     }
 
+    orientArrows() {
+        this.arrowD.position.y = -1
+        this.arrowU.position.y = 1
+        this.arrowL.position.x = 1
+        this.arrowR.position.x = -1
+        this.arrowD.rotation.z = Math.PI
+        this.arrowL.rotation.z = -HALF_PI
+        this.arrowR.rotation.z = HALF_PI
+    }
+
     addMove(moveFunction) {
         this.moveQueue.length === 2 && this.moveQueue.shift()
         this.moveQueue.push(moveFunction)
     }
 
-    buildArrow(parent) {
+    buildArrow() {
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
         geometry.vertices.push(new THREE.Vector3(0, 10, 0));
@@ -61,22 +67,26 @@ class Snake {
         geometry.vertices.push(new THREE.Vector3(-3, -10, 0));
         geometry.vertices.push(new THREE.Vector3(-3, 0, 0));
         geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
-        var line = new THREE.Line(geometry, mat_flat_blue);
+        var line = new THREE.Line(geometry, mat_arrow);
         line.scale.set(.02, .02, .02)
         scene.add(line)
-        parent.add(line)
+        this.arrowGroup.add(line)
         return line
+    }
+
+    highlightArrow(arrow) {
+        arrow.material = mat_arrow_highlight
+        setTimeout(arrow => {
+            arrow.material = mat_arrow
+        }, 1000, arrow)
     }
 
     makeMove() {
         this.direction.map((dirNormal, i) => {
             if (dirNormal) {
-                //TODO: Add checking here to see if we've been clamped and set the speed accordingly.
                 this.mesh.position[this.dirs[i]] = THREE.Math.clamp(this.mesh.position[this.dirs[i]] + this.speed * dirNormal, -BOARD_OFFSET, BOARD_OFFSET)
             }
         })
-
-        //TODO: Add checking here to add to the moveTicker only if we have speed.
         this.moveTicker += 1
     }
 
@@ -96,18 +106,22 @@ class Snake {
 
     pitchUp() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.up[Number(Math.round(this.direction[1]) !== 1)]))
+        this.highlightArrow(this.arrowU)
     }
 
     pitchDown() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.down[Number(Math.round(this.direction[1]) !== -1)]))
+        this.highlightArrow(this.arrowD)
     }
 
     left() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.left[Math.round(this.direction[1])]))
+        this.highlightArrow(this.arrowR)
     }
 
     right() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.right[Math.round(this.direction[1])]))
+        this.highlightArrow(this.arrowL)
     }
 
     rollLeft() {
@@ -150,7 +164,7 @@ class Snake {
 
     }
 
-    update() {
+    update(delta) {
         // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
         this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
         this.mesh.getWorldDirection(this.wpVector)
@@ -166,6 +180,10 @@ class Snake {
             }
         }
         this.makeMove()
+        this.mesh.getWorldPosition(this.arrowGroupVector)
+        this.arrowGroup.position.copy(this.arrowGroupVector)
+        this.arrowGroup.lookAt(camera.position)
+        if (CLOCK.elapsedTime > 5 && mat_arrow.opacity) mat_arrow.opacity -= .1
         this.updateTail()
     }
 }
