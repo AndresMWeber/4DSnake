@@ -2,9 +2,6 @@ class Snake {
     constructor() {
         this.dirs = ['x', 'y', 'z']
         this.moveQueue = []
-        this.tail = []
-        this.trail = []
-        this.trailInterpolated = []
 
         this.speed = DEFAULT_SPEED
         this.moveTicker = 0
@@ -23,8 +20,8 @@ class Snake {
         this.facingVector = new THREE.Vector3(0, 0, 1)
         this.cameraVector = new THREE.Vector3(0, 0, -1)
 
+        this.tail = new Tail()
         this.compass = new Compass()
-        tjs_scene.add(this.compass.group)
         this.buildModel()
     }
 
@@ -98,36 +95,8 @@ class Snake {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.rollR))
     }
 
-    addToTail() {
-        let tailShape = new THREE.BoxBufferGeometry(.95, .95, .95)
-        let tailXform = new THREE.Mesh(tailShape, tjs_materials.dark_orange)
-        tailXform.position.set(...this.lastPosition)
-        tjs_scene.add(tailXform)
-        this.tail.push(tailXform)
-        this.hasEaten = false
-    }
-
-    updateTail() {
-        this.tail.map((tail, i) => {
-            tail.position.set(...this.trail[i])
-            arrayCompare(this.position, this.trail[i]) && i != this.trail.length - 1 && game.setGameOver()
-        })
-    }
-
-    updateTrail() {
-        if (this.trail.every(trail => !arrayCompare(trail, this.position))) {
-            this.trail.push(this.position)
-            if (this.trail.length > this.tail.length + 1) this.trail.shift()
-        }
-        return this.trail
-    }
-
     reset() {
         this.mesh.position.set(0, 0, 0)
-        this.tail.map(tailSection => tjs_scene.remove(tailSection))
-        this.tail = []
-        this.trail = []
-        this.trailInterpolated = []
     }
 
     update(delta) {
@@ -135,15 +104,13 @@ class Snake {
         this.onValidGridMove()
         this.makeMove()
         this.compass.move(this.mesh)
-        this.updateTail()
+        this.tail.update()
     }
 
     updatePositionInfo() {
         this.mesh.getWorldDirection(this.wpVector)
         let position = this.mesh.position.toArray()
-        this.trailInterpolated.push(position)
-
-        // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
+        this.tail.trailInterpolated.push(position)
         this.position = (position.map(p => Math.floor(p + .1)))
         this.direction = this.wpVector.toArray()
     }
@@ -151,10 +118,10 @@ class Snake {
     onValidGridMove() {
         if (this.moveTicker % MOVE_TICKER_COMPARE === 0) {
             this.moveQueue.length && this.executeMoveFromQueue()
-            game.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
+            game.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.tail.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]
-                this.updateTrail() && this.hasEaten && this.addToTail()
+                this.tail.update() && this.hasEaten && this.tail.add()
             }
         }
     }
@@ -169,6 +136,7 @@ class Compass {
         this.arrowR = this.buildCurveFromCoordinates(letters['d'])
         this.vector = new THREE.Vector3()
         this.orient()
+        tjs_scene.add(this.group)
     }
 
     buildCurveFromCoordinates(coordinates) {
@@ -176,7 +144,6 @@ class Compass {
         coordinates.map(pos => geometry.vertices.push(new THREE.Vector3(...pos)))
         var line = new THREE.Line(geometry, tjs_materials.arrow)
         line.scale.set(.2, .2, .2)
-        tjs_scene.add(line)
         this.group.add(line)
         return line
     }
@@ -214,5 +181,44 @@ class Compass {
             this.arrowL.position.x = -1
             this.arrowR.position.x = 1
         }
+    }
+}
+
+class Tail {
+    constructor() {
+        this.tail = []
+        this.trail = []
+        this.trailInterpolated = []
+    }
+
+    reset() {
+        this.tail.map(tailSection => tjs_scene.remove(tailSection))
+        this.tail = []
+        this.trail = []
+        this.trailInterpolated = []
+    }
+
+    add() {
+        let tailShape = new THREE.BoxBufferGeometry(.95, .95, .95)
+        let tailXform = new THREE.Mesh(tailShape, tjs_materials.dark_orange)
+        tailXform.position.set(...this.lastPosition)
+        tjs_scene.add(tailXform)
+        this.tail.push(tailXform)
+        this.hasEaten = false
+    }
+
+    update() {
+        this.tail.map((tail, i) => {
+            tail.position.set(...this.trail[i])
+            arrayCompare(this.position, this.trail[i]) && i != this.trail.length - 1 && game.setGameOver()
+        })
+    }
+
+    updateTrail() {
+        if (this.trail.every(trail => !arrayCompare(trail, this.position))) {
+            this.trail.push(this.position)
+            if (this.trail.length > this.tail.length + 1) this.trail.shift()
+        }
+        return this.trail
     }
 }
