@@ -83,13 +83,15 @@ class Game {
         camera.position.z = BOARD_SIZE
 
         controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, -0.2, -0.2);
-        controls.update();
+        controls.target.set(0, -0.2, -0.2)
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.5
+        controls.enableZoom = true
+        controls.enablePan = false
     }
 
     createScene() {
         scene = new THREE.Scene();
-        // scene.fog = new THREE.FogExp2(0xf0fff0, 0.02);
     }
 
     createLights() {
@@ -97,14 +99,6 @@ class Game {
         light.position.set(0, 200, 0);
         scene.add(light);
 
-        var lights = [];
-        lights.push(new THREE.DirectionalLight(0xe69705, 1))
-        lights[lights.length - 1].position.set(1, .3, 0);
-
-        lights.push(new THREE.DirectionalLight(0xffffff, .2))
-        lights[lights.length - 1].position.set(0, 100, 0);
-
-        lights.map(light => scene.add(light))
     }
 
 
@@ -126,6 +120,7 @@ class Game {
     }
 
     animate() {
+        controls.update();
         requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver) {
             var delta = CLOCK.getDelta()

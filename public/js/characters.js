@@ -12,20 +12,23 @@ class Snake {
         this.hasEaten = false
         this.tail = []
         this.trail = []
+        this.trailInterpolated = []
         this.direction = [0, 0, 1]
+        this.facingCamera = false
         this.wpVector = new THREE.Vector3()
         this.arrowGroupVector = new THREE.Vector3()
         this.rotateEuler = new THREE.Euler()
         this.rotateQuaternion = new THREE.Quaternion
-
+        this.facingVector = new THREE.Vector3(0, 0, 1)
+        this.cameraVector = new THREE.Vector3(0, 0, -1)
         this.geometry = new THREE.BoxGeometry(1, 1, 1)
         this.mesh = new THREE.Mesh(this.geometry, mat_collider)
 
         this.arrowGroup = new THREE.Group();
-        this.arrowR = this.buildArrow(this.mesh)
-        this.arrowL = this.buildArrow(this.mesh)
-        this.arrowU = this.buildArrow(this.mesh)
-        this.arrowD = this.buildArrow(this.mesh)
+        this.arrowU = this.buildLetter('w')
+        this.arrowL = this.buildLetter('a')
+        this.arrowD = this.buildLetter('s')
+        this.arrowR = this.buildLetter('d')
         this.orientArrows()
         scene.add(this.arrowGroup)
 
@@ -37,6 +40,7 @@ class Snake {
             object.traverse(child => {
                 let material = snakeMaterialsLookup[child.name]
                 if (material) child.material = material
+                child.scale.set(1.2, 1.2, 1.2)
             })
             scope.mesh.add(object)
         })
@@ -48,8 +52,6 @@ class Snake {
         this.arrowL.position.x = 1
         this.arrowR.position.x = -1
         this.arrowD.rotation.z = Math.PI
-        this.arrowL.rotation.z = -HALF_PI
-        this.arrowR.rotation.z = HALF_PI
     }
 
     addMove(moveFunction) {
@@ -57,17 +59,27 @@ class Snake {
         this.moveQueue.push(moveFunction)
     }
 
+    buildLetter(key) {
+        var geometry = new THREE.Geometry()
+        letters[key].map(pos => geometry.vertices.push(new THREE.Vector3(...pos)))
+        var line = new THREE.Line(geometry, mat_arrow)
+        line.scale.set(.2, .2, .2)
+        scene.add(line)
+        this.arrowGroup.add(line)
+        return line
+    }
+
     buildArrow() {
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(0, 10, 0));
-        geometry.vertices.push(new THREE.Vector3(7, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(3, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(3, -10, 0));
-        geometry.vertices.push(new THREE.Vector3(-3, -10, 0));
-        geometry.vertices.push(new THREE.Vector3(-3, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(-7, 0, 0));
-        var line = new THREE.Line(geometry, mat_arrow);
+        var geometry = new THREE.Geometry()
+        geometry.vertices.push(new THREE.Vector3(-7, 0, 0))
+        geometry.vertices.push(new THREE.Vector3(0, 10, 0))
+        geometry.vertices.push(new THREE.Vector3(7, 0, 0))
+        geometry.vertices.push(new THREE.Vector3(3, 0, 0))
+        geometry.vertices.push(new THREE.Vector3(3, -10, 0))
+        geometry.vertices.push(new THREE.Vector3(-3, -10, 0))
+        geometry.vertices.push(new THREE.Vector3(-3, 0, 0))
+        geometry.vertices.push(new THREE.Vector3(-7, 0, 0))
+        var line = new THREE.Line(geometry, mat_arrow)
         line.scale.set(.02, .02, .02)
         scene.add(line)
         this.arrowGroup.add(line)
@@ -78,7 +90,7 @@ class Snake {
         arrow.material = mat_arrow_highlight
         setTimeout(arrow => {
             arrow.material = mat_arrow
-        }, 1000, arrow)
+        }, 200, arrow)
     }
 
     makeMove() {
@@ -90,9 +102,6 @@ class Snake {
         this.moveTicker += 1
     }
 
-    validateMoveOnGrid() {
-        return this.moveTicker % MOVE_TICKER_COMPARE === 0
-    }
 
     executeMoveFromQueue() {
         this.moveQueue.shift()()
@@ -116,12 +125,12 @@ class Snake {
 
     left() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.left[Math.round(this.direction[1])]))
-        this.highlightArrow(this.arrowR)
+        this.highlightArrow(this.arrowL)
     }
 
     right() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.right[Math.round(this.direction[1])]))
-        this.highlightArrow(this.arrowL)
+        this.highlightArrow(this.arrowR)
     }
 
     rollLeft() {
@@ -133,7 +142,7 @@ class Snake {
     }
 
     addToTail() {
-        let tailGeo = new THREE.SphereBufferGeometry(.5, .5, .5)
+        let tailGeo = new THREE.BoxBufferGeometry(.95, .95, .95)
         let tailXform = new THREE.Mesh(tailGeo, mat_dark_orange)
         tailXform.position.set(...this.lastPosition)
         scene.add(tailXform)
@@ -161,29 +170,52 @@ class Snake {
         this.tail.map(tailSection => scene.remove(tailSection))
         this.tail = []
         this.trail = []
+        this.trailInterpolated = []
+    }
 
+    moveArrowGroup() {
+        this.mesh.getWorldPosition(this.arrowGroupVector)
+        this.arrowGroup.position.copy(this.arrowGroupVector)
+        this.arrowGroup.lookAt(camera.position)
+        let planeVector = (new THREE.Vector3(0, 0, 1)).applyQuaternion(this.mesh.quaternion);
+        let cameraVector = (new THREE.Vector3(0, 0, -1)).applyQuaternion(camera.quaternion);
+        this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
+        if (CLOCK.elapsedTime > 15 && mat_arrow.opacity) mat_arrow.opacity -= .01
+        if (this.facingCamera) {
+            this.arrowL.position.x = 1
+            this.arrowR.position.x = -1
+        } else {
+            this.arrowL.position.x = -1
+            this.arrowR.position.x = 1
+        }
     }
 
     update(delta) {
-        // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
-        this.position = (this.mesh.position.toArray().map(p => Math.floor(p + .1)))
-        this.mesh.getWorldDirection(this.wpVector)
-        this.direction = this.wpVector.toArray()
+        this.updatePositionInfo()
+        this.onValidGridMove()
+        this.makeMove()
+        this.moveArrowGroup()
+        this.updateTail()
+    }
 
-        if (this.validateMoveOnGrid()) {
+    updatePositionInfo() {
+        this.mesh.getWorldDirection(this.wpVector)
+        let position = this.mesh.position.toArray()
+        this.trailInterpolated.push(position)
+
+        // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
+        this.position = (position.map(p => Math.floor(p + .1)))
+        this.direction = this.wpVector.toArray()
+    }
+
+    onValidGridMove() {
+        if (this.moveTicker % MOVE_TICKER_COMPARE === 0) {
             this.moveQueue.length && this.executeMoveFromQueue()
             gameInstance.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
-
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]
                 this.updateTrail() && this.hasEaten && this.addToTail()
             }
         }
-        this.makeMove()
-        this.mesh.getWorldPosition(this.arrowGroupVector)
-        this.arrowGroup.position.copy(this.arrowGroupVector)
-        this.arrowGroup.lookAt(camera.position)
-        if (CLOCK.elapsedTime > 5 && mat_arrow.opacity) mat_arrow.opacity -= .1
-        this.updateTail()
     }
 }

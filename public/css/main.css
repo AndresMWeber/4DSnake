@@ -1,16 +1,8 @@
 body {
     margin: 0;
     height: 100%;
-    /* Old browsers */
-    background: -moz-linear-gradient(top, #CE4F6C 0%, #603556 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #CE4F6C 0%, #603556 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #CE4F6C 0%, #603556 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#CE4F6C', endColorstr='#603556', GradientType=0);
-    /* IE6-9 */
-    animation: Gradient 15s ease infinite;
+    background-image: linear-gradient(to bottom, #CE4F6C 0%, #603556 100%);
+    transition: background-image 3s #603556 #CE4F6C;
 }
 
 @keyframes Gradient {
