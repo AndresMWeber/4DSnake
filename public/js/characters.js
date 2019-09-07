@@ -104,7 +104,7 @@ class Snake {
         this.onValidGridMove()
         this.makeMove()
         this.compass.move(this.mesh)
-        this.tail.update()
+        this.tail.update(this.position)
     }
 
     updatePositionInfo() {
@@ -121,7 +121,7 @@ class Snake {
             game.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.tail.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]
-                this.tail.update() && this.hasEaten && this.tail.add()
+                this.tail.update() && this.hasEaten && this.tail.add(this.lastPosition)
             }
         }
     }
@@ -174,50 +174,44 @@ class Compass {
         this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
 
         if (CLOCK.elapsedTime > 15 && tjs_materials.arrow.opacity) tjs_materials.arrow.opacity -= .01
-        if (this.facingCamera) {
-            this.arrowL.position.x = 1
-            this.arrowR.position.x = -1
-        } else {
-            this.arrowL.position.x = -1
-            this.arrowR.position.x = 1
-        }
+        this.arrowL.position = this.facingCamera ? 1 : -1
+        this.arrowR.position = this.facingCamera ? -1 : 1
     }
 }
 
 class Tail {
     constructor() {
-        this.tail = []
+        this.tailXforms = []
         this.trail = []
         this.trailInterpolated = []
     }
 
     reset() {
-        this.tail.map(tailSection => tjs_scene.remove(tailSection))
-        this.tail = []
+        this.tailXforms.map(tailSection => tjs_scene.remove(tailSection))
+        this.tailXforms = []
         this.trail = []
         this.trailInterpolated = []
     }
 
-    add() {
-        let tailShape = new THREE.BoxBufferGeometry(.95, .95, .95)
-        let tailXform = new THREE.Mesh(tailShape, tjs_materials.dark_orange)
-        tailXform.position.set(...this.lastPosition)
+    add(position) {
+        let tailXform = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.dark_orange)
+        tailXform.position.set(position)
         tjs_scene.add(tailXform)
-        this.tail.push(tailXform)
-        this.hasEaten = false
+        this.tailXforms.push(tailXform)
+        player.hasEaten = false
     }
 
-    update() {
-        this.tail.map((tail, i) => {
+    update(playerPosition) {
+        this.tailXforms.map((tail, i) => {
             tail.position.set(...this.trail[i])
-            arrayCompare(this.position, this.trail[i]) && i != this.trail.length - 1 && game.setGameOver()
+            arrayCompare(playerPosition, this.trail[i]) && i != this.trail.length - 1 && game.setGameOver()
         })
     }
 
-    updateTrail() {
-        if (this.trail.every(trail => !arrayCompare(trail, this.position))) {
-            this.trail.push(this.position)
-            if (this.trail.length > this.tail.length + 1) this.trail.shift()
+    updateTrail(playerPosition) {
+        if (this.trail.every(trail => !arrayCompare(trail, playerPosition))) {
+            this.trail.push(playerPosition)
+            if (this.trail.length > this.tailXforms.length + 1) this.trail.shift()
         }
         return this.trail
     }
