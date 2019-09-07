@@ -10,6 +10,7 @@ class Level {
         tjs_scene.add(this.lineSegments)
         tjs_scene.add(floor)
         tjs_scene.add(player.mesh)
+        tjs_scene.add(this.floorSpot)
     }
 
     buildLevel() {
@@ -18,7 +19,7 @@ class Level {
 
         var floorShape = new THREE.PlaneBufferGeometry(BOARD_SIZE, BOARD_SIZE, 0)
         floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
-        floor.rotateX(-Math.PI / 2)
+        floor.rotateX(-HALF_PI)
         floor.translateZ(-BOARD_SIZE / 2)
 
         let boardShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE, BOARD_SIZE, BOARD_SIZE)); // or WireframeGeometry( geometry )
@@ -36,6 +37,10 @@ class Level {
             floorIndicators.push(indicatorXform)
             tjs_scene.add(indicatorXform)
         }
+
+        this.floorSpot = new THREE.Points(new THREE.PlaneBufferGeometry(1, 1, 0), tjs_materials.points);
+        this.floorSpot.rotateX(-HALF_PI)
+        this.floorSpot.position.y = -BOARD_SIZE / 2 + .01
     }
 
     buildGrid() {
@@ -93,6 +98,9 @@ class Level {
             if (Math.floor(indicator.position.y) === Math.floor(player.position[1])) indicator.material = tjs_materials.indicator
             else indicator.material = tjs_materials.indicator_inactive
         })
+
+        this.floorSpot.position.x = player.mesh.position.x
+        this.floorSpot.position.z = player.mesh.position.z
     }
 
     highlightFood() {
@@ -118,6 +126,7 @@ class Level {
 
     updateFoods() {
         var originPoint = player.mesh.position.clone();
+
         for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
             var localVertex = player.mesh.geometry.vertices[vertexIndex].clone()
             var globalVertex = localVertex.applyMatrix4(player.mesh.matrix)

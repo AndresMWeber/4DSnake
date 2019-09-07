@@ -137,6 +137,11 @@ const tjs_materials = {
         gapSize: 2,
         opacity: .1,
         transparent: true
+    }),
+    points: new THREE.PointsMaterial({
+        size: .1,
+        sizeAttenuation: true,
+        color: 0xFFFFFF,
     })
 }
 

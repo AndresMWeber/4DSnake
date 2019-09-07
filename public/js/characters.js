@@ -66,7 +66,13 @@ class Snake {
 
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
-        this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
+        var count = 0
+        var interval = setInterval(function(scope, changeValue) {
+                if (changeValue >= 1) clearInterval(interval)
+                scope.mesh.quaternion.slerp(scope.rotateQuaternion.setFromEuler(euler), changeValue)
+                count += changeValue
+            }, 20, this, .5)
+            // this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
         game.debugRight(`Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`)
     }
 
