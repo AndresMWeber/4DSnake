@@ -1,4 +1,4 @@
-loader = new THREE.FBXLoader();
+loader = new THREE.FBXLoader()
 
 document.onkeydown = function(e) {
     switch (e.keyCode) {
@@ -21,21 +21,21 @@ document.onkeydown = function(e) {
             player.rollRight()
             break;
         case (KEYCODES.left):
-            camera.rotation.y -= .1;
-            camera.updateProjectionMatrix();
+            camera.rotation.y -= .1
+            camera.updateProjectionMatrix()
             break;
         case (KEYCODES.right):
             console.log(camera.rotation)
-            camera.rotation.y += .1;
-            camera.updateProjectionMatrix();
+            camera.rotation.y += .1
+            camera.updateProjectionMatrix()
             break;
         case (KEYCODES.up):
-            camera.zoom += .05;
-            camera.updateProjectionMatrix();
+            camera.zoom += .05
+            camera.updateProjectionMatrix()
             break;
         case (KEYCODES.down):
-            camera.zoom -= .05;
-            camera.updateProjectionMatrix();
+            camera.zoom -= .05
+            camera.updateProjectionMatrix()
             break;
     }
 }
@@ -44,63 +44,57 @@ class Game {
     constructor() {
         this.createRenderer()
         this.createCamera()
-        this.createScene()
         this.createLights()
 
-        this.level = new Level(Math.floor(BOARD_SIZE / 2))
+        this.debugMode = false
         this.gameOver = false
         this.stats = new Stats()
-        this.debugMode = false
+        this.level = new Level(Math.floor(BOARD_SIZE / 2))
 
-        container = document.getElementById('canvas')
-        container.appendChild(renderer.domElement)
-        container.appendChild(this.stats.dom)
+        tjs_container = $id('canvas')
+        tjs_container.append(tjs_renderer.domElement)
+        tjs_container.append(this.stats.dom)
         $id('title').innerHTML = "\"4D\" SNAKE"
 
         window.addEventListener('resize', () => {
-            ASPECT_RATIO = window.innerWidth / window.innerHeight;
-            SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio;
-            SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio;
+            ASPECT_RATIO = window.innerWidth / window.innerHeight
+            SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
+            SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
 
-            camera.aspect = ASPECT_RATIO;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            tjs_camera.aspect = ASPECT_RATIO
+            tjs_camera.updateProjectionMatrix()
+            tjs_renderer.setSize(window.innerWidth, window.innerHeight)
         }, false)
     }
 
     createRenderer() {
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.autoClear = false;
-        renderer.setClearColor(0x000000, 0.0);
+        tjs_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+        tjs_renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1)
+        tjs_renderer.setSize(window.innerWidth, window.innerHeight)
+        tjs_renderer.autoClear = false
+        tjs_renderer.setClearColor(0x000000, 0.0)
+        tjs_scene = new THREE.Scene()
     }
 
     createCamera() {
-        camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000);
-        camera.position.x = BOARD_SIZE
-        camera.position.y = BOARD_SIZE / 2
-        camera.position.z = BOARD_SIZE
+        tjs_camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000)
+        tjs_camera.position.x = BOARD_SIZE
+        tjs_camera.position.y = BOARD_SIZE / 2
+        tjs_camera.position.z = BOARD_SIZE
 
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, -0.2, -0.2)
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.5
-        controls.enableZoom = true
-        controls.enablePan = false
-    }
-
-    createScene() {
-        scene = new THREE.Scene();
+        tjs_controls = new THREE.OrbitControls(tjs_camera, tjs_renderer.domElement)
+        tjs_controls.target.set(0, -0.2, -0.2)
+        tjs_controls.enableDamping = true
+        tjs_controls.dampingFactor = 0.5
+        tjs_controls.enableZoom = true
+        tjs_controls.enablePan = false
     }
 
     createLights() {
-        let light = new THREE.HemisphereLight(0xffffff, 0x444444);
-        light.position.set(0, 200, 0);
-        scene.add(light);
-
+        let light = new THREE.HemisphereLight(0xffffff, 0x444444)
+        light.position.set(0, 200, 0)
+        tjs_scene.add(light)
     }
-
 
     debugLeft(message) {
         if (this.debugMode) $id('debugInfoL').innerHTML = message
@@ -120,19 +114,19 @@ class Game {
     }
 
     animate() {
-        controls.update();
+        tjs_controls.update();
         requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver) {
             var delta = CLOCK.getDelta()
-            if (mixer) mixer.update(delta)
+            if (tjs_animMixer) mixer.update(delta)
             this.level.update(delta)
             this.stats.update(delta)
         }
-        renderer.clear()
-        renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        renderer.render(scene, camera)
+        tjs_renderer.clear()
+        tjs_renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        tjs_renderer.render(tjs_scene, tjs_camera)
     }
 }
 
-gameInstance = new Game()
-gameInstance.animate()
+game = new Game()
+game.animate()

@@ -1,35 +1,3 @@
-var ASPECT_RATIO = window.innerWidth / window.innerHeight
-var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
-var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
-
-// TODO:  HAVE THESE BE MODIFIABLE AND AUTO UPDATING ON THE GAME INSTANCE.
-var DEFAULT_SPEED = .05
-var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
-
-var BOARD_SIZE = 11
-var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
-
-const DEFAULT_ROTATION_ORDER = 'ZXY'
-const HALF_PI = Math.PI / 2
-var CLOCK = new THREE.Clock()
-var $id = document.getElementById.bind(document)
-var $class = document.getElementsByClassName.bind(document)
-
-var gameInstance,
-    loader,
-    renderer,
-    container,
-    controls,
-    scene,
-    camera,
-    player,
-    board,
-    mixer,
-    floorXform,
-    floorIndicators = [],
-    foods = [],
-    colliders = []
-
 const KEYCODES = {
     up: 38,
     down: 40,
@@ -43,7 +11,39 @@ const KEYCODES = {
     e: 81
 }
 
-var rotationLookup = {
+var ASPECT_RATIO = window.innerWidth / window.innerHeight
+var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
+var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
+
+const $id = document.getElementById.bind(document)
+const $class = document.getElementsByClassName.bind(document)
+const DEFAULT_ROTATION_ORDER = 'ZXY'
+const HALF_PI = Math.PI / 2
+const CLOCK = new THREE.Clock()
+
+// DYNAMIC GAME VARS
+var DEFAULT_SPEED = .05
+var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
+var BOARD_SIZE = 11
+var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
+
+var tjs_FBXLoader,
+    tjs_renderer,
+    tjs_container,
+    tjs_controls,
+    tjs_scene,
+    tjs_camera,
+    tjs_animMixer
+
+var game,
+    player,
+    board,
+    floor,
+    floorIndicators = [],
+    foods = [],
+    colliders = []
+
+const rotationLookup = {
     'right': {
         "0": [0, -HALF_PI, 0, DEFAULT_ROTATION_ORDER],
         "1": [HALF_PI, -HALF_PI, 0, DEFAULT_ROTATION_ORDER],
@@ -66,84 +66,86 @@ var rotationLookup = {
     'rollR': [0, 0, HALF_PI, DEFAULT_ROTATION_ORDER],
 }
 
-var mat_collider = new THREE.MeshBasicMaterial({
-    opacity: 0,
-    transparent: true
-})
+const tjs_materials = {
+    collider: new THREE.MeshBasicMaterial({
+        opacity: 0,
+        transparent: true
+    }),
 
-var mat_flat_blue = new THREE.MeshBasicMaterial({
-    color: 0x48C4DA,
-    opacity: .1,
-    transparent: true
-})
+    flat_blue: new THREE.MeshBasicMaterial({
+        color: 0x48C4DA,
+        opacity: .1,
+        transparent: true
+    }),
 
-var mat_flat_orange = new THREE.MeshLambertMaterial({
-    color: 0xFBB059
-})
+    flat_orange: new THREE.MeshLambertMaterial({
+        color: 0xFBB059
+    }),
 
-var mat_dark_orange = new THREE.MeshPhongMaterial({
-    color: 0xCA4E2B
-})
+    dark_orange: new THREE.MeshPhongMaterial({
+        color: 0xCA4E2B
+    }),
 
-var mat_cornea = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    specular: 0xffffff,
-    shininess: 1,
-    transparent: true,
-    opacity: .3
-})
+    cornea: new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        specular: 0xffffff,
+        shininess: 1,
+        transparent: true,
+        opacity: .3
+    }),
 
-var mat_sclera = new THREE.MeshPhongMaterial({
-    color: 0xffffff
-})
+    sclera: new THREE.MeshPhongMaterial({
+        color: 0xffffff
+    }),
 
-var mat_mid_blue = new THREE.MeshBasicMaterial({
-    color: 0x365E81
-})
+    mid_blue: new THREE.MeshBasicMaterial({
+        color: 0x365E81
+    }),
 
-var mat_arrow = new THREE.MeshBasicMaterial({
-    color: 0x0063AA,
-    transparent: true
-})
+    arrow: new THREE.MeshBasicMaterial({
+        color: 0x0063AA,
+        transparent: true
+    }),
 
-var mat_arrow_highlight = new THREE.MeshBasicMaterial({
-    color: 0xFFAFFF
-})
+    arrow_highlight: new THREE.MeshBasicMaterial({
+        color: 0xFFAFFF
+    }),
 
-var mat_mid_highlight = new THREE.MeshBasicMaterial({
-    color: 0x36FFFF
-})
+    mid_highlight: new THREE.MeshBasicMaterial({
+        color: 0x36FFFF
+    }),
 
-var board_material = new THREE.LineBasicMaterial({
-    color: 0xFCEF9F,
-    linewidth: 5
-});
+    board: new THREE.LineBasicMaterial({
+        color: 0xFCEF9F,
+        linewidth: 5
+    }),
 
-var dashline_material = new THREE.LineBasicMaterial({
-    color: 0xffaa00,
-    linewidth: 5
-})
+    dashline: new THREE.LineBasicMaterial({
+        color: 0xffaa00,
+        linewidth: 5
+    }),
 
-var dashline_indicator_material = new THREE.LineDashedMaterial({
-    color: 0x5ad6ca,
-    dashSize: 1,
-    gapSize: 2
-})
+    indicator: new THREE.LineDashedMaterial({
+        color: 0x5ad6ca,
+        dashSize: 1,
+        gapSize: 2
+    }),
 
-var dashline_indicator_inactive_material = new THREE.LineDashedMaterial({
-    color: 0x5ad6ca,
-    dashSize: 1,
-    gapSize: 2,
-    opacity: .1,
-    transparent: true
-})
+    indicator_inactive: new THREE.LineDashedMaterial({
+        color: 0x5ad6ca,
+        dashSize: 1,
+        gapSize: 2,
+        opacity: .1,
+        transparent: true
+    })
+}
 
-var snakeMaterialsLookup = {
-    'head_GEO': mat_flat_orange,
-    'l_sclera_GEO': mat_sclera,
-    'r_sclera_GEO': mat_sclera,
-    'l_cornea_GEO': mat_cornea,
-    'r_cornea_GEO': mat_cornea,
+const snakeMaterialsLookup = {
+    'head_GEO': tjs_materials.flat_orange,
+    'l_sclera_GEO': tjs_materials.sclera,
+    'r_sclera_GEO': tjs_materials.sclera,
+    'l_cornea_GEO': tjs_materials.cornea,
+    'r_cornea_GEO': tjs_materials.cornea,
 }
 
 const letters = {
@@ -198,4 +200,14 @@ const letters = {
         [0.440955473403, -9.78021306164e-08, 0.0],
         [-1.0, 9.78021308384e-08, 0.0],
     ],
+    arrow: [
+        [-7, 0, 0],
+        [0, 10, 0],
+        [7, 0, 0],
+        [3, 0, 0],
+        [3, -10, 0],
+        [3, -10, 0],
+        [-3, 0, 0],
+        [-7, 0, 0],
+    ]
 }
