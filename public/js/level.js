@@ -34,20 +34,20 @@ class Level {
         this.makeGrid && this.buildGrid()
         this.buildFloorIndicators()
 
-        var floorShape = new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0)
+        var floorShape = new THREE.PlaneBufferGeometry(this.size.x, this.size.z, 0)
         this.floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
         this.floor.name = "FloorPlane"
         this.floor.rotateX(-HALF_PI)
         this.floor.translateZ(-this.size.vertCenter - .5)
 
-        this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.points)
+        this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.pointsY)
         this.floorSpotZX.name = 'FloorSpotZX'
 
-        this.floorSpotYX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.points)
-        this.floorSpotYX.rotateX(-HALF_PI)
+        this.floorSpotYX = new THREE.Points(new THREE.BoxBufferGeometry(this.size.z, 1, 0), tjs_materials.pointsX)
+        this.floorSpotYX.rotateY(-HALF_PI)
         this.floorSpotYX.name = 'FloorSpotYX'
 
-        this.floorSpotYZ = new THREE.Points(new THREE.BoxBufferGeometry(this.size.x, 1, 0), tjs_materials.points)
+        this.floorSpotYZ = new THREE.Points(new THREE.BoxBufferGeometry(this.size.x, 1, 0), tjs_materials.pointsZ)
         this.floorSpotYZ.rotateX(-HALF_PI)
         this.floorSpotYZ.name = 'FloorSpotYZ'
 
@@ -94,11 +94,12 @@ class Level {
     buildFoods() {
         let foodPositions = []
         for (let i = 0; i < this.numFood; i++) {
+            console.log(this.size)
             let posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             while (foodPositions.includes(posCandidate)) {
                 posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             }
-            foodPositions.push(posCandidate.map(p => p - this.size.horizCenter))
+            foodPositions.push(posCandidate.map((p, i) => p - ((i === 1) ? this.size.vertCenter : this.size.horizCenter)))
         }
 
         foodPositions.map((foodPosition, i) => {

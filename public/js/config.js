@@ -27,9 +27,11 @@ var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
 
 const LEVELS = [
-    [5, 11, 11],
-    [7, 11, 11],
-    [9, 11, 11],
+    [2, 1, 5],
+    [4, 1, 7],
+    [8, 1, 11],
+    [6, 3, 9],
+    [9, 5, 7],
     [11, 11, 11],
     [4, 9, 9],
     [6, 9, 9],
@@ -148,10 +150,23 @@ const tjs_materials = {
         opacity: .1,
         transparent: true
     }),
-    points: new THREE.PointsMaterial({
+
+    pointsX: new THREE.PointsMaterial({
         size: .1,
         sizeAttenuation: true,
-        color: 0xFFFFFF,
+        color: 0xf56942,
+    }),
+
+    pointsY: new THREE.PointsMaterial({
+        size: .1,
+        sizeAttenuation: true,
+        color: 0x90f542,
+    }),
+
+    pointsZ: new THREE.PointsMaterial({
+        size: .1,
+        sizeAttenuation: true,
+        color: 0x4287f5,
     })
 }
 

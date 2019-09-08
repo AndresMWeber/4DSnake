@@ -125,7 +125,7 @@ class Game {
                 }
                 this.startCountdown()
             }, 1500)
-        }, 250)
+        }, 50)
 
     }
 

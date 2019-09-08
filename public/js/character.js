@@ -93,7 +93,8 @@ class Snake {
         this.direction.map((dirNormal, i) => {
             if (dirNormal) {
                 let newPosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
-                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -level.size.horizCenter, level.size.horizCenter)
+                let offset = (i === 1) ? level.size.vertCenter : level.size.horizCenter
+                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -offset, offset)
 
                 if (this.autoRedirect && newPosition > level.size.horizCenter || newPosition < -level.horizCenter) {
                     [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * 4)].bind(this)()
@@ -149,11 +150,16 @@ class Tail {
         this.trailRounded = []
         this.trailInterpolated = []
         this.tolerance = 0.001
+        this.transparent = false
     }
 
     reset() {
         this.trailRounded = []
         this.trailInterpolated = []
+        this.vertebrae.map(vertebra => {
+            vertebra.material = tjs_materials.flat_blue
+            vertebra.transparent = true
+        })
         if (!game.hardcoreMode) this.resetTrail()
     }
 
@@ -177,6 +183,7 @@ class Tail {
         if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance) && this.vertebrae.length) {
             this.vertebrae.map((tail, i) => {
                 if (this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]) tail.position.set(...this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE])
+                if (tail.transparent) tail.material = tjs_materials.dark_orange
             })
         }
     }
@@ -192,7 +199,6 @@ class Tail {
     update() {
         if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance)) {
             this.trailInterpolated.push(player.mesh.position.toArray())
-            console.log((this.vertebrae.length + 1) * MOVE_TICKER_COMPARE, this.trailInterpolated.length)
             this.trailInterpolated.length > (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE && this.trailInterpolated.shift()
             this.trailInterpolated.length = (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE
         }
