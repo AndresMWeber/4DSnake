@@ -26,8 +26,6 @@ class Snake {
         this.direction = [0, 0, 1]
 
         this.autoRedirect = false
-        this.canPitchUp = true
-        this.canPitchDown = true
         this.hasEaten = false
 
         this.facingCamera = false
@@ -123,7 +121,6 @@ class Snake {
         this.position = (position.map(p => Math.floor(p + .1)))
         this.mesh.getWorldDirection(this.wpVector)
         this.direction = this.wpVector.toArray()
-        this.tail.trailInterpolated.push(position)
     }
 
     moveOnValidGridSpace() {
@@ -155,15 +152,18 @@ class Tail {
     }
 
     reset() {
-        this.vertebrae.map(vertebra => tjs_scene.remove(vertebra))
-        this.vertebrae = []
         this.trailRounded = []
         this.trailInterpolated = []
+        if (!game.hardcoreMode) this.resetTrail()
+    }
+
+    resetTrail() {
+        this.vertebrae.map(vertebra => tjs_scene.remove(vertebra))
+        this.vertebrae = []
     }
 
     add() {
         let vertebra = this.vertebra.clone()
-        vertebra.position.set(...player.lastPosition)
         this.vertebrae.push(vertebra)
         player.hasEaten = false
         tjs_scene.add(vertebra)
@@ -190,8 +190,9 @@ class Tail {
     }
 
     update() {
-        if (this.vertebrae.length && !arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance)) {
+        if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance)) {
             this.trailInterpolated.push(player.mesh.position.toArray())
+            console.log((this.vertebrae.length + 1) * MOVE_TICKER_COMPARE, this.trailInterpolated.length)
             this.trailInterpolated.length > (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE && this.trailInterpolated.shift()
             this.trailInterpolated.length = (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE
         }

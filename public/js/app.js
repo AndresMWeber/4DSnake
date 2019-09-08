@@ -52,6 +52,7 @@ class Game {
         this.debugMode = false
         this.gameOver = false
         this.paused = true
+        this.hardcoreMode = true
 
 
         level = new Level()
@@ -192,7 +193,7 @@ class Game {
     }
 
     debugPlayerMove() {
-        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(player.mesh.position.toArray())}<br>canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}<br>canPitchUp:${player.canPitchUp} canPitchDown:${player.canPitchDown}`
+        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(player.mesh.position.toArray())}<br>canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}<br>trailLength (increments of ${MOVE_TICKER_COMPARE}):${player.tail.trailInterpolated.length}`
     }
 }
 
