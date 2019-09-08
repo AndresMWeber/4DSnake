@@ -43,40 +43,6 @@ document.onkeydown = function(e) {
     }
 }
 
-const fitCameraToObject = function(camera, object, offset, controls) {
-    offset = offset || 1.25;
-    const boundingBox = new THREE.Box3();
-    boundingBox.setFromObject(object);
-    const center = boundingBox.getCenter();
-    const size = boundingBox.getSize();
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const fov = camera.fov * (Math.PI / 180);
-    let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2))
-    cameraZ *= offset;
-
-    scene.updateMatrixWorld();
-    var objectWorldPosition = new THREE.Vector3();
-    objectWorldPosition.setFromMatrixPosition(object.matrixWorld);
-
-    const directionVector = camera.position.sub(objectWorldPosition);
-    const unitDirectionVector = directionVector.normalize();
-    camera.position = unitDirectionVector.multiplyScalar(cameraZ);
-    camera.lookAt(objectWorldPosition);
-
-    const minZ = boundingBox.min.z;
-    const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ;
-
-    camera.far = cameraToFarEdge * 3;
-    camera.updateProjectionMatrix();
-
-    if (controls) {
-        controls.target = center;
-        controls.maxDistance = cameraToFarEdge * 2;
-        controls.saveState();
-    } else {
-        camera.lookAt(center)
-    }
-}
 class Game {
     constructor() {
         this.createRenderer()
@@ -84,7 +50,7 @@ class Game {
         this.createLights()
 
         this.score = 0
-        this.debugMode = false
+        this.debugMode = true
         this.gameOver = false
         this.stats = new Stats()
         this.level = new Level(Math.floor(BOARD_SIZE / 2))
@@ -103,7 +69,7 @@ class Game {
             tjs_camera.updateProjectionMatrix()
             tjs_renderer.setSize(window.innerWidth, window.innerHeight)
         }, false)
-        fitCameraToObject(camera, this.level.lineSegments, 0, controls)
+        fitCameraToObject(tjs_camera, this.level.lineSegments, 0, tjs_controls)
     }
 
     createRenderer() {
