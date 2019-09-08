@@ -42,7 +42,7 @@ document.onkeydown = function(e) {
 class Game {
     constructor() {
         $id('title').innerHTML = "\"4D\" SNAKE"
-
+        $id('version').innerHTML = VERSION
         this.createRenderer()
         this.createCamera()
         this.createLights()
