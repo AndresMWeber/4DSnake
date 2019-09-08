@@ -1,5 +1,6 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 .vscode/
+*.mb
 
 # compiled output
 /dist
@@ -92,3 +93,4 @@ lerna-debug.log
 Thumbs.db
 
 .vscode/settings.json
+public/models/wasd.mb
