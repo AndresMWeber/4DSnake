@@ -10,7 +10,9 @@ class Level {
         tjs_scene.add(this.lineSegments)
         tjs_scene.add(floor)
         tjs_scene.add(player.mesh)
-        tjs_scene.add(this.floorSpot)
+        tjs_scene.add(this.floorSpotZX)
+        tjs_scene.add(this.floorSpotYX)
+        tjs_scene.add(this.floorSpotYZ)
     }
 
     buildLevel() {
@@ -38,14 +40,18 @@ class Level {
             tjs_scene.add(indicatorXform)
         }
 
-        this.floorSpot = new THREE.Points(new THREE.PlaneBufferGeometry(1, 1, 0), tjs_materials.points);
-        this.floorSpot.rotateX(-HALF_PI)
-        this.floorSpot.position.y = -BOARD_SIZE / 2 + .01
+        this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.boardSize, 0), tjs_materials.points)
+
+        this.floorSpotYX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.boardSize, 0), tjs_materials.points)
+        this.floorSpotYX.rotateX(-HALF_PI)
+
+        this.floorSpotYZ = new THREE.Points(new THREE.BoxBufferGeometry(this.boardSize, 1, 0), tjs_materials.points)
+        this.floorSpotYZ.rotateX(-HALF_PI)
     }
 
     buildGrid() {
         loader.load('models/dot.fbx', function(object) {
-            object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue });
+            object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue })
             for (let i = 0; i < BOARD_SIZE; i++) {
                 for (let j = 0; j < BOARD_SIZE; j++) {
                     for (let k = 0; k < BOARD_SIZE; k++) {
@@ -69,8 +75,8 @@ class Level {
         }
 
         foodPositions.map(foodPosition => {
-            let collider = new THREE.BoxBufferGeometry(1, 1, 1);
-            var mesh = new THREE.Mesh(collider, tjs_materials.collider);
+            let collider = new THREE.BoxBufferGeometry(1, 1, 1)
+            var mesh = new THREE.Mesh(collider, tjs_materials.collider)
             loader.load('models/apple.fbx', function(object) {
                 object.traverse(child => { if (child.isMesh) child.material = tjs_materials.dark_orange })
                 mesh.add(object)
@@ -88,9 +94,44 @@ class Level {
 
     update(delta) {
         player.update(delta)
-        this.updateFoods()
         this.highlightFloor()
         this.highlightFood()
+        this.checkCollision()
+    }
+
+    checkCollision() {
+        var originPoint = player.mesh.position.clone();
+
+        for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
+            var localVertex = player.mesh.geometry.vertices[vertexIndex].clone()
+            var globalVertex = localVertex.applyMatrix4(player.mesh.matrix)
+            var directionVector = globalVertex.sub(player.mesh.position)
+            var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize())
+
+            foods.map(food => {
+                if (food.eaten === undefined) {
+                    var collisionResults = ray.intersectObject(food)
+                    if (collisionResults.length && collisionResults[0].distance < directionVector.length() - 0.2) {
+                        food.eaten = true
+                        player.hasEaten = true
+                        game.score += food.points
+                        executeUntil(
+                            () => food.scale.x < .2,
+                            () => {
+                                food.scale.x *= .85
+                                food.scale.y *= .85
+                                food.scale.z *= .85
+                            },
+                            () => tjs_scene.remove(food),
+                            100
+                        )
+                    }
+                }
+            })
+        }
+
+        if (player.tail.trailRounded.some(trailPosition => arrayCompare(trailPosition, player.position))) game.setGameOver()
+        foods = foods.filter(f => !f.eaten)
     }
 
     highlightFloor() {
@@ -99,8 +140,14 @@ class Level {
             else indicator.material = tjs_materials.indicator_inactive
         })
 
-        this.floorSpot.position.x = player.mesh.position.x
-        this.floorSpot.position.z = player.mesh.position.z
+        this.floorSpotZX.position.z = player.mesh.position.z
+        this.floorSpotZX.position.x = player.mesh.position.x
+
+        this.floorSpotYX.position.y = player.mesh.position.y
+        this.floorSpotYX.position.x = player.mesh.position.x
+
+        this.floorSpotYZ.position.y = player.mesh.position.y
+        this.floorSpotYZ.position.z = player.mesh.position.z
     }
 
     highlightFood() {
@@ -122,31 +169,5 @@ class Level {
                 }
             }
         })
-    }
-
-    updateFoods() {
-        var originPoint = player.mesh.position.clone();
-
-        for (var vertexIndex = 0; vertexIndex < player.mesh.geometry.vertices.length; vertexIndex++) {
-            var localVertex = player.mesh.geometry.vertices[vertexIndex].clone()
-            var globalVertex = localVertex.applyMatrix4(player.mesh.matrix)
-            var directionVector = globalVertex.sub(player.mesh.position)
-            var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize())
-
-            foods.map(food => {
-                if (food.eaten === undefined) {
-                    var collisionResults = ray.intersectObject(food)
-                    if (collisionResults.length) {
-                        if (collisionResults[0].distance < directionVector.length() - 0.2) {
-                            tjs_scene.remove(food)
-                            food.eaten = true
-                            player.hasEaten = true
-                        }
-                    }
-                }
-            })
-
-            foods = foods.filter(f => !f.eaten)
-        }
     }
 }

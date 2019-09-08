@@ -1,5 +1,9 @@
 loader = new THREE.FBXLoader()
 
+function test() {
+    console.log('test')
+}
+
 document.onkeydown = function(e) {
     switch (e.keyCode) {
         case (KEYCODES.w):
@@ -46,6 +50,7 @@ class Game {
         this.createCamera()
         this.createLights()
 
+        this.score = 0
         this.debugMode = false
         this.gameOver = false
         this.stats = new Stats()
@@ -88,6 +93,10 @@ class Game {
         tjs_controls.dampingFactor = 0.5
         tjs_controls.enableZoom = true
         tjs_controls.enablePan = false
+        tjs_controls.touches = {
+            ONE: test,
+            TWO: THREE.TOUCH.ROTATE
+        }
     }
 
     createLights() {

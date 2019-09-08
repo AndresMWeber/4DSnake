@@ -9,3 +9,13 @@ var arrayCompare = (arr1, arr2) => arr1.length === arr2.length && arr1.every((p,
 var arrayCompareClose = (arr1, arr2, tolerance) => arr1.length === arr2.length && arr1.every((p, i) => Math.abs(arr2[i] - p) < tolerance)
 
 var printFloatArray = floatArray => `(${floatArray.map(f=>f.toFixed(2)).join(',')})`
+
+var executeUntil = (conditionCallback, executionCallback, finalCallback, time) => {
+    var intervalID = setInterval(function() {
+        if (conditionCallback()) {
+            finalCallback()
+            clearInterval(intervalID);
+        }
+        executionCallback()
+    }, time)
+}
