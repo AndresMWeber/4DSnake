@@ -176,7 +176,7 @@ class Tail {
 
     updateTrailRounded() {
         if (this.vertebrae.length) {
-            this.trailRounded.push(player.mesh.position.toArray())
+            this.trailRounded.push(player.position)
             this.trailRounded.length > this.vertebrae.length + 1 && this.trailRounded.shift()
             this.trailRounded.length = this.vertebrae.length + 1
         }

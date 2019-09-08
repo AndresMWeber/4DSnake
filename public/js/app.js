@@ -29,7 +29,6 @@ document.onkeydown = function(e) {
             camera.updateProjectionMatrix()
             break;
         case (KEYCODES.right):
-            console.log(camera.rotation)
             camera.rotation.y += .1
             camera.updateProjectionMatrix()
             break;

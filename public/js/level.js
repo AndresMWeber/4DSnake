@@ -130,6 +130,7 @@ class Level {
             })
         }
 
+        console.table(player.tail.trailRounded)
         if (player.tail.trailRounded.some(trailPosition => arrayCompare(trailPosition, player.position))) game.setGameOver()
         foods = foods.filter(f => !f.eaten)
     }
