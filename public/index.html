@@ -11,10 +11,15 @@
 
 <body>
     <div id="title" unselectable="on" class="unselectable">Description</div>
+    <div id="debugSceneInfo" unselectable="on" class="unselectable"></div>
     <div id="debugInfoL" unselectable="on" class="unselectable"></div>
     <div id="debugInfoR" unselectable="on" class="unselectable"></div>
     <div id="status" unselectable="on" class="unselectable"></div>
+    <div id="score" unselectable="on" class="unselectable"></div>
     <div id="canvas"></div>
+    <input type="checkbox" class="form-radio" onclick="game.debugMode = !game.debugMode" id='debugCheck' name="debugMode"><br>
+    <input type="checkbox" class="form-radio" onclick="player.autoRedirect = !player.autoRedirect" id='autoTurnCheck' name="autoTurn"><br>
+
     <script src="js/lib/three.min.js"></script>
     <script src='https://threejs.org/examples/js/libs/stats.min.js'></script>
     <script src='https://threejs.org/examples/js/utils/GeometryUtils.js'></script>
@@ -24,7 +29,7 @@
     <script src="js/config.js "></script>
     <script src="js/helpers.js "></script>
     <script src="js/level.js "></script>
-    <script src="js/characters.js "></script>
+    <script src="js/character.js "></script>
     <script src="js/app.js "></script>
 </body>
 

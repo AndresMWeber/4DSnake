@@ -24,7 +24,8 @@ canvas {
 }
 
 #title,
-#status {
+#status,
+#score {
     position: absolute;
     top: 5%;
     width: 100%;
@@ -36,33 +37,59 @@ canvas {
     color: #EEEEEE;
 }
 
+#score {
+    top: 5%;
+    right: 5%;
+    text-align: right;
+    font-size: 1rem
+}
+
 #status {
     top: 50%;
     font-size: 6rem;
 }
 
 #debugInfoL,
-#debugInfoR {
+#debugInfoR,
+#debugSceneInfo,
+#debugCheck,
+#autoTurnCheck {
     line-height: 1.25rem;
     position: absolute;
-    top: 60%;
+    right: 3%;
+    top: 10%;
     width: 20%;
     height: 20%;
+    margin-left: 1rem;
     text-align: left;
     z-index: 101;
     display: block;
-    font-size: .75rem;
+    font-size: .5rem;
     font-family: 'Press Start 2P', cursive;
     color: #EEEEEE;
 }
 
-#debugInfoR {
-    right: 3%;
-    left: none;
+#debugSceneInfo {
+    left: 0%;
+    font-size: .3rem;
 }
 
-#debugInfo {
-    left: 2%;
+#debugInfoR {
+    top: 30%;
+}
+
+#debugCheck {
+    top: 18%;
+    right: 5%;
+    width: 2rem;
+    height: 2rem;
+}
+
+#autoTurnCheck {
+    top: 15%;
+    right: 5%;
+    width: 2rem;
+    height: 2rem;
 }
 
 .unselectable {
@@ -71,4 +98,33 @@ canvas {
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+
+.form-radio {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    position: relative;
+    background-color: #bbbbbb;
+    color: #666;
+    top: 10px;
+    height: 30px;
+    width: 30px;
+    border: 0;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-right: 7px;
+    outline: none;
+}
+
+.form-radio:checked::before {
+    position: absolute;
+    font: 13px/1 'Open Sans', sans-serif;
+    left: 43%;
+    top: 30%;
+    content: '\02143';
+    transform: rotate(40deg);
+    text-align: center;
+    color: #444444;
 }

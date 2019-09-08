@@ -1,34 +1,66 @@
 class Level {
-    constructor(numFood, sizeHeight, sizeDiameter) {
-        this.size = { x: sizeDiameter, y: sizeDiameter, z: sizeHeight, offset: (sizeDiameter - 1) / 2 }
+    constructor() {
+        this.initialize(...LEVELS[0])
+    }
+
+    initialize(difficulty, numFood, sizeHeight, sizeDiameter) {
+        this.loading = true
+        this.size = {
+            x: sizeDiameter,
+            y: sizeHeight,
+            z: sizeDiameter,
+            horizCenter: (sizeDiameter - Number(sizeDiameter % 2)) / 2,
+            vertCenter: (sizeHeight - Number(sizeDiameter % 2)) / 2,
+        }
+
+        this.difficulty = difficulty
         this.numFood = numFood
         this.makeGrid = false
+        this.floorIndicators = []
+        this.foods = []
+        this.meshes = []
 
         this.buildLevel()
         this.buildFoods()
-        player = new Snake()
-        tjs_scene.add(this.lineSegments)
-        tjs_scene.add(floor)
-        tjs_scene.add(player.mesh)
-        tjs_scene.add(this.floorSpotZX)
-        tjs_scene.add(this.floorSpotYX)
-        tjs_scene.add(this.floorSpotYZ)
+        this.loading = false
     }
 
+    get center() {
+        return [this.size.horizCenter, this.size.vertCenter, this.size.horizCenter]
+    }
 
     buildLevel() {
         this.makeGrid && this.buildGrid()
         this.buildFloorIndicators()
 
         var floorShape = new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0)
-        floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
-        floor.rotateX(-HALF_PI)
-        floor.translateZ(-this.size.x / 2)
+        this.floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
+        this.floor.name = "FloorPlane"
+        this.floor.rotateX(-HALF_PI)
+        this.floor.translateZ(-this.size.vertCenter - .5)
 
-        let boardShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(this.size.x, this.size.y, this.size.z)); // or WireframeGeometry( geometry )
-        this.lineSegments = new THREE.LineSegments(boardShape, tjs_materials.dashline)
-        this.lineSegments.position.set(0, 0, 0)
+        this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.points)
+        this.floorSpotZX.name = 'FloorSpotZX'
+
+        this.floorSpotYX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.points)
+        this.floorSpotYX.rotateX(-HALF_PI)
+        this.floorSpotYX.name = 'FloorSpotYX'
+
+        this.floorSpotYZ = new THREE.Points(new THREE.BoxBufferGeometry(this.size.x, 1, 0), tjs_materials.points)
+        this.floorSpotYZ.rotateX(-HALF_PI)
+        this.floorSpotYZ.name = 'FloorSpotYZ'
+
+        this.lineSegments = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(this.size.x, this.size.y, this.size.z)), tjs_materials.dashline)
+        this.lineSegments.name = "BoardOutline"
         this.lineSegments.computeLineDistances()
+
+        this.meshes.push(this.floor)
+        this.meshes.push(this.floorSpotZX)
+        this.meshes.push(this.floorSpotYX)
+        this.meshes.push(this.floorSpotYZ)
+        this.meshes.push(this.lineSegments)
+
+        this.meshes.map(mesh => tjs_scene.add(mesh))
     }
 
     buildFloorIndicators() {
@@ -36,18 +68,11 @@ class Level {
             var indicatorShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(this.size.x + .2, 1, this.size.z + .2))
             var indicatorXform = new THREE.LineSegments(indicatorShape, tjs_materials.indicator_inactive)
             indicatorXform.position.set(0, i - this.offset, 0)
+            indicatorXform.name = `FloorIndicator${String(i).padStart(2, '0')}`
             indicatorXform.computeLineDistances()
-            floorIndicators.push(indicatorXform)
+            this.floorIndicators.push(indicatorXform)
             tjs_scene.add(indicatorXform)
         }
-
-        this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.boardSize, 0), tjs_materials.points)
-
-        this.floorSpotYX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.boardSize, 0), tjs_materials.points)
-        this.floorSpotYX.rotateX(-HALF_PI)
-
-        this.floorSpotYZ = new THREE.Points(new THREE.BoxBufferGeometry(this.boardSize, 1, 0), tjs_materials.points)
-        this.floorSpotYZ.rotateX(-HALF_PI)
     }
 
     buildGrid() {
@@ -72,32 +97,43 @@ class Level {
             while (foodPositions.includes(posCandidate)) {
                 posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             }
-            foodPositions.push(posCandidate)
+            foodPositions.push(posCandidate.map(p => p - this.size.horizCenter))
         }
 
-        foodPositions.map(foodPosition => {
+        foodPositions.map((foodPosition, i) => {
             let collider = new THREE.BoxBufferGeometry(1, 1, 1)
-            var mesh = new THREE.Mesh(collider, tjs_materials.collider)
+            var food = new THREE.Mesh(collider, tjs_materials.collider)
+            food.name = `Food${String(i).padStart(2, '0')}`
+
             loader.load('models/apple.fbx', function(object) {
                 object.traverse(child => { if (child.isMesh) child.material = tjs_materials.dark_orange })
-                mesh.add(object)
-                mesh.fbx = object
+                object.name = `FoodFBX${String(i).padStart(2, '0')}`
+                food.add(object)
+                food.fbx = object
             })
-            mesh.position.x = foodPosition[0] - this.size.offset
-            mesh.position.y = foodPosition[1] - this.size.offset
-            mesh.position.z = foodPosition[2] - this.size.offset
-            mesh.offset = Math.random()
 
-            foods.push(mesh)
-            tjs_scene.add(mesh)
+            food.position.set(...foodPosition)
+            food.offset = Math.random()
+            food.points = this.difficulty * 100
+
+            this.foods.push(food)
+            tjs_scene.add(food)
         })
     }
 
     update() {
-        player.update(level)
+        player.update()
         this.highlightFloor()
         this.highlightFood()
         this.checkCollision()
+        this.checkWin()
+    }
+
+    checkWin() {
+        if (!this.foods.length && !game.paused && !this.loading) {
+            this.loading = true;
+            game.setBeatLevel()
+        }
     }
 
     checkCollision() {
@@ -109,7 +145,7 @@ class Level {
             var directionVector = globalVertex.sub(player.mesh.position)
             var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize())
 
-            foods.map(food => {
+            this.foods.map(food => {
                 if (food.eaten === undefined) {
                     var collisionResults = ray.intersectObject(food)
                     if (collisionResults.length && collisionResults[0].distance < directionVector.length() - 0.2) {
@@ -131,11 +167,11 @@ class Level {
             })
         }
         if (player.tail.trailRounded.slice(1, player.tail.trailRounded.length - 1).some(trailPosition => arrayCompare(trailPosition, player.position))) game.setGameOver()
-        foods = foods.filter(f => !f.eaten)
+        this.foods = this.foods.filter(f => !f.eaten)
     }
 
     highlightFloor() {
-        floorIndicators.map(indicator => {
+        this.floorIndicators.map(indicator => {
             if (Math.floor(indicator.position.y) === Math.floor(player.position[1])) indicator.material = tjs_materials.indicator
             else indicator.material = tjs_materials.indicator_inactive
         })
@@ -151,7 +187,7 @@ class Level {
     }
 
     highlightFood() {
-        foods.map(food => {
+        this.foods.map(food => {
             if (food.fbx) {
                 let foodFBX = food.fbx.children[0]
                 foodFBX.position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
@@ -169,5 +205,11 @@ class Level {
                 }
             }
         })
+    }
+
+    reset() {
+        this.foods.concat(this.meshes).concat(this.floorIndicators).map(e => tjs_scene.remove(e))
+        this.foods = []
+        this.floorIndicators = []
     }
 }

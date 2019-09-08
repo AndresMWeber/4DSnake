@@ -25,22 +25,32 @@ const CLOCK = new THREE.Clock()
 var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
 
+const LEVELS = [
+    [1, 5, 11, 11],
+    [2, 7, 11, 11],
+    [3, 9, 11, 11],
+    [4, 11, 11, 11],
+    [5, 4, 9, 9],
+    [6, 6, 9, 9],
+    [7, 8, 9, 9],
+    [8, 7, 7, 7],
+    [9, 9, 7, 7],
+    [10, 11, 7, 7]
+]
+
 var tjs_FBXLoader,
     tjs_renderer,
     tjs_container,
     tjs_controls,
     tjs_scene,
     tjs_camera,
-    tjs_animMixer
+    tjs_animMixer,
+    tjs_stats
 
 var game,
     level,
     player,
-    board,
-    floor,
-    floorIndicators = [],
-    foods = [],
-    colliders = []
+    board
 
 const rotationLookup = {
     'right': {
