@@ -53,7 +53,7 @@ class Game {
         this.debugMode = true
         this.gameOver = false
         this.stats = new Stats()
-        this.level = new Level(Math.floor(BOARD_SIZE / 2))
+        this.level = new Level(3, 1, 7)
 
         tjs_container = $id('canvas')
         tjs_container.append(tjs_renderer.domElement)
@@ -69,6 +69,9 @@ class Game {
             tjs_camera.updateProjectionMatrix()
             tjs_renderer.setSize(window.innerWidth, window.innerHeight)
         }, false)
+        tjs_camera.position.x = this.level.size.x
+        tjs_camera.position.y = this.level.size.y / 2
+        tjs_camera.position.z = this.level.size.z
         fitCameraToObject(tjs_camera, this.level.lineSegments, 0, tjs_controls)
     }
 
@@ -83,9 +86,6 @@ class Game {
 
     createCamera() {
         tjs_camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000)
-        tjs_camera.position.x = BOARD_SIZE
-        tjs_camera.position.y = BOARD_SIZE / 2
-        tjs_camera.position.z = BOARD_SIZE
 
         tjs_controls = new THREE.OrbitControls(tjs_camera, tjs_renderer.domElement)
         tjs_controls.target.set(0, -0.2, -0.2)

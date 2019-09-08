@@ -83,14 +83,14 @@ class Snake {
         this.moveQueue.push(moveFunction)
     }
 
-    move() {
+    move(minValue, maxValue) {
         this.direction.map((dirNormal, i) => {
             if (dirNormal) {
                 let newPosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
-                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -BOARD_OFFSET, BOARD_OFFSET)
+                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, minValue, maxValue)
 
                 // If we are auto redirecting when "exiting" the board, rotate in a random direction.
-                if (this.autoRedirect && newPosition > BOARD_OFFSET || newPosition < -BOARD_OFFSET) {
+                if (this.autoRedirect && newPosition > this.size.offset || newPosition < -level.offset) {
                     [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * 4)].bind(this)()
                 }
             }
@@ -102,10 +102,10 @@ class Snake {
         this.moveQueue.shift()()
     }
 
-    update(delta) {
+    update(level) {
         this.updatePositionInfo()
         this.moveOnValidGridSpace()
-        this.move()
+        this.move(level.size.x, level.size.z)
         this.tail.update()
         this.compass.move()
         this.tail.move()

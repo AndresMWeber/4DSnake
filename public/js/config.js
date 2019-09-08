@@ -24,8 +24,6 @@ const CLOCK = new THREE.Clock()
 // DYNAMIC GAME VARS
 var DEFAULT_SPEED = .05
 var MOVE_TICKER_COMPARE = 1 / DEFAULT_SPEED
-var BOARD_SIZE = 11
-var BOARD_OFFSET = (BOARD_SIZE - 1) / 2
 
 var tjs_FBXLoader,
     tjs_renderer,
@@ -36,6 +34,7 @@ var tjs_FBXLoader,
     tjs_animMixer
 
 var game,
+    level,
     player,
     board,
     floor,

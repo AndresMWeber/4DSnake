@@ -1,4 +1,4 @@
-const generateRandomPosition = () => [Math.floor(Math.random() * BOARD_SIZE), Math.floor(Math.random() * BOARD_SIZE), Math.floor(Math.random() * BOARD_SIZE)]
+const generateRandomPosition = (x, y, z) => [Math.floor(Math.random() * x), Math.floor(Math.random() * y), Math.floor(Math.random() * z)]
 
 const radToDeg = (rad) => Math.floor(rad * 180 / Math.PI)
 

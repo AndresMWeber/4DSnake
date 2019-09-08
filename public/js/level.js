@@ -1,9 +1,9 @@
 class Level {
-    constructor(numFood) {
-        this.boardSize = BOARD_SIZE
-        this.boardHeight = BOARD_SIZE
+    constructor(numFood, sizeHeight, sizeDiameter) {
+        this.size = { x: sizeDiameter, y: sizeDiameter, z: sizeHeight, offset: (sizeDiameter - 1) / 2 }
         this.numFood = numFood
         this.makeGrid = false
+
         this.buildLevel()
         this.buildFoods()
         player = new Snake()
@@ -15,26 +15,27 @@ class Level {
         tjs_scene.add(this.floorSpotYZ)
     }
 
+
     buildLevel() {
         this.makeGrid && this.buildGrid()
         this.buildFloorIndicators()
 
-        var floorShape = new THREE.PlaneBufferGeometry(BOARD_SIZE, BOARD_SIZE, 0)
+        var floorShape = new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0)
         floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
         floor.rotateX(-HALF_PI)
-        floor.translateZ(-BOARD_SIZE / 2)
+        floor.translateZ(-this.size.x / 2)
 
-        let boardShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE, BOARD_SIZE, BOARD_SIZE)); // or WireframeGeometry( geometry )
+        let boardShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(this.size.x, this.size.y, this.size.z)); // or WireframeGeometry( geometry )
         this.lineSegments = new THREE.LineSegments(boardShape, tjs_materials.dashline)
         this.lineSegments.position.set(0, 0, 0)
         this.lineSegments.computeLineDistances()
     }
 
     buildFloorIndicators() {
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            var indicatorShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(BOARD_SIZE + .2, 1, BOARD_SIZE + .2))
+        for (let i = 0; i < this.size.y; i++) {
+            var indicatorShape = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(this.size.x + .2, 1, this.size.z + .2))
             var indicatorXform = new THREE.LineSegments(indicatorShape, tjs_materials.indicator_inactive)
-            indicatorXform.position.set(0, i - BOARD_OFFSET, 0)
+            indicatorXform.position.set(0, i - this.offset, 0)
             indicatorXform.computeLineDistances()
             floorIndicators.push(indicatorXform)
             tjs_scene.add(indicatorXform)
@@ -52,12 +53,12 @@ class Level {
     buildGrid() {
         loader.load('models/dot.fbx', function(object) {
             object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue })
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                for (let j = 0; j < BOARD_SIZE; j++) {
-                    for (let k = 0; k < BOARD_SIZE; k++) {
+            for (let i = 0; i < this.size.x; i++) {
+                for (let j = 0; j < this.size.z; j++) {
+                    for (let k = 0; k < this.size.y; k++) {
                         let clone = object.clone()
                         tjs_scene.add(clone)
-                        clone.position.set(i - BOARD_OFFSET, j - BOARD_OFFSET, k - BOARD_OFFSET)
+                        clone.position.set(i - this.size.offset, j - this.size.offset, k - this.size.offset)
                     }
                 }
             }
@@ -67,9 +68,9 @@ class Level {
     buildFoods() {
         let foodPositions = []
         for (let i = 0; i < this.numFood; i++) {
-            let posCandidate = generateRandomPosition()
+            let posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             while (foodPositions.includes(posCandidate)) {
-                posCandidate = generateRandomPosition()
+                posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             }
             foodPositions.push(posCandidate)
         }
@@ -82,9 +83,9 @@ class Level {
                 mesh.add(object)
                 mesh.fbx = object
             })
-            mesh.position.x = foodPosition[0] - BOARD_OFFSET
-            mesh.position.y = foodPosition[1] - BOARD_OFFSET
-            mesh.position.z = foodPosition[2] - BOARD_OFFSET
+            mesh.position.x = foodPosition[0] - this.size.offset
+            mesh.position.y = foodPosition[1] - this.size.offset
+            mesh.position.z = foodPosition[2] - this.size.offset
             mesh.offset = Math.random()
 
             foods.push(mesh)
@@ -92,8 +93,8 @@ class Level {
         })
     }
 
-    update(delta) {
-        player.update(delta)
+    update() {
+        player.update(level)
         this.highlightFloor()
         this.highlightFood()
         this.checkCollision()
@@ -129,8 +130,6 @@ class Level {
                 }
             })
         }
-
-        console.table(player.tail.trailRounded)
         if (player.tail.trailRounded.slice(1, player.tail.trailRounded.length - 1).some(trailPosition => arrayCompare(trailPosition, player.position))) game.setGameOver()
         foods = foods.filter(f => !f.eaten)
     }
