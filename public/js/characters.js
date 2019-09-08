@@ -1,36 +1,34 @@
 class Snake {
-    constructor(material) {
+    constructor() {
         this.dirs = ['x', 'y', 'z']
         this.moveQueue = []
-        this.lastPosition = [0, 0, 0]
-        this.position = [0, 0, 0]
+
         this.speed = DEFAULT_SPEED
         this.moveTicker = 0
+        this.lastPosition = [0, 0, 0]
+        this.position = [0, 0, 0]
+        this.autoRedirect = true
 
         this.canPitchUp = true
         this.canPitchDown = true
         this.hasEaten = false
-        this.tail = []
-        this.trail = []
-        this.trailInterpolated = []
+
         this.direction = [0, 0, 1]
         this.facingCamera = false
-        this.wpVector = new THREE.Vector3()
-        this.arrowGroupVector = new THREE.Vector3()
         this.rotateEuler = new THREE.Euler()
         this.rotateQuaternion = new THREE.Quaternion
+        this.wpVector = new THREE.Vector3()
         this.facingVector = new THREE.Vector3(0, 0, 1)
         this.cameraVector = new THREE.Vector3(0, 0, -1)
-        this.geometry = new THREE.BoxGeometry(1, 1, 1)
-        this.mesh = new THREE.Mesh(this.geometry, mat_collider)
 
-        this.arrowGroup = new THREE.Group();
-        this.arrowU = this.buildLetter('w')
-        this.arrowL = this.buildLetter('a')
-        this.arrowD = this.buildLetter('s')
-        this.arrowR = this.buildLetter('d')
-        this.orientArrows()
-        scene.add(this.arrowGroup)
+        this.tail = new Tail()
+        this.compass = new Compass()
+        this.buildModel()
+    }
+
+    buildModel() {
+        this.geometry = new THREE.BoxGeometry(.4, .4, .4)
+        this.mesh = new THREE.Mesh(this.geometry, tjs_materials.collider)
 
         let scope = this
         loader.load('models/snakeHeadAnim.fbx', function(object) {
@@ -46,91 +44,30 @@ class Snake {
         })
     }
 
-    orientArrows() {
-        this.arrowD.position.y = -1
-        this.arrowU.position.y = 1
-        this.arrowL.position.x = 1
-        this.arrowR.position.x = -1
-        this.arrowD.rotation.z = Math.PI
-    }
-
-    addMove(moveFunction) {
-        this.moveQueue.length === 2 && this.moveQueue.shift()
-        this.moveQueue.push(moveFunction)
-    }
-
-    buildLetter(key) {
-        var geometry = new THREE.Geometry()
-        letters[key].map(pos => geometry.vertices.push(new THREE.Vector3(...pos)))
-        var line = new THREE.Line(geometry, mat_arrow)
-        line.scale.set(.2, .2, .2)
-        scene.add(line)
-        this.arrowGroup.add(line)
-        return line
-    }
-
-    buildArrow() {
-        var geometry = new THREE.Geometry()
-        geometry.vertices.push(new THREE.Vector3(-7, 0, 0))
-        geometry.vertices.push(new THREE.Vector3(0, 10, 0))
-        geometry.vertices.push(new THREE.Vector3(7, 0, 0))
-        geometry.vertices.push(new THREE.Vector3(3, 0, 0))
-        geometry.vertices.push(new THREE.Vector3(3, -10, 0))
-        geometry.vertices.push(new THREE.Vector3(-3, -10, 0))
-        geometry.vertices.push(new THREE.Vector3(-3, 0, 0))
-        geometry.vertices.push(new THREE.Vector3(-7, 0, 0))
-        var line = new THREE.Line(geometry, mat_arrow)
-        line.scale.set(.02, .02, .02)
-        scene.add(line)
-        this.arrowGroup.add(line)
-        return line
-    }
-
-    highlightArrow(arrow) {
-        arrow.material = mat_arrow_highlight
-        setTimeout(arrow => {
-            arrow.material = mat_arrow
-        }, 200, arrow)
-    }
-
-    makeMove() {
-        this.direction.map((dirNormal, i) => {
-            if (dirNormal) {
-                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(this.mesh.position[this.dirs[i]] + this.speed * dirNormal, -BOARD_OFFSET, BOARD_OFFSET)
-            }
-        })
-        this.moveTicker += 1
-    }
-
-
-    executeMoveFromQueue() {
-        this.moveQueue.shift()()
-    }
-
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
         this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
-        gameInstance.debugRight(`Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`)
+        game.debugRight(`Made turn on position ${printFloatArray(this.mesh.position.toArray())}<br>canMove?:${this.moveTicker%MOVE_TICKER_COMPARE ? false : true}`)
     }
 
     pitchUp() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.up[Number(Math.round(this.direction[1]) !== 1)]))
-        this.highlightArrow(this.arrowU)
+        this.compass.highlight('arrowU')
     }
 
     pitchDown() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.down[Number(Math.round(this.direction[1]) !== -1)]))
-        this.highlightArrow(this.arrowD)
+        this.compass.highlight('arrowD')
     }
 
     left() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.left[Math.round(this.direction[1])]))
-        this.highlightArrow(this.arrowL)
+        this.compass.highlight('arrowL')
     }
 
     right() {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.right[Math.round(this.direction[1])]))
-        this.highlightArrow(this.arrowR)
+        this.compass.highlight('arrowR')
     }
 
     rollLeft() {
@@ -141,81 +78,172 @@ class Snake {
         this.makeTurn(this.rotateEuler.fromArray(rotationLookup.rollR))
     }
 
-    addToTail() {
-        let tailGeo = new THREE.BoxBufferGeometry(.95, .95, .95)
-        let tailXform = new THREE.Mesh(tailGeo, mat_dark_orange)
-        tailXform.position.set(...this.lastPosition)
-        scene.add(tailXform)
-        this.hasEaten = false
-        this.tail.push(tailXform)
+    addMove(moveFunction) {
+        this.moveQueue.length === 2 && this.moveQueue.shift()
+        this.moveQueue.push(moveFunction)
     }
 
-    updateTail() {
-        this.tail.map((tail, i) => {
-            tail.position.set(...this.trail[i])
-            arrayCompare(this.position, this.trail[i]) && i != this.trail.length - 1 && gameInstance.setGameOver()
+    move() {
+        this.direction.map((dirNormal, i) => {
+            if (dirNormal) {
+                let newPosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
+                this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -BOARD_OFFSET, BOARD_OFFSET)
+
+                // If we are auto redirecting when "exiting" the board, rotate in a random direction.
+                if (this.autoRedirect && newPosition > BOARD_OFFSET || newPosition < -BOARD_OFFSET) {
+                    [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * 4)].bind(this)()
+                }
+            }
         })
+        this.moveTicker += 1
     }
 
-    updateTrail() {
-        if (this.trail.every(trail => !arrayCompare(trail, this.position))) {
-            this.trail.push(this.position)
-            if (this.trail.length > this.tail.length + 1) this.trail.shift()
-        }
-        return this.trail
-    }
-
-    reset() {
-        this.mesh.position.set(0, 0, 0)
-        this.tail.map(tailSection => scene.remove(tailSection))
-        this.tail = []
-        this.trail = []
-        this.trailInterpolated = []
-    }
-
-    moveArrowGroup() {
-        this.mesh.getWorldPosition(this.arrowGroupVector)
-        this.arrowGroup.position.copy(this.arrowGroupVector)
-        this.arrowGroup.lookAt(camera.position)
-        let planeVector = (new THREE.Vector3(0, 0, 1)).applyQuaternion(this.mesh.quaternion);
-        let cameraVector = (new THREE.Vector3(0, 0, -1)).applyQuaternion(camera.quaternion);
-        this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
-        if (CLOCK.elapsedTime > 15 && mat_arrow.opacity) mat_arrow.opacity -= .01
-        if (this.facingCamera) {
-            this.arrowL.position.x = 1
-            this.arrowR.position.x = -1
-        } else {
-            this.arrowL.position.x = -1
-            this.arrowR.position.x = 1
-        }
+    executeMoveFromQueue() {
+        this.moveQueue.shift()()
     }
 
     update(delta) {
         this.updatePositionInfo()
-        this.onValidGridMove()
-        this.makeMove()
-        this.moveArrowGroup()
-        this.updateTail()
+        this.moveOnValidGridSpace()
+        this.move()
+        this.tail.update()
+        this.compass.move()
+        this.tail.move()
     }
 
     updatePositionInfo() {
-        this.mesh.getWorldDirection(this.wpVector)
         let position = this.mesh.position.toArray()
-        this.trailInterpolated.push(position)
-
-        // TODO: This line is causing a bug where the position is actually offset from the real position.  Sometimes Y is 1 less and sometimes its equal.  Not sure when.
         this.position = (position.map(p => Math.floor(p + .1)))
+        this.mesh.getWorldDirection(this.wpVector)
         this.direction = this.wpVector.toArray()
+        this.tail.trailInterpolated.push(position)
     }
 
-    onValidGridMove() {
+    moveOnValidGridSpace() {
         if (this.moveTicker % MOVE_TICKER_COMPARE === 0) {
             this.moveQueue.length && this.executeMoveFromQueue()
-            gameInstance.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.trail)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
             if (!arrayCompare(this.position, this.lastPosition)) {
                 this.lastPosition = [...this.position]
-                this.updateTrail() && this.hasEaten && this.addToTail()
+                this.tail.updateTrailRounded()
+                this.hasEaten && this.tail.add(this.lastPosition)
             }
+            game.debugLeft(`Snake Direction: (${printFloatArray(this.direction)}<br>(Snake Position:(${printFloatArray(this.position)})<br>moveQueue:${this.moveQueue.length}<br>trail:${JSON.stringify(this.tail.trailRounded)}<br>canMove?:${Math.floor(this.moveTicker%MOVE_TICKER_COMPARE/10)}<br>canPitchUp:${this.canPitchUp} canPitchDown:${this.canPitchDown}`)
         }
+    }
+
+    reset() {
+        this.mesh.position.set(0, 0, 0)
+        this.tail.reset()
+    }
+}
+
+
+class Tail {
+    constructor() {
+        this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.dark_orange)
+        this.trailMarker = new THREE.Mesh(new THREE.SphereBufferGeometry(.2, .2, .2), tjs_materials.dark_orange)
+        this.vertebrae = []
+        this.trailRounded = []
+        this.trailInterpolated = []
+        this.tolerance = 0.001
+    }
+
+    reset() {
+        this.vertebrae.map(vertebra => tjs_scene.remove(vertebra))
+        this.vertebrae = []
+        this.trailRounded = []
+        this.trailInterpolated = []
+    }
+
+    add() {
+        let vertebra = this.vertebra.clone()
+        vertebra.position.set(...player.lastPosition)
+        this.vertebrae.push(vertebra)
+        player.hasEaten = false
+        tjs_scene.add(vertebra)
+
+        this.update()
+        this.move()
+    }
+
+    move() {
+        if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance) && this.vertebrae.length) {
+            this.vertebrae.map((tail, i) => {
+                if (this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]) tail.position.set(...this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE])
+            })
+        }
+    }
+
+    updateTrailRounded() {
+        if (this.vertebrae.length) {
+            this.trailRounded.push(player.position)
+            this.trailRounded.length > this.vertebrae.length + 1 && this.trailRounded.shift()
+            this.trailRounded.length = this.vertebrae.length + 1
+        }
+    }
+
+    update() {
+        if (this.vertebrae.length && !arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance)) {
+            this.trailInterpolated.push(player.mesh.position.toArray())
+            this.trailInterpolated.length > (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE && this.trailInterpolated.shift()
+            this.trailInterpolated.length = (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE
+        }
+    }
+}
+
+
+class Compass {
+    constructor() {
+        this.group = new THREE.Group();
+        this.arrowU = this.buildCurveFromCoordinates(letters['w'])
+        this.arrowL = this.buildCurveFromCoordinates(letters['a'])
+        this.arrowD = this.buildCurveFromCoordinates(letters['s'])
+        this.arrowR = this.buildCurveFromCoordinates(letters['d'])
+        this.vector = new THREE.Vector3()
+        this.orient()
+        tjs_materials.arrow.depthTest = false
+        tjs_materials.arrow_highlight.depthTest = false
+        tjs_scene.add(this.group)
+    }
+
+    buildCurveFromCoordinates(coordinates) {
+        var geometry = new THREE.Geometry()
+        coordinates.map(pos => geometry.vertices.push(new THREE.Vector3(...pos)))
+        var line = new THREE.Line(geometry, tjs_materials.arrow)
+        line.scale.set(.2, .2, .2)
+        this.group.add(line)
+        return line
+    }
+
+    highlight(arrowName) {
+        let arrow = this[arrowName]
+        arrow.material = tjs_materials.arrow_highlight
+        setTimeout(arrow => {
+            arrow.material = tjs_materials.arrow
+        }, 200, arrow)
+    }
+
+    orient() {
+        this.arrowD.position.y = -1
+        this.arrowU.position.y = 1
+        this.arrowL.position.x = 1.5
+        this.arrowR.position.x = -1.5
+        this.arrowL.position.y = -.2
+        this.arrowR.position.y = -.2
+        this.arrowD.rotation.z = Math.PI
+    }
+
+    move() {
+        player.mesh.getWorldPosition(this.vector)
+        this.group.position.copy(this.vector)
+        this.group.lookAt(tjs_camera.position)
+
+        let planeVector = (new THREE.Vector3(0, 0, 1)).applyQuaternion(player.mesh.quaternion);
+        let cameraVector = (new THREE.Vector3(0, 0, -1)).applyQuaternion(tjs_camera.quaternion);
+        this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
+
+        if (CLOCK.elapsedTime > 15 && tjs_materials.arrow.opacity) tjs_materials.arrow.opacity -= .01
+        this.arrowL.position.x = this.facingCamera ? 1.2 : -1.2
+        this.arrowR.position.x = this.facingCamera ? -1.2 : 1.2
     }
 }
