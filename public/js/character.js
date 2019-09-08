@@ -3,9 +3,6 @@ class Snake {
         this.dirs = ['x', 'y', 'z']
         this.fbxScale = 1.2
         this.colliderScale = .4
-        this.speed = DEFAULT_SPEED
-
-        this.initialize()
 
         this.rotateEuler = new THREE.Euler()
         this.rotateQuaternion = new THREE.Quaternion
@@ -13,14 +10,17 @@ class Snake {
         this.facingVector = new THREE.Vector3(0, 0, 1)
         this.cameraVector = new THREE.Vector3(0, 0, -1)
 
+        this.buildModel()
+        this.initialize()
         this.tail = new Tail()
         this.compass = new Compass()
-        this.buildModel()
     }
 
     initialize() {
+        this.speed = DEFAULT_SPEED
         this.moveTicker = 0
         this.moveQueue = []
+        this.mesh.position.set(...[0, 0, 0])
         this.lastPosition = [0, 0, 0]
         this.position = [0, 0, 0]
         this.direction = [0, 0, 1]
@@ -39,7 +39,7 @@ class Snake {
         this.mesh.name = "Player"
 
         let scope = this
-        loader.load('models/snakeHeadAnim.fbx', function(object) {
+        loader.load('models/snakeHeadAnim.fbx', object => {
             // mixer = new THREE.AnimationMixer(object);
             // var action = mixer.clipAction(object.animations[0]);
             // action.play();
@@ -97,7 +97,6 @@ class Snake {
                 let newPosition = this.mesh.position[this.dirs[i]] + this.speed * dirNormal
                 this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -level.size.horizCenter, level.size.horizCenter)
 
-                // If we are auto redirecting when "exiting" the board, rotate in a random direction.
                 if (this.autoRedirect && newPosition > level.size.horizCenter || newPosition < -level.horizCenter) {
                     [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * 4)].bind(this)()
                 }

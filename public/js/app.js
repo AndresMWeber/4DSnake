@@ -115,19 +115,21 @@ class Game {
             this.levelStatus('NEXT LEVEL!!!')
             this.paused = true
             setTimeout(() => {
+                console.log('changing level')
                 this.levelStatus('')
                 level.reset()
-                level.initialize(...LEVELS[level.difficulty + 1])
+                level.initialize(...LEVELS[level.difficulty])
                 while (level.loading) {
                     this.levelStatus('loading...')
                 }
                 this.startCountdown()
-            }, 2000)
-        }, 1000)
+            }, 1500)
+        }, 250)
+
     }
 
     updateScore() {
-        $id('score').innerHTML = `Level ${level.difficulty}: ${this.score}`
+        $id('score').innerHTML = `Level ${level.difficulty+1}: ${this.score}`
     }
 
     startCountdown() {

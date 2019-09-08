@@ -3,7 +3,7 @@ class Level {
         this.initialize(...LEVELS[0])
     }
 
-    initialize(difficulty, numFood, sizeHeight, sizeDiameter) {
+    initialize(numFood, sizeHeight, sizeDiameter) {
         this.loading = true
         this.size = {
             x: sizeDiameter,
@@ -13,9 +13,10 @@ class Level {
             vertCenter: (sizeHeight - Number(sizeDiameter % 2)) / 2,
         }
 
-        this.difficulty = difficulty
+        this.difficulty = (this.difficulty) ? this.difficulty : 0
         this.numFood = numFood
         this.makeGrid = false
+        this.beaten = false
         this.floorIndicators = []
         this.foods = []
         this.meshes = []
@@ -114,7 +115,7 @@ class Level {
 
             food.position.set(...foodPosition)
             food.offset = Math.random()
-            food.points = this.difficulty * 100
+            food.points = (this.difficulty + 1) * 15
 
             this.foods.push(food)
             tjs_scene.add(food)
@@ -130,8 +131,9 @@ class Level {
     }
 
     checkWin() {
-        if (!this.foods.length && !game.paused && !this.loading) {
-            this.loading = true;
+        if (!this.foods.length && !game.paused && !this.beaten) {
+            this.beaten = true
+            this.difficulty++;
             game.setBeatLevel()
         }
     }
@@ -211,5 +213,6 @@ class Level {
         this.foods.concat(this.meshes).concat(this.floorIndicators).map(e => tjs_scene.remove(e))
         this.foods = []
         this.floorIndicators = []
+        player.reset()
     }
 }

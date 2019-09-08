@@ -22,34 +22,36 @@ const executeUntil = (conditionCallback, executionCallback, finalCallback, time)
 
 const fitCameraToObject = function(camera, object, offset, controls) {
     offset = offset || 1.25;
-    const boundingBox = new THREE.Box3();
-    boundingBox.setFromObject(object);
-    const center = boundingBox.getCenter();
-    const size = boundingBox.getSize();
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const fov = camera.fov * (Math.PI / 180);
+    const boundingBox = new THREE.Box3()
+    boundingBox.setFromObject(object)
+    var center = new THREE.Vector3()
+    var size = new THREE.Vector3()
+    boundingBox.getCenter(center)
+    boundingBox.getSize(size)
+    const maxDim = Math.max(size.x, size.y, size.z)
+    const fov = camera.fov * (Math.PI / 180)
     let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2))
-    cameraZ *= offset;
+    cameraZ *= offset
 
-    tjs_scene.updateMatrixWorld();
-    var objectWorldPosition = new THREE.Vector3();
-    objectWorldPosition.setFromMatrixPosition(object.matrixWorld);
+    tjs_scene.updateMatrixWorld()
+    var objectWorldPosition = new THREE.Vector3()
+    objectWorldPosition.setFromMatrixPosition(object.matrixWorld)
 
-    const directionVector = camera.position.sub(objectWorldPosition);
-    const unitDirectionVector = directionVector.normalize();
-    camera.position = unitDirectionVector.multiplyScalar(cameraZ);
-    camera.lookAt(objectWorldPosition);
+    const directionVector = camera.position.sub(objectWorldPosition)
+    const unitDirectionVector = directionVector.normalize()
+    camera.position = unitDirectionVector.multiplyScalar(cameraZ)
+    camera.lookAt(objectWorldPosition)
 
-    const minZ = boundingBox.min.z;
-    const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ;
+    const minZ = boundingBox.min.z
+    const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ
 
-    camera.far = cameraToFarEdge * 3;
-    camera.updateProjectionMatrix();
+    camera.far = cameraToFarEdge * 3
+    camera.updateProjectionMatrix()
 
     if (controls) {
-        controls.target = center;
-        controls.maxDistance = cameraToFarEdge * 2;
-        controls.saveState();
+        controls.target = center
+        controls.maxDistance = cameraToFarEdge * 2
+        controls.saveState()
     } else {
         camera.lookAt(center)
     }
