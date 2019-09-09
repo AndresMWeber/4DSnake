@@ -17,6 +17,13 @@
     <div id="status" unselectable="on" class="unselectable"></div>
     <div id="score" unselectable="on" class="unselectable"></div>
     <div id="version" unselectable="on" class="unselectable"></div>
+    <div id="menu" unselectable="on" class="unselectable">
+        <div class="menu">
+            <h1>"4D" Snake</h1>
+            <button onclick="game.toggleMenu(); game.start()">Normal Mode</button>
+            <button>Arcade Mode</button>
+        </div>
+    </div>
     <div id="canvas"></div>
     <input type="checkbox" class="form-radio" onclick="game.debugMode = !game.debugMode" id='debugCheck' name="debugMode"><br>
     <input type="checkbox" class="form-radio" onclick="player.autoRedirect = !player.autoRedirect" id='autoTurnCheck' name="autoTurn"><br>

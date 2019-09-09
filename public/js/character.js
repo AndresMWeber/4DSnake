@@ -138,6 +138,7 @@ class Snake {
     reset() {
         this.initialize()
         this.tail.reset()
+        this.compass.reset()
     }
 }
 
@@ -253,6 +254,10 @@ class Compass {
         this.arrowL.position.y = -.2
         this.arrowR.position.y = -.2
         this.arrowD.rotation.z = Math.PI
+    }
+
+    reset() {
+        this.group.position.set(0, 0, 0)
     }
 
     move() {

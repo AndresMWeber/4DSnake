@@ -10,9 +10,7 @@ const arrayCompareClose = (arr1, arr2, tolerance) => arr1.length === arr2.length
 
 const printFloatArray = floatArray => `(${floatArray.map(f=>f.toFixed(2)).join(',')})`
 
-const choice = array => {
-    return array[Math.floor(Math.random() * array.length)]
-}
+const choice = array => array[Math.floor(Math.random() * array.length)]
 
 const executeUntil = (conditionCallback, executionCallback, finalCallback, time) => {
     var intervalID = setInterval(function() {
@@ -52,8 +50,6 @@ const fitCameraToObject = function(camera, object, offset, controls) {
     endRotation.copy(camera.quaternion)
     camera.quaternion.copy(startRotation)
 
-    console.log(endRotation, startRotation)
-
     var count = 0
     var slerp = setInterval(() => {
         if (count > 1) {
@@ -74,6 +70,6 @@ const fitCameraToObject = function(camera, object, offset, controls) {
         controls.maxDistance = cameraToFarEdge * 2
         controls.saveState()
     } else {
-        // camera.lookAt(center)
+        camera.lookAt(center)
     }
 }

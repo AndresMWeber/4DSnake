@@ -46,16 +46,9 @@ class Game {
         this.createCamera()
         this.createLights()
 
-        this.score = 0
-        this.currentLevel = 0
-        this.debugMode = false
-        this.gameOver = false
-        this.paused = true
-        this.hardcoreMode = true
-
+        this.initialize()
         level = new Level()
         player = new Snake()
-        this.startCountdown()
 
         window.addEventListener('resize', () => {
             ASPECT_RATIO = window.innerWidth / window.innerHeight
@@ -69,6 +62,15 @@ class Game {
 
         tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
         fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
+    }
+
+    initialize() {
+        this.score = 0
+        this.currentLevel = 0
+        this.debugMode = false
+        this.gameOver = false
+        this.paused = true
+        this.hardcoreMode = true
     }
 
     createRenderer() {
@@ -105,18 +107,23 @@ class Game {
         light.position.set(0, -1, 0)
         tjs_scene.add(light)
 
-        light = new THREE.DirectionalLight(0xf2d97e, .8)
+        light = new THREE.DirectionalLight(0xf2d97e, 2)
         tjs_scene.add(light)
 
-        light = new THREE.DirectionalLight(0xf5cea6, .7)
+        light = new THREE.DirectionalLight(0xf5cea6, .8)
         light.position.set(0, 0, 1)
         tjs_scene.add(light)
 
-        light = new THREE.DirectionalLight(0xb4d6db, .5)
+
+        light = new THREE.DirectionalLight(0xf5cea6, .3)
+        light.position.set(0, 0, -1)
+        tjs_scene.add(light)
+
+        light = new THREE.DirectionalLight(0xb4d6db, .6)
         light.position.set(-1, 0, 0)
         tjs_scene.add(light)
 
-        light = new THREE.DirectionalLight(0xb4d6db, .4)
+        light = new THREE.DirectionalLight(0xb4d6db, .6)
         light.position.set(1, 0, 0)
         tjs_scene.add(light)
 
@@ -128,6 +135,7 @@ class Game {
     setGameOver() {
         this.gameOver = true
         this.levelStatus('GAME OVER')
+        setTimeout(() => this.toggleMenu(), 3000)
     }
 
     setBeatLevel() {
@@ -135,18 +143,22 @@ class Game {
             this.levelStatus('LEVEL COMPLETE')
             this.paused = true
             setTimeout(() => {
-                this.levelStatus('')
-                level.reset()
-                level.initialize(...LEVELS[level.difficulty])
-                while (level.loading) {
-                    this.levelStatus('loading...')
-                }
-                tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
-                fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
-                this.startCountdown()
+                this.loadLevel()
             }, 1500)
         }, 50)
+    }
 
+
+    loadLevel() {
+        level.reset()
+        level.initialize(...LEVELS[level.difficulty])
+        while (level.loading) {
+            this.levelStatus('loading...')
+        }
+        tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
+        fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
+        this.startCountdown()
+        this.levelStatus('')
     }
 
     updateScore() {
@@ -167,6 +179,22 @@ class Game {
         }, 1000)
 
     }
+
+    restart() {
+        this.initialize()
+        level.difficulty = 0
+        player.tail.resetTrail()
+        this.loadLevel()
+    }
+
+    start() {
+        if (this.gameOver) {
+            this.restart()
+        }
+        this.startCountdown()
+        this.animate()
+    }
+
     animate() {
         requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver && !this.paused) {
@@ -198,6 +226,12 @@ class Game {
         }
     }
 
+
+    toggleMenu() {
+        var x = $id("menu")
+        x.style.display = (x.style.display === "none") ? "block" : "none"
+    }
+
     clearDebug() {
         $id('debugSceneInfo').innerHTML = ''
         $id('debugInfoL').innerHTML = ''
@@ -218,4 +252,3 @@ class Game {
 }
 
 game = new Game()
-game.animate()

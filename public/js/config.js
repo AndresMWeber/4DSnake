@@ -11,7 +11,7 @@ const KEYCODES = {
     e: 81
 }
 
-const VERSION = "0.3.3"
+const VERSION = "0.5.0"
 var ASPECT_RATIO = window.innerWidth / window.innerHeight
 var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
