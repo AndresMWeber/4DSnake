@@ -50,15 +50,6 @@ const fitCameraToObject = function(camera, object, offset, controls) {
     endRotation.copy(camera.quaternion)
     camera.quaternion.copy(startRotation)
 
-    var count = 0
-    var slerp = setInterval(() => {
-        if (count > 1) {
-            clearInterval(slerp)
-        }
-        camera.quaternion.slerp(endRotation, count)
-        count += .01
-    }, 50)
-
     const minZ = boundingBox.min.z
     const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ
 

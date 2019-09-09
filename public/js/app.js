@@ -52,8 +52,8 @@ class Game {
 
         window.addEventListener('resize', () => {
             ASPECT_RATIO = window.innerWidth / window.innerHeight
-            SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
-            SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
+            SCREEN_WIDTH = window.innerWidth
+            SCREEN_HEIGHT = window.innerHeight
 
             tjs_camera.aspect = ASPECT_RATIO
             tjs_camera.updateProjectionMatrix()
