@@ -180,7 +180,7 @@ class Level {
                         player.hasEaten = true
                         game.score += food.points
                         executeUntil(
-                            () => food.scale.x < .1,
+                            () => food.scale.x < .25,
                             () => {
                                 food.scale.x *= .9
                                 food.scale.y *= .9

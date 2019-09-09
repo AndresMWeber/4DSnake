@@ -41,8 +41,7 @@ document.onkeydown = function(e) {
 
 class Game {
     constructor() {
-        $id('title').innerHTML = "\"4D\" SNAKE"
-        $id('version').innerHTML = VERSION
+        $id('title').innerHTML = `\"4D\" SNAKE<br><p>${VERSION}</p>`
         this.createRenderer()
         this.createCamera()
         this.createLights()
@@ -88,7 +87,7 @@ class Game {
     createCamera() {
         tjs_camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000)
         tjs_controls = new THREE.OrbitControls(tjs_camera, tjs_renderer.domElement)
-        tjs_controls.target.set(0, -0.2, -0.2)
+        tjs_controls.target.set(0, 0, 0)
         tjs_controls.enableDamping = true
         tjs_controls.dampingFactor = 0.5
         tjs_controls.enableZoom = true

@@ -158,7 +158,7 @@ class Tail {
         this.trailInterpolated = []
         this.vertebrae.map((vertebra, i) => {
             vertebra.material = tjs_materials.snake_body
-            vertebra.position.set(i - Math.floor(this.vertebrae.length / 2), 0, level.size.z - level.size.horizCenter + 2)
+            setTimeout(() => vertebra.position.set(i - Math.floor((this.vertebrae.length || 1) / 2), 0, -level.size.horizCenter - 1), 100)
         })
         if (!game.hardcoreMode) this.resetTrail()
     }

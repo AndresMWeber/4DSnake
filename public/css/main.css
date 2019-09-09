@@ -3,6 +3,7 @@ body {
     height: 100%;
     background-image: linear-gradient(to bottom, #CE4F6C 0%, #603556 100%);
     transition: background-image 3s #603556 #CE4F6C;
+    overflow: hidden;
 }
 
 @keyframes Gradient {
@@ -40,23 +41,23 @@ canvas {
 }
 
 #title {
-    top: 2%;
+    top: 96%;
     font-size: 1rem;
+    line-height: .5rem;
+}
+
+p {
+    font-size: .7rem;
+    color: rgba(255, 255, 255, .2)
 }
 
 #score {
-    top: 7%;
+    top: 4%;
 }
 
 #status {
-    top: 60%;
+    top: 30%;
     font-size: 3rem;
-}
-
-#version {
-    top: 4.5%;
-    font-size: .7rem;
-    color: rgba(255, 255, 255, .2)
 }
 
 #debugInfoL,
@@ -89,15 +90,17 @@ canvas {
 }
 
 #debugCheck {
-    top: 18%;
-    right: 5%;
+    top: auto;
+    bottom: 1%;
+    right: 1%;
     width: 2rem;
     height: 2rem;
 }
 
 #autoTurnCheck {
-    top: 15%;
-    right: 5%;
+    top: auto;
+    bottom: 1%;
+    left: 1%;
     width: 2rem;
     height: 2rem;
 }
