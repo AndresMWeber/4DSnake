@@ -74,6 +74,7 @@ class Game {
         this.paused = true
         this.hardcoreMode = false
         this.arcadeMode = false
+        this.classicMode = false
     }
 
     createRenderer() {
@@ -98,7 +99,7 @@ class Game {
         tjs_controls.enableZoom = true
         tjs_controls.enablePan = false
         tjs_controls.touches = {
-            ONE: () => console.log('test'),
+            ONE: THREE.TOUCH.ROTATE,
             TWO: THREE.TOUCH.ROTATE
         }
     }
@@ -156,7 +157,7 @@ class Game {
 
     start() {
         if (this.gameOver) this.restart()
-        if (this.arcadeMode) this.loadLevel([1, 15, 15])
+        if (this.arcadeMode) this.loadLevel(this.classicMode ? [1, 1, 20] : [1, 15, 15])
         this.startCountdown()
         this.animate()
     }
