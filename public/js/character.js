@@ -117,7 +117,6 @@ class Snake {
         this.move()
         this.tail.update()
         this.tail.move()
-        this.compass.move()
     }
 
     updatePositionInfo() {

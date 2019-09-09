@@ -135,11 +135,10 @@ const tjs_materials = {
     }),
 
     food: new THREE.MeshLambertMaterial({
-        color: 0x9c0b0d
+        color: 0x5c0b0d
     }),
 
     food_highlight: new THREE.MeshLambertMaterial({
-        // color: 0xf15558
         color: 0xed070a
     }),
 

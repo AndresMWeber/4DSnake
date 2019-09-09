@@ -208,6 +208,7 @@ class Game {
             this.debug()
             this.updateScore()
         }
+        player.compass.move()
         tjs_controls.update()
         tjs_renderer.clear()
         tjs_renderer.setViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)

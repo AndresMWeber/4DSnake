@@ -117,11 +117,11 @@ class Level {
     buildFoods() {
         let foodPositions = []
         for (let i = 0; i < this.numFood; i++) {
-            let posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
-            while (foodPositions.includes(posCandidate) && !arrayCompare([0, 0, 0], posCandidate)) {
-                posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
+            let posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z).map((p, i) => p - ((i === 1) ? this.size.vertCenter : this.size.horizCenter))
+            while (foodPositions.includes(posCandidate) || arrayCompare([0, 0, 0], posCandidate)) {
+                posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z).map((p, i) => p - ((i === 1) ? this.size.vertCenter : this.size.horizCenter))
             }
-            foodPositions.push(posCandidate.map((p, i) => p - ((i === 1) ? this.size.vertCenter : this.size.horizCenter)))
+            foodPositions.push(posCandidate)
         }
 
         foodPositions.map((foodPosition, i) => {
@@ -131,13 +131,14 @@ class Level {
             var foodGroup = new THREE.Group()
             foodGroup.rotateY(choice([RAD90, RAD180, RAD270]))
 
-
             loader.load('models/fruit.fbx', function(object) {
                 object.name = `FoodFBX${String(i).padStart(2, '0')}`
+                object.children[2].material = tjs_materials.food
                 foodGroup.add(object)
             })
             food.fbx = foodGroup
             food.add(foodGroup)
+            console.log(foodPosition)
             food.position.set(...foodPosition)
             food.offset = Math.random()
             food.points = (this.difficulty + 1) * 15
