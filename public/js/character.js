@@ -145,7 +145,10 @@ class Snake {
 class Tail {
     constructor() {
         this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.snake_body)
-        this.trailMarker = new THREE.Mesh(new THREE.SphereBufferGeometry(.2, .2, .2), tjs_materials.snake_body)
+        let scope = this
+        loader.load('models/snakeSection.fbx', object => {
+            scope.vertebra.add(object)
+        })
         this.vertebrae = []
         this.trailRounded = []
         this.trailInterpolated = []
@@ -182,7 +185,11 @@ class Tail {
     move() {
         if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance) && this.vertebrae.length) {
             this.vertebrae.map((tail, i) => {
-                if (this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]) tail.position.set(...this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE])
+                if (this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]) {
+                    let trailValue = this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]
+                    tail.position.set(...trailValue[0])
+                    tail.quaternion.copy(trailValue[1])
+                }
                 if (tail.transparent) tail.material = tjs_materials.snake_body
             })
         }
@@ -198,7 +205,7 @@ class Tail {
 
     update() {
         if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance)) {
-            this.trailInterpolated.push(player.mesh.position.toArray())
+            this.trailInterpolated.push([player.mesh.position.toArray(), player.mesh.quaternion.clone()])
             this.trailInterpolated.length > (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE && this.trailInterpolated.shift()
             this.trailInterpolated.length = (this.vertebrae.length + 1) * MOVE_TICKER_COMPARE
         }
