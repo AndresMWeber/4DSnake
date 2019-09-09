@@ -10,6 +10,10 @@ const arrayCompareClose = (arr1, arr2, tolerance) => arr1.length === arr2.length
 
 const printFloatArray = floatArray => `(${floatArray.map(f=>f.toFixed(2)).join(',')})`
 
+const choice = array => {
+    return array[Math.floor(Math.random() * array.length)]
+}
+
 const executeUntil = (conditionCallback, executionCallback, finalCallback, time) => {
     var intervalID = setInterval(function() {
         if (conditionCallback()) {

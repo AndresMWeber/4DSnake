@@ -20,6 +20,9 @@ const $id = document.getElementById.bind(document)
 const $class = document.getElementsByClassName.bind(document)
 const DEFAULT_ROTATION_ORDER = 'ZXY'
 const HALF_PI = Math.PI / 2
+const RAD90 = Math.PI / 2
+const RAD180 = Math.PI
+const RAD270 = (3 * Math.PI) / 2
 const CLOCK = new THREE.Clock()
 
 // DYNAMIC GAME VARS
@@ -125,6 +128,18 @@ const tjs_materials = {
 
     mid_highlight: new THREE.MeshBasicMaterial({
         color: 0x36FFFF
+    }),
+
+    snake_body: new THREE.MeshLambertMaterial({
+        color: 0x639311
+    }),
+
+    food: new THREE.MeshLambertMaterial({
+        color: 0xed2528
+    }),
+
+    food_highlight: new THREE.MeshLambertMaterial({
+        color: 0xf15558
     }),
 
     board: new THREE.LineBasicMaterial({

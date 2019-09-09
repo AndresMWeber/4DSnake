@@ -54,7 +54,6 @@ class Game {
         this.paused = true
         this.hardcoreMode = true
 
-
         level = new Level()
         player = new Snake()
         this.startCountdown()
@@ -69,7 +68,7 @@ class Game {
             tjs_renderer.setSize(window.innerWidth, window.innerHeight)
         }, false)
 
-        tjs_camera.position.set(...[level.size.x, level.size.y / 2, level.size.z])
+        tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
         fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
     }
 
@@ -83,7 +82,7 @@ class Game {
         tjs_stats = new Stats()
         tjs_container = $id('canvas')
         tjs_container.append(tjs_renderer.domElement)
-        tjs_container.append(tjs_stats.dom)
+        if (this.debugMode) tjs_container.append(tjs_stats.dom)
     }
 
     createCamera() {
@@ -101,9 +100,30 @@ class Game {
     }
 
     createLights() {
-        let light = new THREE.HemisphereLight(0xffffff, 0x444444)
-        light.position.set(0, 200, 0)
+        let light = undefined
+
+        light = new THREE.HemisphereLight(0xaaaaaa, 0x444444, .7)
+        light.position.set(0, -1, 0)
         tjs_scene.add(light)
+
+        light = new THREE.DirectionalLight(0xf2d97e, .8)
+        tjs_scene.add(light)
+
+        light = new THREE.DirectionalLight(0xf5cea6, .7)
+        light.position.set(0, 0, 1)
+        tjs_scene.add(light)
+
+        light = new THREE.DirectionalLight(0xb4d6db, .5)
+        light.position.set(-1, 0, 0)
+        tjs_scene.add(light)
+
+        light = new THREE.DirectionalLight(0xb4d6db, .4)
+        light.position.set(1, 0, 0)
+        tjs_scene.add(light)
+
+        // // Turn this on for light testing
+        // let lightCube = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({ color: 0xFFFFFF }))
+        // tjs_scene.add(lightCube)
     }
 
     setGameOver() {
@@ -113,16 +133,17 @@ class Game {
 
     setBeatLevel() {
         setTimeout(() => {
-            this.levelStatus('NEXT LEVEL!!!')
+            this.levelStatus('LEVEL COMPLETE')
             this.paused = true
             setTimeout(() => {
-                console.log('changing level')
                 this.levelStatus('')
                 level.reset()
                 level.initialize(...LEVELS[level.difficulty])
                 while (level.loading) {
                     this.levelStatus('loading...')
                 }
+                tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
+                fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
                 this.startCountdown()
             }, 1500)
         }, 50)
@@ -130,7 +151,7 @@ class Game {
     }
 
     updateScore() {
-        $id('score').innerHTML = `Level ${level.difficulty+1}: ${this.score}`
+        $id('score').innerHTML = `${level.difficulty+1}<br>${this.score}`
     }
 
     startCountdown() {

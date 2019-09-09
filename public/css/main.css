@@ -29,29 +29,32 @@ canvas {
 #version {
     position: absolute;
     top: 5%;
-    width: 100%;
+    left: 0;
+    right: 0;
     text-align: center;
     z-index: 100;
     display: block;
-    font-family: 'Megrim', cursive;
+    font-family: 'Offside', cursive;
     font-size: 3rem;
-    color: #EEEEEE;
+    color: rgba(255, 255, 255, .8);
+}
+
+#title {
+    top: 2%;
+    font-size: 1rem;
 }
 
 #score {
-    top: 5%;
-    right: 5%;
-    text-align: right;
-    font-size: 1rem
+    top: 7%;
 }
 
 #status {
-    top: 50%;
-    font-size: 6rem;
+    top: 60%;
+    font-size: 3rem;
 }
 
 #version {
-    top: 9%;
+    top: 4.5%;
     font-size: .7rem;
     color: rgba(255, 255, 255, .2)
 }

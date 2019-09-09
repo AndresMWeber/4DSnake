@@ -1,7 +1,7 @@
 class Snake {
     constructor() {
         this.dirs = ['x', 'y', 'z']
-        this.fbxScale = 1.2
+        this.fbxScale = 1
         this.colliderScale = .4
 
         this.rotateEuler = new THREE.Euler()
@@ -37,7 +37,7 @@ class Snake {
         this.mesh.name = "Player"
 
         let scope = this
-        loader.load('models/snakeHeadAnim.fbx', object => {
+        loader.load('models/snakeHeadBlock.fbx', object => {
             // mixer = new THREE.AnimationMixer(object);
             // var action = mixer.clipAction(object.animations[0]);
             // action.play();
@@ -144,8 +144,8 @@ class Snake {
 
 class Tail {
     constructor() {
-        this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.dark_orange)
-        this.trailMarker = new THREE.Mesh(new THREE.SphereBufferGeometry(.2, .2, .2), tjs_materials.dark_orange)
+        this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.snake_body)
+        this.trailMarker = new THREE.Mesh(new THREE.SphereBufferGeometry(.2, .2, .2), tjs_materials.snake_body)
         this.vertebrae = []
         this.trailRounded = []
         this.trailInterpolated = []
@@ -156,9 +156,9 @@ class Tail {
     reset() {
         this.trailRounded = []
         this.trailInterpolated = []
-        this.vertebrae.map(vertebra => {
-            vertebra.material = tjs_materials.flat_blue
-            vertebra.transparent = true
+        this.vertebrae.map((vertebra, i) => {
+            vertebra.material = tjs_materials.snake_body
+            vertebra.position.set(i - Math.floor(this.vertebrae.length / 2), 0, level.size.z - level.size.horizCenter + 2)
         })
         if (!game.hardcoreMode) this.resetTrail()
     }
@@ -183,7 +183,7 @@ class Tail {
         if (!arrayCompareClose(player.mesh.position.toArray(), player.lastPosition, this.tolerance) && this.vertebrae.length) {
             this.vertebrae.map((tail, i) => {
                 if (this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE]) tail.position.set(...this.trailInterpolated[(i + 1) * MOVE_TICKER_COMPARE])
-                if (tail.transparent) tail.material = tjs_materials.dark_orange
+                if (tail.transparent) tail.material = tjs_materials.snake_body
             })
         }
     }

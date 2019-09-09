@@ -34,11 +34,29 @@ class Level {
         this.makeGrid && this.buildGrid()
         this.buildFloorIndicators()
 
-        var floorShape = new THREE.PlaneBufferGeometry(this.size.x, this.size.z, 0)
-        this.floor = new THREE.Mesh(floorShape, tjs_materials.dark_orange);
+        this.floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(this.size.x, this.size.z, 0), tjs_materials.flat_blue);
         this.floor.name = "FloorPlane"
         this.floor.rotateX(-HALF_PI)
         this.floor.translateZ(-this.size.vertCenter - .5)
+
+        this.floorZ = new THREE.Mesh(new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0), tjs_materials.flat_blue);
+        this.floorZ.name = "FloorPlaneZ"
+        this.floorZ.translateZ(-this.size.horizCenter + -.5)
+
+        this.floorZP = new THREE.Mesh(new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0), tjs_materials.flat_blue);
+        this.floorZP.name = "FloorPlaneZP"
+        this.floorZP.translateZ(this.size.horizCenter + .5)
+        this.floorZP.rotateY(Math.PI)
+
+        this.floorX = new THREE.Mesh(new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0), tjs_materials.flat_blue);
+        this.floorX.name = "FloorPlaneX"
+        this.floorX.translateX(this.size.horizCenter + .5)
+        this.floorX.rotateY((3 * Math.PI) / 2)
+
+        this.floorXP = new THREE.Mesh(new THREE.PlaneBufferGeometry(this.size.x, this.size.y, 0), tjs_materials.flat_blue);
+        this.floorXP.name = "FloorPlaneXP"
+        this.floorXP.translateX(-this.size.horizCenter + -.5)
+        this.floorXP.rotateY(HALF_PI)
 
         this.floorSpotZX = new THREE.Points(new THREE.BoxBufferGeometry(1, this.size.y, 0), tjs_materials.pointsY)
         this.floorSpotZX.name = 'FloorSpotZX'
@@ -56,6 +74,11 @@ class Level {
         this.lineSegments.computeLineDistances()
 
         this.meshes.push(this.floor)
+        this.meshes.push(this.floorZ)
+        this.meshes.push(this.floorZP)
+        this.meshes.push(this.floorX)
+        this.meshes.push(this.floorXP)
+
         this.meshes.push(this.floorSpotZX)
         this.meshes.push(this.floorSpotYX)
         this.meshes.push(this.floorSpotYZ)
@@ -94,9 +117,8 @@ class Level {
     buildFoods() {
         let foodPositions = []
         for (let i = 0; i < this.numFood; i++) {
-            console.log(this.size)
             let posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
-            while (foodPositions.includes(posCandidate)) {
+            while (foodPositions.includes(posCandidate) && !arrayCompare([0, 0, 0], posCandidate)) {
                 posCandidate = generateRandomPosition(this.size.x, this.size.y, this.size.z)
             }
             foodPositions.push(posCandidate.map((p, i) => p - ((i === 1) ? this.size.vertCenter : this.size.horizCenter)))
@@ -106,14 +128,16 @@ class Level {
             let collider = new THREE.BoxBufferGeometry(1, 1, 1)
             var food = new THREE.Mesh(collider, tjs_materials.collider)
             food.name = `Food${String(i).padStart(2, '0')}`
+            var foodGroup = new THREE.Group()
+            foodGroup.rotateY(choice([RAD90, RAD180, RAD270]))
 
-            loader.load('models/apple.fbx', function(object) {
-                object.traverse(child => { if (child.isMesh) child.material = tjs_materials.dark_orange })
+
+            loader.load('models/fruit.fbx', function(object) {
                 object.name = `FoodFBX${String(i).padStart(2, '0')}`
-                food.add(object)
-                food.fbx = object
+                foodGroup.add(object)
             })
-
+            food.fbx = foodGroup
+            food.add(foodGroup)
             food.position.set(...foodPosition)
             food.offset = Math.random()
             food.points = (this.difficulty + 1) * 15
@@ -156,11 +180,13 @@ class Level {
                         player.hasEaten = true
                         game.score += food.points
                         executeUntil(
-                            () => food.scale.x < .2,
+                            () => food.scale.x < .1,
                             () => {
-                                food.scale.x *= .85
-                                food.scale.y *= .85
-                                food.scale.z *= .85
+                                food.scale.x *= .9
+                                food.scale.y *= .9
+                                food.scale.z *= .9
+                                food.rotation.x += 5;
+                                food.rotation.y += 5;
                             },
                             () => tjs_scene.remove(food),
                             100
@@ -169,6 +195,8 @@ class Level {
                 }
             })
         }
+
+        // Maybe turn this back to ray collisions
         if (player.tail.trailRounded.slice(1, player.tail.trailRounded.length - 1).some(trailPosition => arrayCompare(trailPosition, player.position))) game.setGameOver()
         this.foods = this.foods.filter(f => !f.eaten)
     }
@@ -192,19 +220,19 @@ class Level {
     highlightFood() {
         this.foods.map(food => {
             if (food.fbx) {
-                let foodFBX = food.fbx.children[0]
-                foodFBX.position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
+                let foodMesh = food.fbx.children[0].children[2]
+                food.fbx.children[0].position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
 
                 if (player.position[1] === food.position.y) {
                     if (player.position[0] === food.position.x || player.position[2] === food.position.z) {
-                        foodFBX.material = tjs_materials.mid_highlight
+                        foodMesh.material = tjs_materials.food_highlight
                     } else {
-                        foodFBX.material = tjs_materials.mid_blue
+                        foodMesh.material = tjs_materials.food
                     }
                 } else if (player.position[0] === food.position.x && player.position[2] === food.position.z) {
-                    foodFBX.material = tjs_materials.mid_highlight
+                    foodMesh.material = tjs_materials.food_highlight
                 } else {
-                    foodFBX.material = tjs_materials.dark_orange
+                    foodMesh.material = tjs_materials.food
                 }
             }
         })
