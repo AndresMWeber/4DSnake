@@ -42,6 +42,7 @@ document.onkeydown = function(e) {
 class Game {
     constructor() {
         $id('title').innerHTML = `\"4D\" SNAKE<br><p>${VERSION}</p>`
+        this.container = $id('canvas')
         this.createRenderer()
         this.createCamera()
         this.createLights()
@@ -84,9 +85,8 @@ class Game {
         tjs_renderer.setClearColor(0x000000, 0.0)
         tjs_scene = new THREE.Scene()
         tjs_stats = new Stats()
-        tjs_container = $id('canvas')
-        tjs_container.append(tjs_renderer.domElement)
-        if (this.debugMode) tjs_container.append(tjs_stats.dom)
+        this.container.append(tjs_renderer.domElement)
+        if (this.debugMode) this.container.append(tjs_stats.dom)
     }
 
     createCamera() {
@@ -97,6 +97,11 @@ class Game {
         tjs_controls.dampingFactor = 0.5
         tjs_controls.enableZoom = true
         tjs_controls.enablePan = false
+
+        tjs_controls.touches = {
+            TWO: 0,
+            THREE: 2
+        }
     }
 
     createLights() {

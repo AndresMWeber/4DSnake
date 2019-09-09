@@ -38,9 +38,6 @@ class Snake {
 
         let scope = this
         loader.load('models/snakeHeadBlock.fbx', object => {
-            // mixer = new THREE.AnimationMixer(object);
-            // var action = mixer.clipAction(object.animations[0]);
-            // action.play();
             object.traverse(child => {
                 let material = snakeMaterialsLookup[child.name]
                 if (material) child.material = material

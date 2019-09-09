@@ -138,7 +138,6 @@ class Level {
             })
             food.fbx = foodGroup
             food.add(foodGroup)
-            console.log(foodPosition)
             food.position.set(...foodPosition)
             food.offset = Math.random()
             food.points = (this.difficulty + 1) * 15
