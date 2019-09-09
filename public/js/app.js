@@ -45,23 +45,25 @@ class Game {
         this.createRenderer()
         this.createCamera()
         this.createLights()
+        this.fitToWindow()
 
         this.initialize()
         level = new Level()
         player = new Snake()
 
-        window.addEventListener('resize', () => {
-            ASPECT_RATIO = window.innerWidth / window.innerHeight
-            SCREEN_WIDTH = window.innerWidth
-            SCREEN_HEIGHT = window.innerHeight
-
-            tjs_camera.aspect = ASPECT_RATIO
-            tjs_camera.updateProjectionMatrix()
-            tjs_renderer.setSize(window.innerWidth, window.innerHeight)
-        }, false)
-
+        window.addEventListener('resize', this.fitToWindow.bind(this), false)
         tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
         fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
+    }
+
+    fitToWindow() {
+        ASPECT_RATIO = window.innerWidth / window.innerHeight
+        SCREEN_WIDTH = window.innerWidth
+        SCREEN_HEIGHT = window.innerHeight
+
+        tjs_camera.aspect = ASPECT_RATIO
+        tjs_camera.updateProjectionMatrix()
+        tjs_renderer.setSize(window.innerWidth, window.innerHeight)
     }
 
     initialize() {
