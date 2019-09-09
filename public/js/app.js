@@ -70,7 +70,7 @@ class Game {
         this.debugMode = false
         this.gameOver = false
         this.paused = true
-        this.hardcoreMode = true
+        this.hardcoreMode = false
         this.arcadeMode = false
     }
 
