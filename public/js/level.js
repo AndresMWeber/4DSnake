@@ -191,6 +191,7 @@ class Level {
                             () => tjs_scene.remove(food),
                             100
                         )
+                        if (game.arcadeMode) this.buildFoods()
                     }
                 }
             })
@@ -219,7 +220,7 @@ class Level {
 
     highlightFood() {
         this.foods.map(food => {
-            if (food.fbx) {
+            if (food.fbx && food.fbx.children[0]) {
                 let foodMesh = food.fbx.children[0].children[2]
                 food.fbx.children[0].position.y += Math.sin(CLOCK.elapsedTime * 2 + food.offset) / 400
 

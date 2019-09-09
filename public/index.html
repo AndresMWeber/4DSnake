@@ -20,8 +20,8 @@
     <div id="menu" unselectable="on" class="unselectable">
         <div class="menu">
             <h1>"4D" Snake</h1>
-            <button onclick="game.toggleMenu(); game.start()">Normal Mode</button>
-            <button>Arcade Mode</button>
+            <button onclick="game.toggleMenu(); game.arcadeMode = false; game.start()">Normal Mode</button>
+            <button onclick="game.toggleMenu(); game.arcadeMode = true; game.start()">Arcade Mode</button>
         </div>
     </div>
     <div id="canvas"></div>

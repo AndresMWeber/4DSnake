@@ -71,6 +71,7 @@ class Game {
         this.gameOver = false
         this.paused = true
         this.hardcoreMode = true
+        this.arcadeMode = false
     }
 
     createRenderer() {
@@ -132,35 +133,6 @@ class Game {
         // tjs_scene.add(lightCube)
     }
 
-    setGameOver() {
-        this.gameOver = true
-        this.levelStatus('GAME OVER')
-        setTimeout(() => this.toggleMenu(), 3000)
-    }
-
-    setBeatLevel() {
-        setTimeout(() => {
-            this.levelStatus('LEVEL COMPLETE')
-            this.paused = true
-            setTimeout(() => {
-                this.loadLevel()
-            }, 1500)
-        }, 50)
-    }
-
-
-    loadLevel() {
-        level.reset()
-        level.initialize(...LEVELS[level.difficulty])
-        while (level.loading) {
-            this.levelStatus('loading...')
-        }
-        tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
-        fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
-        this.startCountdown()
-        this.levelStatus('')
-    }
-
     updateScore() {
         $id('score').innerHTML = `${level.difficulty+1}<br>${this.score}`
     }
@@ -180,19 +152,49 @@ class Game {
 
     }
 
-    restart() {
-        this.initialize()
-        level.difficulty = 0
-        player.tail.resetTrail()
-        this.loadLevel()
-    }
-
     start() {
-        if (this.gameOver) {
-            this.restart()
-        }
+        if (this.gameOver) this.restart()
+        if (this.arcadeMode) this.loadLevel([1, 15, 15])
         this.startCountdown()
         this.animate()
+    }
+
+    restart() {
+        this.initialize()
+        level.difficulty = (this.arcadeMode) ? "arcade" : 0
+        player.tail.resetTrail()
+        this.loadLevel(LEVELS[level.difficulty])
+    }
+
+    loadLevel(levelData) {
+        level.reset()
+        level.initialize(...levelData)
+        while (level.loading) {
+            this.levelStatus('loading...')
+        }
+        tjs_camera.position.set(...[-level.size.x, level.size.y + 5, level.size.z])
+        fitCameraToObject(tjs_camera, level.lineSegments, 0, tjs_controls)
+        this.startCountdown()
+        this.levelStatus('')
+    }
+
+    setGameOver() {
+        this.gameOver = true
+        this.levelStatus('GAME OVER')
+        setTimeout(() => this.toggleMenu(), 3000)
+
+    }
+
+    setBeatLevel() {
+        if (!this.arcadeMode) {
+            setTimeout(() => {
+                this.levelStatus('LEVEL COMPLETE')
+                this.paused = true
+                setTimeout(() => {
+                    this.loadLevel(LEVELS[level.difficulty])
+                }, 1500)
+            }, 50)
+        }
     }
 
     animate() {

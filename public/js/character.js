@@ -96,8 +96,11 @@ class Snake {
                 let offset = (i === 1) ? level.size.vertCenter : level.size.horizCenter
                 this.mesh.position[this.dirs[i]] = THREE.Math.clamp(newPosition, -offset, offset)
 
-                if (this.autoRedirect && newPosition > level.size.horizCenter || newPosition < -level.horizCenter) {
-                    [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * 4)].bind(this)()
+                // TODO: Implement this...right
+                if (this.autoRedirect &&
+                    ((i !== 1 && newPosition >= level.size.horizCenter || newPosition <= -level.horizCenter) ||
+                        (i === 1 && newPosition >= level.size.vertCenter || newPosition <= -level.vertCenter))) {
+                    [this.right, this.left, this.pitchDown, this.pitchUp][Math.floor(Math.random() * ((level.size.y === 1) ? 2 : 4))].bind(this)()
                 }
             }
         })
