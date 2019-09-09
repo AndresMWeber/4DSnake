@@ -5,7 +5,7 @@ class Snake {
         this.colliderScale = .4
 
         this.rotateEuler = new THREE.Euler()
-        this.rotateQuaternion = new THREE.Quaternion
+        this.rotateQuaternion = new THREE.Quaternion()
         this.wpVector = new THREE.Vector3()
         this.facingVector = new THREE.Vector3(0, 0, 1)
         this.cameraVector = new THREE.Vector3(0, 0, -1)

@@ -44,7 +44,24 @@ const fitCameraToObject = function(camera, object, offset, controls) {
     const directionVector = camera.position.sub(objectWorldPosition)
     const unitDirectionVector = directionVector.normalize()
     camera.position = unitDirectionVector.multiplyScalar(cameraZ)
+
+    var startRotation = new THREE.Quaternion()
+    startRotation.copy(camera.quaternion)
     camera.lookAt(objectWorldPosition)
+    var endRotation = new THREE.Quaternion()
+    endRotation.copy(camera.quaternion)
+    camera.quaternion.copy(startRotation)
+
+    console.log(endRotation, startRotation)
+
+    var count = 0
+    var slerp = setInterval(() => {
+        if (count > 1) {
+            clearInterval(slerp)
+        }
+        camera.quaternion.slerp(endRotation, count)
+        count += .01
+    }, 50)
 
     const minZ = boundingBox.min.z
     const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ
@@ -57,6 +74,6 @@ const fitCameraToObject = function(camera, object, offset, controls) {
         controls.maxDistance = cameraToFarEdge * 2
         controls.saveState()
     } else {
-        camera.lookAt(center)
+        // camera.lookAt(center)
     }
 }
