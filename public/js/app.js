@@ -80,7 +80,6 @@ class Game {
     createRenderer() {
         tjs_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
         tjs_renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1)
-        tjs_renderer.setSize(window.innerWidth, window.innerHeight)
         tjs_renderer.autoClear = false
         tjs_renderer.setClearColor(0x000000, 0.0)
         tjs_scene = new THREE.Scene()
@@ -98,10 +97,6 @@ class Game {
         tjs_controls.dampingFactor = 0.5
         tjs_controls.enableZoom = true
         tjs_controls.enablePan = false
-        tjs_controls.touches = {
-            ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.ROTATE
-        }
     }
 
     createLights() {
