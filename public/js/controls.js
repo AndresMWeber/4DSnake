@@ -48,8 +48,8 @@ tjs_controls.touches = {
     THREE: THREE.TOUCH.DOLLY_PAN
 }
 
-tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false)
-tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
+tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, { passive: true })
+tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, { passive: true });
 
 
 function onDocumentTouchStart(event) {
@@ -67,6 +67,7 @@ function onDocumentTouchStart(event) {
             lat > SCREEN_WIDTH / 2 && player.addMove(player.right.bind(player))
         }
     }
+    setTimeout(() => touch_info = [], 2000)
 }
 
 function onDocumentTouchEnd(event) {
