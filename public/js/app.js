@@ -1,43 +1,5 @@
 loader = new THREE.FBXLoader()
 
-document.onkeydown = function(e) {
-    switch (e.keyCode) {
-        case (KEYCODES.w):
-            player.addMove(player.pitchUp.bind(player))
-            break;
-        case (KEYCODES.a):
-            player.addMove(player.left.bind(player))
-            break;
-        case (KEYCODES.s):
-            player.addMove(player.pitchDown.bind(player))
-            break;
-        case (KEYCODES.d):
-            player.addMove(player.right.bind(player))
-            break;
-        case (KEYCODES.q):
-            // player.rollLeft()
-            break;
-        case (KEYCODES.e):
-            // player.rollRight()
-            break;
-        case (KEYCODES.left):
-            camera.rotation.y -= .1
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.right):
-            camera.rotation.y += .1
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.up):
-            camera.zoom += .05
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.down):
-            camera.zoom -= .05
-            camera.updateProjectionMatrix()
-            break;
-    }
-}
 
 class Game {
     constructor() {
@@ -91,17 +53,6 @@ class Game {
 
     createCamera() {
         tjs_camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000)
-        tjs_controls = new THREE.OrbitControls(tjs_camera, tjs_renderer.domElement)
-        tjs_controls.target.set(0, 0, 0)
-        tjs_controls.enableDamping = true
-        tjs_controls.dampingFactor = 0.5
-        tjs_controls.enableZoom = true
-        tjs_controls.enablePan = false
-
-        tjs_controls.touches = {
-            TWO: 0,
-            THREE: 2
-        }
     }
 
     createLights() {
