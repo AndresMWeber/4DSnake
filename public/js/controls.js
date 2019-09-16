@@ -49,7 +49,7 @@ tjs_controls.touches = {
 }
 
 tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false)
-tjs_renderer.domElement.addEventListener('touchend', onTouchEnd, false);
+tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
 
 
 function onDocumentTouchStart(event) {
@@ -66,4 +66,8 @@ function onDocumentTouchStart(event) {
             lat > SCREEN_WIDTH / 2 && player.addMove(player.right.bind(player))
         }
     }
+}
+
+function onDocumentTouchEnd(event) {
+    null
 }
