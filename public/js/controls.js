@@ -71,7 +71,8 @@ function onDocumentTouchStart(event) {
 function onDocumentTouchMove(event) {
     if (event.touches.length == 2) {
         event.preventDefault();
-        touch_info = ['TOUCHEDDDDDD']
+        touch_info = event.touches
+        tjs_camera.rotation.x += 2
     }
 }
 
