@@ -42,21 +42,20 @@ tjs_controls.enableDamping = true
 tjs_controls.dampingFactor = 1
 tjs_controls.enableZoom = true
 tjs_controls.enablePan = false
-
 tjs_controls.touches = {
     TWO: THREE.TOUCH.ROTATE,
     THREE: THREE.TOUCH.DOLLY_PAN
 }
 
 tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, { passive: true })
-tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, { passive: true });
+tjs_renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
+tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
 
 
 function onDocumentTouchStart(event) {
     tjs_scene.remove(player.compass.group)
     touch_info = event.touches
     if (event.touches.length == 1) {
-        // event.preventDefault();
         lat = event.touches[0].pageX;
         lon = event.touches[0].pageY;
         if (lon > TOUCH_AREA_Y_BOTTOM_START || lon < TOUCH_AREA_Y_TOP_END) {
@@ -67,9 +66,15 @@ function onDocumentTouchStart(event) {
             lat > SCREEN_WIDTH / 2 && player.addMove(player.right.bind(player))
         }
     }
-    setTimeout(() => touch_info = [], 2000)
+}
+
+function onDocumentTouchMove(event) {
+    if (event.touches.length == 2) {
+        event.preventDefault();
+        touch_info = ['TOUCHEDDDDDD']
+    }
 }
 
 function onDocumentTouchEnd(event) {
-    null
+    touch_info = []
 }
