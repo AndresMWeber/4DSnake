@@ -39,8 +39,8 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 30%;
-    margin-right: 30%;
+    margin-left: 20%;
+    margin-right: 20%;
     height: 100%;
 }
 
@@ -115,17 +115,17 @@ p {
 #debugSceneInfo,
 #debugCheck,
 #autoTurnCheck {
-    line-height: 1.25rem;
     position: absolute;
     right: 3%;
     top: 10%;
-    width: 20%;
-    height: 20%;
+    width: 25%;
+    height: 25%;
     margin-left: 1rem;
     text-align: left;
     z-index: 101;
     display: block;
-    font-size: .5rem;
+    font-size: .25rem;
+    line-height: .75rem;
     font-family: 'Press Start 2P', cursive;
     color: #EEEEEE;
 }

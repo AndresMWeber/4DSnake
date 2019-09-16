@@ -51,7 +51,8 @@ var tjs_FBXLoader,
     tjs_scene,
     tjs_camera,
     tjs_animMixer,
-    tjs_stats
+    tjs_stats,
+    touch_info
 
 var game,
     level,

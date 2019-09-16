@@ -54,6 +54,7 @@ tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
 
 function onDocumentTouchStart(event) {
     tjs_scene.remove(player.compass.group)
+    touch_info = event.touches
     if (event.touches.length == 1) {
         // event.preventDefault();
         lat = event.touches[0].pageX;
