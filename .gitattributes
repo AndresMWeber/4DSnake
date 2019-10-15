@@ -8,6 +8,5 @@
 
 # Binary files
 # ============
-*.ma            linguist-vendored
-*.mb            linguist-vendored
-*.fbx           linguist-vendored
+
+/public/models/* linguist-generated=true
