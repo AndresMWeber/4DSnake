@@ -8,6 +8,6 @@
 
 # Binary files
 # ============
-*.ma            binary
-*.mb            binary
-*.fbx           binary
+*.ma            linguist-vendored
+*.mb            linguist-vendored
+*.fbx           linguist-vendored
