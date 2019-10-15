@@ -1,5 +1,5 @@
-# "4D" Snake
-You've all seen snake, but let's bring it into the fourth D I M E N S I O N!
+# "4D" Snake 🐍
+You've all seen snake, but let's bring it into the true third (not really fourth) D I M E N S I O N!
 
 To Play 4D Snake go [here](https://andresmweber.github.io/4DSnake/)
 
