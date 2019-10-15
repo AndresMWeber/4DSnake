@@ -1,0 +1,13 @@
+# Basic .gitattributes for a repo that includes Maya files and fbxes..
+
+# Source files
+# ============
+
+
+# Caution: *.m also matches Mathematica packages.
+
+# Binary files
+# ============
+*.ma            binary
+*.mb            binary
+*.fbx           binary
