@@ -47,26 +47,59 @@ tjs_controls.touches = {
     THREE: THREE.TOUCH.DOLLY_PAN
 }
 
-tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, { passive: true })
-tjs_renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
-tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
+// tjs_renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, { passive: true })
+// tjs_renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
+// tjs_renderer.domElement.addEventListener('touchend', onDocumentTouchEnd, false);
+// document.createElement('button')
 
+tjs_renderer.domElement.addEventListener("touchstart", startTouch, false);
+tjs_renderer.domElement.addEventListener("touchmove", moveTouch, false);
 
-function onDocumentTouchStart(event) {
-    tjs_scene.remove(player.compass.group)
-    touch_info = event.touches
-    if (event.touches.length == 1) {
-        lat = event.touches[0].pageX;
-        lon = event.touches[0].pageY;
-        if (lon > TOUCH_AREA_Y_BOTTOM_START || lon < TOUCH_AREA_Y_TOP_END) {
-            lon < TOUCH_AREA_Y_TOP_END && player.addMove(player.pitchUp.bind(player))
-            lon > TOUCH_AREA_Y_BOTTOM_START && player.addMove(player.pitchDown.bind(player))
+var initialX = null;
+var initialY = null;
+
+function startTouch(e) {
+    initialX = e.touches[0].clientX;
+    initialY = e.touches[0].clientY;
+};
+
+document.onload(
+    isMobileDevice() && tjs_scene.remove(player.compass.group)
+)
+
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+};
+
+function moveTouch(e) {
+    if (initialX === null || initialY === null) return
+
+    var currentX = e.touches[0].clientX;
+    var currentY = e.touches[0].clientY;
+
+    var diffX = initialX - currentX;
+    var diffY = initialY - currentY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+            player.addMove(player.left.bind(player))
         } else {
-            lat < SCREEN_WIDTH / 2 && player.addMove(player.left.bind(player))
-            lat > SCREEN_WIDTH / 2 && player.addMove(player.right.bind(player))
+            player.addMove(player.right.bind(player))
+        }
+    } else {
+        if (diffY > 0) {
+            player.addMove(player.pitchUp.bind(player))
+        } else {
+            player.addMove(player.pitchDown.bind(player))
         }
     }
-}
+
+    initialX = null;
+    initialY = null;
+
+    e.preventDefault();
+};
+
 
 function onDocumentTouchMove(event) {
     if (event.touches.length == 2) {
