@@ -61,8 +61,7 @@ button {
     -moz-appearance: none;
 }
 
-button:hover,
-button:focus {
+button:hover, button:focus {
     color: #FBB059;
 }
 
@@ -75,10 +74,7 @@ button:active {
     transform: scale(0.99);
 }
 
-#title,
-#status,
-#score,
-#version {
+#title, #status, #score, #version {
     position: absolute;
     top: 5%;
     left: 0;
@@ -110,11 +106,7 @@ p {
     font-size: 3rem;
 }
 
-#debugInfoL,
-#debugInfoR,
-#debugSceneInfo,
-#debugCheck,
-#autoTurnCheck {
+#debugInfoL, #debugInfoR, #debugSceneInfo, #debugCheck, #autoTurnCheck {
     position: absolute;
     right: 3%;
     top: 10%;
@@ -161,6 +153,8 @@ p {
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;
+    pointer-events: none;
+    position: relative;
 }
 
 .form-radio {
