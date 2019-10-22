@@ -28,7 +28,10 @@
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
-![demo!](https://raw.githubusercontent.com/andresmweber/4dsnake/master/presentation/demo.gif "4D Snake!")
+
+<div align="center">
+<img src="presentation/demo.gif" alt="4D Snake!" />
+</div>
 
 ### Installing
 You can test and run this just by dragging ```public/index.html``` into the browser.
