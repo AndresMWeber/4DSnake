@@ -20,23 +20,36 @@
     <div id="menu" unselectable="on" class="">
         <div class="playMenu">
             <h1>"4D" Snake</h1>
-            <button onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = false; game.start()">
+            <button
+                onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = false; game.start()">
                 Normal Mode
             </button>
-            <button onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = true; game.start()">
+            <button
+                onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = true; game.start()">
                 Continuous Mode
             </button>
-            <button onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=false; game.hardcoreMode = false; game.start()">
+            <button
+                onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=false; game.hardcoreMode = false; game.start()">
                 Arcade Mode
             </button>
-            <button onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=true; game.hardcoreMode = false; game.start()">
+            <button
+                onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=true; game.hardcoreMode = false; game.start()">
                 Classic Mode
             </button>
         </div>
     </div>
     <div id="canvas"></div>
-    <input type="checkbox" class="form-radio" onclick="game.debugMode = !game.debugMode" id='debugCheck' name="debugMode"><br>
-    <input type="checkbox" class="form-radio" onclick="player.autoRedirect = !player.autoRedirect" id='autoTurnCheck' name="autoTurn"><br>
+    <button id="quit" onClick="game.setGameOver()" style="display: none;">X</button>
+
+    <label class="container" name="debugMode" id='debugCheck'>
+        <input type="checkbox" onclick="game.debugMode = !game.debugMode">
+        <span class="checkmark"></span>
+    </label>
+
+    <label class="container" name="autoTurn" id='autoTurnCheck'>
+        <input type="checkbox" onclick="player.autoRedirect = !player.autoRedirect">
+        <span class="checkmark"></span>
+    </label>
 
     <script src="js/lib/three.min.js"></script>
     <script src='https://threejs.org/examples/js/libs/stats.min.js'></script>

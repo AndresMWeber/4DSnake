@@ -13,7 +13,7 @@ const KEY_CODES = {
     e: 81
 }
 
-const VERSION = "0.7.0"
+const VERSION = "0.7.1"
 var ASPECT_RATIO = window.innerWidth / window.innerHeight
 var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
@@ -26,6 +26,7 @@ const RAD90 = Math.PI / 2
 const RAD180 = Math.PI
 const RAD270 = (3 * Math.PI) / 2
 const CLOCK = new THREE.Clock()
+var ANIMATION_FRAME = 0
 
 // DYNAMIC GAME VARS
 var DEFAULT_SPEED = .05
