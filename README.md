@@ -20,6 +20,7 @@
 
 ## 📝 Table of Contents
 - [About](#about)
+- [How To Play](#howto)
 - [Installing](#installing)
 - [Deployment](#deployment)
 - [Usage](#usage)
@@ -33,11 +34,54 @@
 <img src="presentation/demo.gif" alt="4D Snake!" />
 </div>
 
+## 🕹️ How to Play <a name = "howto"></a>
+
+<table>
+    <tr>
+        <td align="center" colspan="3"><h3>Control Scheme</h3></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><b>PC</b></td>
+        <td><b>Mobile</b></td>
+    </tr>
+    <tr>
+        <td><b>Left</b></td>
+        <td>A</td>
+        <td>Swipe Left</td>
+    </tr>
+    <tr>
+        <td><b>Right</b></td>
+        <td>D</td>
+        <td>Swipe Right</td>
+    </tr>
+    <tr>
+        <td><b>Up</b></td>
+        <td>W</td>
+        <td>Swipe Up</td>
+    </tr>
+    <tr>
+        <td><b>Down</b></td>
+        <td>S</td>
+        <td>Swipe Down</td>
+    </tr>
+    <tr>
+        <td><b>Rotate Camera</b></td>
+        <td>Left Click</td>
+        <td>Drag Triple Touch</td>
+    </tr>
+    <tr>
+        <td><b>Zoom Camera</b></td>
+        <td>Mouse Wheel</td>
+        <td>Drag Double Touch</td>
+    </tr>
+</table>
+
 ### Installing
 You can test and run this just by dragging ```public/index.html``` into the browser.
 
 ## 🚀 Deployment <a name = "deployment"></a>
-This project is deployed on Github Pages.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit your own custom github pages hosted ```public/index.html``` route.  
+This project is deployed on Github Pages.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages.  
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [JavaScript](https://www.javascript.com/) - Front End
