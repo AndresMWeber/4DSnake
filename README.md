@@ -94,3 +94,5 @@ This project is deployed on Github Pages.  By keeping the top level ```index.htm
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 - Ironhack for supporting me during the project!
+- [@bobbypwang](https://github.com/bobbypwang) - For keeping me sane throughout the project and helping me brainstorm the idea.
+- [@crispinonicky](https://github.com/crispinonicky) - For helping me out with some radian math!
