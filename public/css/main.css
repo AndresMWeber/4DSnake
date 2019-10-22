@@ -56,22 +56,35 @@ button {
     line-height: 1;
     cursor: pointer;
     text-align: center;
-    transition: color 250ms ease-in-out, transform 150ms ease;
+    transition: color 50ms ease-in-out, transform 150ms ease;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
 
-button:hover, button:focus {
+button:focus {
+    outline: 0;
+}
+
+button:focus:active {
+    color: white;
+    transform: scale(0.95)
+}
+
+button:hover {
     color: #FBB059;
 }
 
-button:focus {
-    outline: 1px solid #fff;
-    outline-offset: -4px;
+#quit {
+    position: absolute;
+    bottom: auto;
+    top: 30px;
+    right: 30px;
+    cursor: pointer;
+    padding-top: 0;
 }
 
-button:active {
-    transform: scale(0.99);
+.quit:hover {
+    color: #df6874;
 }
 
 #title, #status, #score, #version {
@@ -133,18 +146,14 @@ p {
 
 #debugCheck {
     top: auto;
-    bottom: 1%;
-    right: 1%;
-    width: 2rem;
-    height: 2rem;
+    bottom: 30px;
+    right: 30px;
 }
 
 #autoTurnCheck {
     top: auto;
-    bottom: 1%;
-    left: 1%;
-    width: 2rem;
-    height: 2rem;
+    bottom: 30px;
+    left: -10px;
 }
 
 .unselectable {
@@ -157,31 +166,60 @@ p {
     position: relative;
 }
 
-.form-radio {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    display: inline-block;
-    position: relative;
-    background-color: #bbbbbb;
-    color: #666;
-    top: 10px;
-    height: 30px;
-    width: 30px;
-    border: 0;
-    border-radius: 50px;
+.container {
+    display: block;
     cursor: pointer;
-    margin-right: 7px;
-    outline: none;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 0 !important;
+    width: 0 !important;
+    /* margin: 0 !important; */
 }
 
-.form-radio:checked::before {
+.container input {
     position: absolute;
-    font: 13px/1 'Open Sans', sans-serif;
-    left: 43%;
-    top: 30%;
-    content: '\02143';
-    transform: rotate(40deg);
-    text-align: center;
-    color: #444444;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #b85052;
+    border-radius: 50%;
+}
+
+.container:hover input~.checkmark {
+    background-color: #ce7dd0;
+}
+
+input:checked~.checkmark {
+    background-color: #952f69;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+input:checked~.checkmark:after {
+    display: block;
+}
+
+.checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #b85052;
 }

@@ -885,7 +885,7 @@ THREE.OrbitControls = function(object, domElement) {
     function onTouchStart(event) {
         if (scope.enabled === false) return;
         event.preventDefault();
-
+        touch_info = event.touches
         switch (event.touches.length) {
             case 1:
                 switch (scope.touches.ONE) {
