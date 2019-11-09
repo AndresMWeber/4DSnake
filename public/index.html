@@ -17,8 +17,8 @@
     <div id="status" unselectable="on" class="unselectable"></div>
     <div id="score" unselectable="on" class="unselectable"></div>
     <div id="version" unselectable="on" class="unselectable"></div>
-    <div id="menu" unselectable="on" class="unselectable">
-        <div class="menu">
+    <div id="menu" unselectable="on" class="">
+        <div class="playMenu">
             <h1>"4D" Snake</h1>
             <button
                 onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = false; game.start()">
@@ -39,23 +39,30 @@
         </div>
     </div>
     <div id="canvas"></div>
-    <input type="checkbox" class="form-radio" onclick="game.debugMode = !game.debugMode" id='debugCheck'
-        name="debugMode"><br>
-    <input type="checkbox" class="form-radio" onclick="player.autoRedirect = !player.autoRedirect" id='autoTurnCheck'
-        name="autoTurn"><br>
+    <button id="quit" onClick="game.setGameOver()" style="display: none;">X</button>
+
+    <label class="container" name="debugMode" id='debugCheck'>
+        <input type="checkbox" onclick="game.debugMode = !game.debugMode">
+        <span class="checkmark"></span>
+    </label>
+
+    <label class="container" name="autoTurn" id='autoTurnCheck'>
+        <input type="checkbox" onclick="player.autoRedirect = !player.autoRedirect">
+        <span class="checkmark"></span>
+    </label>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
     <script src='https://threejs.org/examples/js/libs/stats.min.js'></script>
     <script src='https://threejs.org/examples/js/utils/GeometryUtils.js'></script>
     <script src='https://threejs.org/examples/js/libs/inflate.min.js'></script>
     <script src='https://threejs.org/examples/js/loaders/FBXLoader.js'></script>
-    <script src='https://threejs.org/examples/js/controls/OrbitControls.js'></script>
     <script src="js/config.js "></script>
     <script src="js/helpers.js "></script>
     <script src="js/level.js "></script>
     <script src="js/character.js "></script>
+    <script src='js/lib/OrbitControls.js'></script>
     <script src="js/app.js "></script>
-    <script src="js/touch.js "></script>
+    <script src="js/controls.js "></script>
 </body>
 
 </html>

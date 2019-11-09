@@ -148,7 +148,7 @@ class Tail {
     constructor() {
         this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.snake_body)
         let scope = this
-        loader.load('models/snakeSection.fbx', object => {
+        loader.load('./models/snakeSection.fbx', object => {
             scope.vertebra.add(object)
         })
         this.vertebrae = []

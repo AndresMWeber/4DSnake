@@ -1,43 +1,5 @@
 loader = new THREE.FBXLoader()
 
-document.onkeydown = function(e) {
-    switch (e.keyCode) {
-        case (KEYCODES.w):
-            player.addMove(player.pitchUp.bind(player))
-            break;
-        case (KEYCODES.a):
-            player.addMove(player.left.bind(player))
-            break;
-        case (KEYCODES.s):
-            player.addMove(player.pitchDown.bind(player))
-            break;
-        case (KEYCODES.d):
-            player.addMove(player.right.bind(player))
-            break;
-        case (KEYCODES.q):
-            // player.rollLeft()
-            break;
-        case (KEYCODES.e):
-            // player.rollRight()
-            break;
-        case (KEYCODES.left):
-            camera.rotation.y -= .1
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.right):
-            camera.rotation.y += .1
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.up):
-            camera.zoom += .05
-            camera.updateProjectionMatrix()
-            break;
-        case (KEYCODES.down):
-            camera.zoom -= .05
-            camera.updateProjectionMatrix()
-            break;
-    }
-}
 
 class Game {
     constructor() {
@@ -91,17 +53,6 @@ class Game {
 
     createCamera() {
         tjs_camera = new THREE.PerspectiveCamera(50, ASPECT_RATIO, 0.1, 1000)
-        tjs_controls = new THREE.OrbitControls(tjs_camera, tjs_renderer.domElement)
-        tjs_controls.target.set(0, 0, 0)
-        tjs_controls.enableDamping = true
-        tjs_controls.dampingFactor = 0.5
-        tjs_controls.enableZoom = true
-        tjs_controls.enablePan = false
-
-        tjs_controls.touches = {
-            TWO: 0,
-            THREE: 2
-        }
     }
 
     createLights() {
@@ -152,7 +103,6 @@ class Game {
                 count--
             }
         }, 1000)
-
     }
 
     start() {
@@ -182,10 +132,13 @@ class Game {
     }
 
     setGameOver() {
-        this.gameOver = true
-        this.levelStatus('GAME OVER')
-        setTimeout(() => this.toggleMenu(), 3000)
+        if (!$id('status').innerHTML) {
+            this.gameOver = true
+            this.levelStatus('GAME OVER')
+            window.cancelAnimationFrame(ANIMATION_FRAME)
 
+            setTimeout(() => this.toggleMenu(), 2000)
+        }
     }
 
     setBeatLevel() {
@@ -201,7 +154,7 @@ class Game {
     }
 
     animate() {
-        requestAnimationFrame(this.animate.bind(this))
+        ANIMATION_FRAME = requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver && !this.paused) {
             var delta = CLOCK.getDelta()
             if (tjs_animMixer) mixer.update(delta)
@@ -234,8 +187,11 @@ class Game {
 
 
     toggleMenu() {
-        var x = $id("menu")
-        x.style.display = (x.style.display === "none") ? "block" : "none"
+        var menu = $id("menu")
+        menu.style.display = (menu.style.display === "none") ? "block" : "none"
+
+        var quit_button = $id("quit")
+        quit_button.style.display = (quit_button.style.display === "none") ? "block" : "none"
     }
 
     clearDebug() {
@@ -249,11 +205,23 @@ class Game {
     }
     
     debugPlayer() {
-        $id('debugInfoL').innerHTML = `Snake Direction: (${printFloatArray(player.direction)}<br>(Snake Position:(${printFloatArray(player.position)})<br>moveQueue:${player.moveQueue.length}<br>trail:${JSON.stringify(player.tail.trailRounded)}`
+        var snake_info = []
+        snake_info.push(`Snake Direction: (${printFloatArray(player.direction)}`)
+        snake_info.push(`Snake Position:(${printFloatArray(player.position)})`)
+        snake_info.push(`moveQueue:${player.moveQueue.length}`)
+        snake_info.push(`speed:${player.speed}`)
+        snake_info.push(`trail:${JSON.stringify(player.tail.trailRounded)}`)
+        snake_info.push(`trail:${JSON.stringify(player.tail.trailRounded)}`)
+        $id('debugInfoL').innerHTML = snake_info.join('<br>')
     }
 
     debugPlayerMove() {
-        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(player.mesh.position.toArray())}<br>canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}<br>trailLength (increments of ${MOVE_TICKER_COMPARE}):${player.tail.trailInterpolated.length}`
+        var snake_info = []
+        snake_info.push(`Made turn on position ${printFloatArray(player.mesh.position.toArray())}`)
+        snake_info.push(`canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}`)
+        snake_info.push(`trailLength (increments of ${MOVE_TICKER_COMPARE}):${player.tail.trailInterpolated.length}`)
+        snake_info.push(`Touch info: #Touches: ${JSON.stringify(touch_info || "No Touches Detected")}`)
+        $id('debugInfoR').innerHTML = snake_info.join('<br>')
     }
 }
 
