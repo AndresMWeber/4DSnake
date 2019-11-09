@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "run": "http-server -c-1"
+        "start": "cd public && http-server . --cors -c-1 -p 4000"
     },
     "repository": {
         "type": "git",
@@ -29,7 +29,6 @@
     },
     "homepage": "https://github.com/AndresMWeber/4DSnake#readme",
     "dependencies": {
-        "http-server": "^0.11.1",
-        "three": "^0.108.0"
+        "http-server": "^0.11.1"
     }
 }
