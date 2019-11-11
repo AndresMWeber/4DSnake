@@ -5,7 +5,15 @@
 </p>
 
 <h2 align="center">"4D" Snake 🐍</h2>
-<h5 align="center">To Play 4D Snake click <a href="https://andresmweber.github.io/4DSnake/">CLICK HERE</a></h5>
+<h5 align="center">To Play 4D Snake:</h5>
+<h5 align="center">
+    <img width=14px alt="Github Favicon" src="https://github.githubassets.com/favicon.ico">
+    <a href="https://andresmweber.github.io/4DSnake/">CLICK HERE</a>
+</h5>
+<h5 align="center">
+    <img width=14px alt="Heroku Favicon" src="https://www.herokucdn.com/favicons/favicon.ico">
+    <a href="https://fourdsnake.herokuapp.com/">OR HERE</a>
+</h5>
 <div align="center">
     <img alt="Status" src="https://img.shields.io/badge/status-active-success.svg">
     <img alt="Issues" src="https://img.shields.io/github/issues/andresmweber/4DSnake.svg">
