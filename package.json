@@ -1,6 +1,6 @@
 {
     "name": "4dsnake",
-    "version": "0.7.0",
+    "version": "0.7.2",
     "description": "You've all seen snake, but let's bring it into the fourth D I M E N S I O N!",
     "main": "index.js",
     "scripts": {

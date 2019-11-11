@@ -13,7 +13,7 @@ const KEY_CODES = {
     e: 81
 }
 
-const VERSION = "0.7.1"
+const VERSION = "0.7.2"
 var ASPECT_RATIO = window.innerWidth / window.innerHeight
 var SCREEN_WIDTH = window.innerWidth * window.devicePixelRatio
 var SCREEN_HEIGHT = window.innerHeight * window.devicePixelRatio
