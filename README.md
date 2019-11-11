@@ -5,21 +5,27 @@
 </p>
 
 <h2 align="center">"4D" Snake 🐍</h2>
+
 <h5 align="center">To Play 4D Snake:</h5>
+
 <h5 align="center">
-    <img width=14px alt="Github Favicon" src="https://github.githubassets.com/favicon.ico">
+    <img width=14px alt="Github Favicon" src="https://github.githubassets.com/favicon.ico" />
     <a href="https://andresmweber.github.io/4DSnake/">CLICK HERE</a>
 </h5>
+
 <h5 align="center">
-    <img width=14px alt="Heroku Favicon" src="https://www.herokucdn.com/favicons/favicon.ico">
+    <img width=14px alt="Heroku Favicon" src="https://www.herokucdn.com/favicons/favicon.ico" />
     <a href="https://fourdsnake.herokuapp.com/">OR HERE</a>
 </h5>
-<div align="center">
-    <img alt="Status" src="https://img.shields.io/badge/status-active-success.svg">
-    <img alt="Issues" src="https://img.shields.io/github/issues/andresmweber/4DSnake.svg">
-    <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg">
-</div>
 
+<div align="center">
+    <img alt="Status" src="https://img.shields.io/badge/status-active-success.svg" />
+    <img alt="Issues" src="https://img.shields.io/github/issues/andresmweber/4DSnake.svg" />
+    <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" />
+</div>
+<div align="center">
+    <img alt="NPM" src="https://nodei.co/npm/4dsnake.png?compact=true" />
+</div>
 ---
 
 <p align="center"> You've all seen snake, but let's bring it into the true third (not really fourth) D I M E N S I O N!
