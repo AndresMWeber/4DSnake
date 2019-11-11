@@ -37,67 +37,67 @@
 - [How To Play](#howto)
 - [Installing](#installing)
 - [Deployment](#deployment)
-- [Usage](#usage)
 - [Built Using](#built_using)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
-
-<div align="center">
-<img src="presentation/demo.gif" alt="4D Snake!" />
-</div>
+After seeing Snake game after Snake game, I noticed that the trend was whenever it was adapted to 3D it always lacked Y-axis movement!  Since I felt that was a total waste of a dimension that set me off to implement a version of it that wasn't constrained to two axes in JavaScript.  After finding [three.js](https://threejs.org/) I knew I would be able to complete my idea! Without futher ado:
 
 ## 🕹️ How to Play <a name = "howto"></a>
-
-<table>
-    <tr>
-        <td align="center" colspan="3"><h3>Control Scheme</h3></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><b>PC</b></td>
-        <td><b>Mobile</b></td>
-    </tr>
-    <tr>
-        <td><b>Left</b></td>
-        <td>A</td>
-        <td>Swipe Left</td>
-    </tr>
-    <tr>
-        <td><b>Right</b></td>
-        <td>D</td>
-        <td>Swipe Right</td>
-    </tr>
-    <tr>
-        <td><b>Up</b></td>
-        <td>W</td>
-        <td>Swipe Up</td>
-    </tr>
-    <tr>
-        <td><b>Down</b></td>
-        <td>S</td>
-        <td>Swipe Down</td>
-    </tr>
-    <tr>
-        <td><b>Rotate Camera</b></td>
-        <td>Left Click</td>
-        <td>Drag Triple Touch</td>
-    </tr>
-    <tr>
-        <td><b>Zoom Camera</b></td>
-        <td>Mouse Wheel</td>
-        <td>Drag Double Touch</td>
-    </tr>
-</table>
+<div align="center">
+    <img width=425px src="presentation/demo.gif" alt="4D Snake!" />
+    <table width=425px>
+        <tr>
+            <td align="center" colspan="3"><h3>Control Scheme</h3></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><b>PC</b></td>
+            <td><b>Mobile</b></td>
+        </tr>
+        <tr>
+            <td><b>Left</b></td>
+            <td>A</td>
+            <td>Swipe Left</td>
+        </tr>
+        <tr>
+            <td><b>Right</b></td>
+            <td>D</td>
+            <td>Swipe Right</td>
+        </tr>
+        <tr>
+            <td><b>Up</b></td>
+            <td>W</td>
+            <td>Swipe Up</td>
+        </tr>
+        <tr>
+            <td><b>Down</b></td>
+            <td>S</td>
+            <td>Swipe Down</td>
+        </tr>
+        <tr>
+            <td><b>Rotate Camera</b></td>
+            <td>Left Click</td>
+            <td>Drag Triple Touch</td>
+        </tr>
+        <tr>
+            <td><b>Zoom Camera</b></td>
+            <td>Mouse Wheel</td>
+            <td>Drag Double Touch</td>
+        </tr>
+    </table>
+</div>
 
 ### Installing
 You can test and run this just by dragging ```public/index.html``` into the browser.
 
-## 🚀 Deployment <a name = "deployment"></a>
-This project is deployed on Github Pages.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages. 
+Feel free to install using NPM as well ```npm install 4dsnake```.
 
-You can also host this project on any cloud deployment you like, I chose Heroku for its quick setup.  It hosts the project using NodeJS a simple http-server that uses the $PORT environment variable (or defaults to 4000).
+## 🚀 Deployment <a name = "deployment"></a>
+This project is deployed on **Github Pages**.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages. 
+
+You can also host this project on any cloud deployment you like, I chose **Heroku** for its quick setup.  It hosts the project using **NodeJS** a simple *http-server* that uses the ```$PORT``` environment variable (or defaults to ```4000```).
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [NodeJS](https://www.nodejs.org/) - Web Server
@@ -110,6 +110,6 @@ You can also host this project on any cloud deployment you like, I chose Heroku 
 - [@andresmweber](https://github.com/andresmweber) - Idea & Completed work
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-- Ironhack for supporting me during the project!
+- [@Ironhack](https://github.com/ironhack) for supporting me during the project!
 - [@bobbypwang](https://github.com/bobbypwang) - For keeping me sane throughout the project and helping me brainstorm the idea.
 - [@crispinonicky](https://github.com/crispinonicky) - For helping me out with some radian math!
