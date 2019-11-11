@@ -37,14 +37,16 @@ class Snake {
         this.mesh.name = "Player"
 
         let scope = this
-        loader.load('models/snakeHeadBlock.fbx', object => {
-            object.traverse(child => {
-                let material = snakeMaterialsLookup[child.name]
-                if (material) child.material = material
-                child.scale.set(this.fbxScale, this.fbxScale, this.fbxScale)
-            })
-            scope.mesh.add(object)
-        })
+        loader.load('../models/snakeHeadBlock.fbx', object => {
+                object.traverse(child => {
+                    let material = snakeMaterialsLookup[child.name]
+                    if (material) child.material = material
+                    child.scale.set(this.fbxScale, this.fbxScale, this.fbxScale)
+                })
+                scope.mesh.add(object)
+            },
+            progress => console.log(progress),
+            error => console.error('Error loading snake:', error))
         tjs_scene.add(this.mesh)
     }
 
@@ -146,14 +148,14 @@ class Tail {
     constructor() {
         this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.snake_body)
         let scope = this
-        loader.load('models/snakeSection.fbx', object => {
+        loader.load('./models/snakeSection.fbx', object => {
             scope.vertebra.add(object)
         })
         this.vertebrae = []
         this.trailRounded = []
         this.trailInterpolated = []
         this.tolerance = 0.001
-        this.transparent = false
+        this.transparent = true
     }
 
     reset() {

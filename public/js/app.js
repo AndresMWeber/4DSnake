@@ -103,7 +103,6 @@ class Game {
                 count--
             }
         }, 1000)
-
     }
 
     start() {
@@ -133,10 +132,13 @@ class Game {
     }
 
     setGameOver() {
-        this.gameOver = true
-        this.levelStatus('GAME OVER')
-        setTimeout(() => this.toggleMenu(), 3000)
+        if (!$id('status').innerHTML) {
+            this.gameOver = true
+            this.levelStatus('GAME OVER')
+            window.cancelAnimationFrame(ANIMATION_FRAME)
 
+            setTimeout(() => this.toggleMenu(), 2000)
+        }
     }
 
     setBeatLevel() {
@@ -152,7 +154,7 @@ class Game {
     }
 
     animate() {
-        requestAnimationFrame(this.animate.bind(this))
+        ANIMATION_FRAME = requestAnimationFrame(this.animate.bind(this))
         if (!this.gameOver && !this.paused) {
             var delta = CLOCK.getDelta()
             if (tjs_animMixer) mixer.update(delta)
@@ -185,8 +187,11 @@ class Game {
 
 
     toggleMenu() {
-        var x = $id("menu")
-        x.style.display = (x.style.display === "none") ? "block" : "none"
+        var menu = $id("menu")
+        menu.style.display = (menu.style.display === "none") ? "block" : "none"
+
+        var quit_button = $id("quit")
+        quit_button.style.display = (quit_button.style.display === "none") ? "block" : "none"
     }
 
     clearDebug() {
@@ -200,11 +205,23 @@ class Game {
     }
     
     debugPlayer() {
-        $id('debugInfoL').innerHTML = `Snake Direction: (${printFloatArray(player.direction)}<br>(Snake Position:(${printFloatArray(player.position)})<br>moveQueue:${player.moveQueue.length}<br>trail:${JSON.stringify(player.tail.trailRounded)}`
+        var snake_info = []
+        snake_info.push(`Snake Direction: (${printFloatArray(player.direction)}`)
+        snake_info.push(`Snake Position:(${printFloatArray(player.position)})`)
+        snake_info.push(`moveQueue:${player.moveQueue.length}`)
+        snake_info.push(`speed:${player.speed}`)
+        snake_info.push(`trail:${JSON.stringify(player.tail.trailRounded)}`)
+        snake_info.push(`trail:${JSON.stringify(player.tail.trailRounded)}`)
+        $id('debugInfoL').innerHTML = snake_info.join('<br>')
     }
 
     debugPlayerMove() {
-        $id('debugInfoR').innerHTML = `Made turn on position ${printFloatArray(player.mesh.position.toArray())}<br>canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}<br>trailLength (increments of ${MOVE_TICKER_COMPARE}):${player.tail.trailInterpolated.length}<br>Touch info: #Touches: ${touch_info.length}<br>${JSON.stringify(touch_info)}`
+        var snake_info = []
+        snake_info.push(`Made turn on position ${printFloatArray(player.mesh.position.toArray())}`)
+        snake_info.push(`canMove?:${Boolean(Math.floor(player.moveTicker%MOVE_TICKER_COMPARE))}`)
+        snake_info.push(`trailLength (increments of ${MOVE_TICKER_COMPARE}):${player.tail.trailInterpolated.length}`)
+        snake_info.push(`Touch info: #Touches: ${JSON.stringify(touch_info || "No Touches Detected")}`)
+        $id('debugInfoR').innerHTML = snake_info.join('<br>')
     }
 }
 
