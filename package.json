@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "cd public && http-server . --cors -c-1 -p 4000"
+        "start": "cd public && http-server . --cors -c-1 -p ${PORT:-4000}"
     },
     "repository": {
         "type": "git",
