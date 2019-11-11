@@ -37,7 +37,7 @@ class Snake {
         this.mesh.name = "Player"
 
         let scope = this
-        loader.load('../models/snakeHeadBlock.fbx', object => {
+        loader.load('./models/snakeHeadBlock.fbx', object => {
                 object.traverse(child => {
                     let material = snakeMaterialsLookup[child.name]
                     if (material) child.material = material
@@ -49,6 +49,7 @@ class Snake {
             error => console.error('Error loading snake:', error))
         tjs_scene.add(this.mesh)
     }
+
 
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
@@ -148,14 +149,14 @@ class Tail {
     constructor() {
         this.vertebra = new THREE.Mesh(new THREE.BoxBufferGeometry(.95, .95, .95), tjs_materials.snake_body)
         let scope = this
-        loader.load('./models/snakeSection.fbx', object => {
+        loader.load('models/snakeSection.fbx', object => {
             scope.vertebra.add(object)
         })
         this.vertebrae = []
         this.trailRounded = []
         this.trailInterpolated = []
         this.tolerance = 0.001
-        this.transparent = true
+        this.transparent = false
     }
 
     reset() {
@@ -271,7 +272,4 @@ class Compass {
         this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
 
         if (CLOCK.elapsedTime > 15 && tjs_materials.arrow.opacity) tjs_materials.arrow.opacity -= .01
-        this.arrowL.position.x = this.facingCamera ? 1.2 : -1.2
-        this.arrowR.position.x = this.facingCamera ? -1.2 : 1.2
-    }
-}
+ 
