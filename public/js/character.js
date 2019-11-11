@@ -50,7 +50,6 @@ class Snake {
         tjs_scene.add(this.mesh)
     }
 
-
     makeTurn(euler) {
         this.speed = DEFAULT_SPEED
         this.mesh.rotation.setFromQuaternion(this.mesh.quaternion.multiply(this.rotateQuaternion.setFromEuler(euler)))
@@ -272,4 +271,7 @@ class Compass {
         this.facingCamera = (planeVector.angleTo(cameraVector) > (3 * Math.PI) / 4)
 
         if (CLOCK.elapsedTime > 15 && tjs_materials.arrow.opacity) tjs_materials.arrow.opacity -= .01
- 
+        this.arrowL.position.x = this.facingCamera ? 1.2 : -1.2
+        this.arrowR.position.x = this.facingCamera ? -1.2 : 1.2
+    }
+}
