@@ -89,9 +89,12 @@
 You can test and run this just by dragging ```public/index.html``` into the browser.
 
 ## 🚀 Deployment <a name = "deployment"></a>
-This project is deployed on Github Pages.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages.  
+This project is deployed on Github Pages.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages. 
+
+You can also host this project on any cloud deployment you like, I chose Heroku for its quick setup.  It hosts the project using NodeJS a simple http-server that uses the $PORT environment variable (or defaults to 4000).
 
 ## ⛏️ Built Using <a name = "built_using"></a>
+- [NodeJS](https://www.nodejs.org/) - Web Server
 - [JavaScript](https://www.javascript.com/) - Front End
 - [ThreeJS](https://threejs.org/) - 3D Engine
 - [CSS](https://www.w3.org/Style/CSS//) - Styling
