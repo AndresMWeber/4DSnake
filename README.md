@@ -45,46 +45,55 @@
 After seeing Snake game after Snake game, I noticed that the trend was whenever it was adapted to 3D it always lacked Y-axis movement!  Since I felt that was a total waste of a dimension that set me off to implement a version of it that wasn't constrained to two axes in JavaScript.  After finding [three.js](https://threejs.org/) I knew I would be able to complete my idea! Without futher ado:
 
 ## 🕹️ How to Play <a name = "howto"></a>
+
 <div align="center">
-    <img width=425px src="presentation/demo.gif" alt="4D Snake!" />
-    <table width=425px>
-        <tr>
-            <td align="center" colspan="3"><h3>Control Scheme</h3></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><b>PC</b></td>
-            <td><b>Mobile</b></td>
-        </tr>
-        <tr>
-            <td><b>Left</b></td>
-            <td>A</td>
-            <td>Swipe Left</td>
-        </tr>
-        <tr>
-            <td><b>Right</b></td>
-            <td>D</td>
-            <td>Swipe Right</td>
-        </tr>
-        <tr>
-            <td><b>Up</b></td>
-            <td>W</td>
-            <td>Swipe Up</td>
-        </tr>
-        <tr>
-            <td><b>Down</b></td>
-            <td>S</td>
-            <td>Swipe Down</td>
-        </tr>
-        <tr>
-            <td><b>Rotate Camera</b></td>
-            <td>Left Click</td>
-            <td>Drag Triple Touch</td>
-        </tr>
-        <tr>
-            <td><b>Zoom Camera</b></td>
-            <td>Mouse Wheel</td>
-            <td>Drag Double Touch</td>
+    <table>
+        <tr width=400px>
+        <td>
+            <img width=400px src="https://github.com/AndresMWeber/4DSnake/blob/master/presentation/demo.gif?raw=true" alt="4D Snake!" />
+        </td>
+        <td valign="top">
+          <table width=400px>
+                <tr>
+                    <td align="center" colspan="3"><h3>Control Scheme</h3></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><b>PC</b></td>
+                    <td><b>Mobile</b></td>
+                </tr>
+                <tr>
+                    <td><b>Left</b></td>
+                    <td>A</td>
+                    <td>Swipe Left</td>
+                </tr>
+                <tr>
+                    <td><b>Right</b></td>
+                    <td>D</td>
+                    <td>Swipe Right</td>
+                </tr>
+                <tr>
+                    <td><b>Up</b></td>
+                    <td>W</td>
+                    <td>Swipe Up</td>
+                </tr>
+                <tr>
+                    <td><b>Down</b></td>
+                    <td>S</td>
+                    <td>Swipe Down</td>
+                </tr>
+                <tr>
+                    <td><b>Rotate Camera</b></td>
+                    <td>Left Click</td>
+                    <td>Drag Triple Touch</td>
+                </tr>
+                <tr>
+                    <td><b>Zoom Camera</b></td>
+                    <td>Mouse Wheel</td>
+                    <td>Drag Double Touch</td>
+                </tr>
+            </table>
+        </td>
         </tr>
     </table>
 </div>
