@@ -100,7 +100,7 @@ class Level {
     }
 
     buildGrid() {
-        loader.load('models/dot.fbx', function(object) {
+        loader.load('./models/dot.fbx', function(object) {
             object.traverse(child => { if (child.isMesh) child.material = mat_flat_blue })
             for (let i = 0; i < this.size.x; i++) {
                 for (let j = 0; j < this.size.z; j++) {
@@ -131,7 +131,7 @@ class Level {
             var foodGroup = new THREE.Group()
             foodGroup.rotateY(choice([RAD90, RAD180, RAD270]))
 
-            loader.load('models/fruit.fbx', function(object) {
+            loader.load('./models/fruit.fbx', function(object) {
                 object.name = `FoodFBX${String(i).padStart(2, '0')}`
                 object.children[2].material = tjs_materials.food
                 foodGroup.add(object)
