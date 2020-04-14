@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>4D Snake</title>
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Offside&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Offside&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
 
-<body>
+  <body>
     <div id="title" unselectable="on" class="unselectable">Description</div>
     <div id="debugSceneInfo" unselectable="on" class="unselectable"></div>
     <div id="debugInfoL" unselectable="on" class="unselectable"></div>
@@ -18,51 +23,59 @@
     <div id="score" unselectable="on" class="unselectable"></div>
     <div id="version" unselectable="on" class="unselectable"></div>
     <div id="menu" unselectable="on" class="">
-        <div class="playMenu">
-            <h1>"4D" Snake</h1>
-            <button
-                onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = false; game.start()">
-                Normal Mode
-            </button>
-            <button
-                onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = true; game.start()">
-                Continuous Mode
-            </button>
-            <button
-                onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=false; game.hardcoreMode = false; game.start()">
-                Arcade Mode
-            </button>
-            <button
-                onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=true; game.hardcoreMode = false; game.start()">
-                Classic Mode
-            </button>
-        </div>
+      <div class="playMenu">
+        <h1>"4D" Snake</h1>
+        <button
+          onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = false; game.start()"
+        >
+          Normal Mode
+        </button>
+        <button
+          onclick="game.toggleMenu(); game.arcadeMode = false; game.classicMode=false;game.hardcoreMode = true; game.start()"
+        >
+          Continuous Mode
+        </button>
+        <button
+          onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=false; game.hardcoreMode = false; game.start()"
+        >
+          Arcade Mode
+        </button>
+        <button
+          onclick="game.toggleMenu(); game.arcadeMode = true; game.classicMode=true; game.hardcoreMode = false; game.start()"
+        >
+          Classic Mode
+        </button>
+      </div>
     </div>
     <div id="canvas"></div>
-    <button id="quit" onClick="game.setGameOver()" style="display: none;">X</button>
+    <button id="quit" onClick="game.setGameOver()" style="display: none;">
+      X
+    </button>
 
-    <label class="container" name="debugMode" id='debugCheck'>
-        <input type="checkbox" onclick="game.debugMode = !game.debugMode">
-        <span class="checkmark"></span>
+    <label class="container" name="debugMode" id="debugCheck">
+      <input type="checkbox" onclick="game.debugMode = !game.debugMode" />
+      <span class="checkmark"></span>
     </label>
 
-    <label class="container" name="autoTurn" id='autoTurnCheck'>
-        <input type="checkbox" onclick="player.autoRedirect = !player.autoRedirect">
-        <span class="checkmark"></span>
+    <label class="container" name="autoTurn" id="autoTurnCheck">
+      <input
+        type="checkbox"
+        onclick="player.autoRedirect = !player.autoRedirect"
+      />
+      <span class="checkmark"></span>
     </label>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
-    <script src='https://threejs.org/examples/js/libs/stats.min.js'></script>
-    <script src='https://threejs.org/examples/js/utils/GeometryUtils.js'></script>
-    <script src='https://threejs.org/examples/js/libs/inflate.min.js'></script>
-    <script src='https://threejs.org/examples/js/loaders/FBXLoader.js'></script>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+    <script src="https://threejs.org/examples/js/utils/GeometryUtils.js"></script>
+    <script src="https://threejs.org/examples/js/libs/inflate.min.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/FBXLoader.js"></script>
     <script src="js/config.js "></script>
     <script src="js/helpers.js "></script>
     <script src="js/level.js "></script>
     <script src="js/character.js "></script>
-    <script src='js/lib/OrbitControls.js'></script>
+    <script src="js/lib/OrbitControls.js"></script>
     <script src="js/app.js "></script>
     <script src="js/controls.js "></script>
-</body>
-
+  </body>
 </html>

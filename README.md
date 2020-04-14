@@ -19,12 +19,20 @@
 </h5>
 
 <div align="center">
-    <img alt="Status" src="https://img.shields.io/badge/status-active-success.svg" />
-    <img alt="Issues" src="https://img.shields.io/github/issues/andresmweber/4DSnake.svg" />
-    <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" />
+    <a href="https://github.com/AndresMWeber/4DSnake">
+        <img alt="Status" src="https://img.shields.io/badge/status-active-success.svg" />
+    </a>
+    <a href="https://github.com/AndresMWeber/4DSnake/issues">
+        <img alt="Issues" src="https://img.shields.io/github/issues/andresmweber/4DSnake.svg" />
+    </a>
+    <a href="https://github.com/AndresMWeber/4DSnake/blob/master/LICENSE">
+        <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" />
+    </a>
 </div>
 <div align="center">
-    <img alt="NPM" src="https://nodei.co/npm/4dsnake.png?compact=true" />
+    <a href="https://www.npmjs.com/package/4dsnake">
+        <img alt="NPM" src="https://nodei.co/npm/4dsnake.png?compact=true" />
+    </a>
 </div>
 ---
 
@@ -33,6 +41,7 @@
 </p>
 
 ## 📝 Table of Contents
+
 - [About](#about)
 - [How To Play](#howto)
 - [Installing](#installing)
@@ -42,7 +51,8 @@
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
-After seeing Snake game after Snake game, I noticed that the trend was whenever it was adapted to 3D it always lacked Y-axis movement!  Since I felt that was a total waste of a dimension that set me off to implement a version of it that wasn't constrained to two axes in JavaScript.  After finding [three.js](https://threejs.org/) I knew I would be able to complete my idea! Without futher ado:
+
+After seeing Snake game after Snake game, I noticed that the trend was whenever it was adapted to 3D it always lacked Y-axis movement! Since I felt that was a total waste of a dimension that set me off to implement a version of it that wasn't constrained to two axes in JavaScript. After finding [three.js](https://threejs.org/) I knew I would be able to complete my idea! Without futher ado:
 
 ## 🕹️ How to Play <a name = "howto"></a>
 
@@ -99,16 +109,19 @@ After seeing Snake game after Snake game, I noticed that the trend was whenever 
 </div>
 
 ### Installing
-You can test and run this just by dragging ```public/index.html``` into the browser.
 
-Feel free to install using NPM as well ```npm install 4dsnake```.
+You can test and run this just by dragging `public/index.html` into the browser.
+
+Feel free to install using NPM as well `npm install 4dsnake`.
 
 ## 🚀 Deployment <a name = "deployment"></a>
-This project is deployed on **Github Pages**.  By keeping the top level ```index.html``` file, it will automatically populate to github pages.  The only thing you need to do is edit the route to your own ```public/index.html``` route hosted on github pages. 
 
-You can also host this project on any cloud deployment you like, I chose **Heroku** for its quick setup.  It hosts the project using **NodeJS** a simple *http-server* that uses the ```$PORT``` environment variable (or defaults to ```4000```).
+This project is deployed on **Github Pages**. By keeping the top level `index.html` file, it will automatically populate to github pages. The only thing you need to do is edit the route to your own `public/index.html` route hosted on github pages.
+
+You can also host this project on any cloud deployment you like, I chose **Heroku** for its quick setup. It hosts the project using **NodeJS** a simple _http-server_ that uses the `$PORT` environment variable (or defaults to `4000`).
 
 ## ⛏️ Built Using <a name = "built_using"></a>
+
 - [NodeJS](https://www.nodejs.org/) - Web Server
 - [JavaScript](https://www.javascript.com/) - Front End
 - [ThreeJS](https://threejs.org/) - 3D Engine
@@ -116,9 +129,11 @@ You can also host this project on any cloud deployment you like, I chose **Herok
 - [Maya](https://www.autodesk.com/products/maya/overview) - 3D Content
 
 ## ✍️ Authors <a name = "authors"></a>
+
 - [@andresmweber](https://github.com/andresmweber) - Idea & Completed work
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+
 - [@Ironhack](https://github.com/ironhack) for supporting me during the project!
 - [@bobbypwang](https://github.com/bobbypwang) - For keeping me sane throughout the project and helping me brainstorm the idea.
 - [@crispinonicky](https://github.com/crispinonicky) - For helping me out with some radian math!
