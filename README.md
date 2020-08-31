@@ -28,13 +28,22 @@
     <a href="https://github.com/AndresMWeber/4DSnake/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" />
     </a>
+    <a href=".">
+        <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/andresmweber/4dsnake" />
+    </a>
+    <a href="https://andresmweber.github.io/4DSnake/public/index.html">
+        <img alt="GitHub deployments GitHub Pages" src="https://img.shields.io/github/deployments/andresmweber/4dsnake/github-pages?label=gh-pages" />
+    </a>
+    <a href="https://fourdsnake.herokuapp.com/">
+        <img alt="GitHub deployments Heroku" src="https://img.shields.io/github/deployments/andresmweber/4dsnake/fourdsnake?label=heroku" />
+    </a>
 </div>
+<br>
 <div align="center">
     <a href="https://www.npmjs.com/package/4dsnake">
         <img alt="NPM" src="https://nodei.co/npm/4dsnake.png?compact=true" />
     </a>
 </div>
----
 
 <p align="center"> You've all seen snake, but let's bring it into the true third (not really fourth) D I M E N S I O N!
     <br> 
