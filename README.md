@@ -1,22 +1,10 @@
 <p align="center">
     <a href="https://andresmweber.github.io/4DSnake/" rel="noopener">
-        <img width=300px height=300px src="https://raw.githubusercontent.com/andresmweber/4dsnake/master/presentation/promotional/promo.png " alt="4DSnake Promo">
+        <img width=300px height=300px src="https://raw.githubusercontent.com/andresmweber/4dsnake/master/presentation/promotional/promo.png" alt="4DSnake Promo">
     </a>
 </p>
 
 <h2 align="center">"4D" Snake 🐍</h2>
-
-<h5 align="center">To Play 4D Snake:</h5>
-
-<h5 align="center">
-    <img width=14px alt="Github Favicon" src="https://github.githubassets.com/favicon.ico" />
-    <a href="https://andresmweber.github.io/4DSnake/">CLICK HERE</a>
-</h5>
-
-<h5 align="center">
-    <img width=14px alt="Heroku Favicon" src="https://www.herokucdn.com/favicons/favicon.ico" />
-    <a href="https://fourdsnake.herokuapp.com/">OR HERE</a>
-</h5>
 
 <div align="center">
     <a href="https://github.com/AndresMWeber/4DSnake">
@@ -28,6 +16,7 @@
     <a href="https://github.com/AndresMWeber/4DSnake/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" />
     </a>
+    <br />
     <a href=".">
         <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/andresmweber/4dsnake" />
     </a>
@@ -39,23 +28,34 @@
     </a>
 </div>
 <br>
+
+<p align="center"> You've all seen snake, but let's bring it into the true third (not really fourth) D I M E N S I O N!
+    <br> 
+</p>
+
+<h3 align="center">
+    <code>
+    <a href="https://fourdsnake.herokuapp.com/"><img width=14px alt="Heroku Favicon" src="https://www.herokucdn.com/favicons/favicon.ico" /> Live Demo</a>
+    ·
+    <a href="https://snake.andresmweber.com/"><img width=14px alt="Github Favicon" src="https://github.githubassets.com/favicon.ico" /> Live Demo</a>
+    ·
+    <a href="#installation">Installation</a>
+    </code>
+</h3>
+
 <div align="center">
     <a href="https://www.npmjs.com/package/4dsnake">
         <img alt="NPM" src="https://nodei.co/npm/4dsnake.png?compact=true" />
     </a>
 </div>
 
-<p align="center"> You've all seen snake, but let's bring it into the true third (not really fourth) D I M E N S I O N!
-    <br> 
-</p>
-
 ## 📝 Table of Contents
 
 - [About](#about)
 - [How To Play](#howto)
-- [Installing](#installing)
+- [Installation](#installation)
 - [Deployment](#deployment)
-- [Built Using](#built_using)
+- [Built Using](#tech)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
@@ -117,7 +117,7 @@ After seeing Snake game after Snake game, I noticed that the trend was whenever 
     </table>
 </div>
 
-### Installing
+### Installation
 
 You can test and run this just by dragging `public/index.html` into the browser.
 
@@ -129,7 +129,7 @@ This project is deployed on **Github Pages**. By keeping the top level `index.ht
 
 You can also host this project on any cloud deployment you like, I chose **Heroku** for its quick setup. It hosts the project using **NodeJS** a simple _http-server_ that uses the `$PORT` environment variable (or defaults to `4000`).
 
-## ⛏️ Built Using <a name = "built_using"></a>
+## ⛏️ Tech Satck <a name = "tech"></a>
 
 - [NodeJS](https://www.nodejs.org/) - Web Server
 - [JavaScript](https://www.javascript.com/) - Front End
@@ -139,7 +139,9 @@ You can also host this project on any cloud deployment you like, I chose **Herok
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@andresmweber](https://github.com/andresmweber) - Idea & Completed work
+<a href="https://github.com/andresmweber/">
+    <img title="Andres Weber" src="https://github.com/andresmweber.png" height="50px">
+</a>
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
