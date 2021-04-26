@@ -129,7 +129,7 @@ This project is deployed on **Github Pages**. By keeping the top level `index.ht
 
 You can also host this project on any cloud deployment you like, I chose **Heroku** for its quick setup. It hosts the project using **NodeJS** a simple _http-server_ that uses the `$PORT` environment variable (or defaults to `4000`).
 
-## ⛏️ Tech Satck <a name = "tech"></a>
+## ⛏️ Tech Stack <a name = "tech"></a>
 
 - [NodeJS](https://www.nodejs.org/) - Web Server
 - [JavaScript](https://www.javascript.com/) - Front End
